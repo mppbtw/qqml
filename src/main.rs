@@ -1,15 +1,10 @@
 use std::env;
 
-fn help() {
+mod utils;
+mod commands;
+
+fn help(subcommand: &str) {
     println!("help logic here");
-}
-
-fn version() {
-    println!("i dunno how to get the version lol");
-}
-
-fn play() {
-    println!("playing logic goes here");
 }
 
 fn main() {
@@ -19,17 +14,17 @@ fn main() {
         let arg = args.get(0).unwrap();
         if arg.starts_with('-') {
             match arg.as_str() {
-                "-v" => version(),
-                "--version" => version(),
-                _ => help(),
+                "-v" => commands::version(),
+                "--version" => commands::version(),
+                _ => help(""),
             }
             return;
         }
         match arg.as_str() {
-            "play" => play(),
-            _ => help(),
+            "play" => commands::play(),
+            _ => help("play"),
         }
         return;
     }
-    help();
+    help("");
 }
