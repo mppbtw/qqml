@@ -1,10 +1,10 @@
 use std::env;
 
-mod utils;
 mod commands;
+mod utils;
 
 fn help(subcommand: &str) {
-    println!("help logic here");
+    println!("help logic here for {}", subcommand);
 }
 
 fn main() {
