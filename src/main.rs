@@ -1,8 +1,8 @@
 use std::env;
 
 mod commands;
-mod utils;
 mod qqml;
+mod utils;
 
 fn main() {
     let args: Vec<String> = env::args().collect::<Vec<String>>()[1..].to_vec();
