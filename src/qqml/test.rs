@@ -1,5 +1,5 @@
-use crate::qqml::token::Token;
 use crate::qqml::lexer::Lexer;
+use crate::qqml::token::Token;
 
 #[test]
 fn test_keyword_tokens_with_spaces() {

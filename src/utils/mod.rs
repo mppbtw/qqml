@@ -74,5 +74,5 @@ fn strip_newline(str: &mut String) {
 }
 
 pub fn get_yarr_dir() -> String {
-    format!("{}/.yarr", tilde("~").to_owned().to_string())
+    format!("{}/.yarr", tilde("~").clone().to_string())
 }
