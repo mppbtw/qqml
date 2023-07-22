@@ -1,6 +1,7 @@
 use super::error::{Result, Error};
 use super::token::{Token, KEYWORDS};
-use std::borrow::Cow;
+
+const WHITESPACE_CHARS: [u8; 4] = [b' ', b'\n', b'\r', b'\t'];
 
 #[allow(unused)]
 pub struct Lexer {
@@ -35,6 +36,7 @@ impl Lexer {
     }
 
     pub fn next_token(&mut self) -> Token {
+        self.scran_whitespace();
         let tok: Token = match self.ch {
             b'=' => Token::Equal,
             b'*' => Token::Asterisk,
@@ -52,7 +54,9 @@ impl Lexer {
             0    => Token::Eof,
             _    => {
                 if is_letter(self.ch) {
-                    Token::Ident(self.read_ident())
+                    let ident = self.read_ident();
+                    dbg!(&ident);
+                    lookup_ident(ident)
                 }  else {
                     Token::Illegal
                 }
@@ -69,6 +73,12 @@ impl Lexer {
             self.read_char();
         }
         self.input[pos..self.position].to_owned()
+    }
+
+    fn scran_whitespace(&mut self) {
+        while WHITESPACE_CHARS.contains(&self.ch) {
+            self.read_char();
+        }
     }
 
 }
@@ -91,7 +101,6 @@ fn is_letter(ch: u8) -> bool {
 fn lookup_ident(ident: String) -> Token {
     match KEYWORDS.get(&ident) {
         Some(i) => return i.clone(),
-        None => (),
+        None => Token::Ident(ident),
     }
-    Token::Ident(ident)
 }
