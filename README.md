@@ -44,11 +44,11 @@ ask calculation (2) "What is 2+2" {
 ```
 This example shows the syntax for the body of calculation questions. Each line is an expression which, if true, awards the mark given in brackets (if the brackets are empty, the full mark shall be awarded). Square brackets can contain multiple, comma separated values which allow the expression to be true if any of the values are matched. The inputs for the question are defined by the `inputs` keyword after the question body. 
 
-## String Answers
+## Text Answers
 ``` javascript
-ask string (2) "What is the plural of fish?" {
+ask text (2) "What is the plural of fish?" {
   x = ["fishes"] ();
   x = ["fishies", "fishices"] (1);
 } inputs: [x];
 ```
-String questions will accept a string which can be handled in a similar way to calculation questions. The user's input will be turned lowercase and markes can be awarded by match expressions.
+Text questions will accept a string which can be handled in a similar way to calculation questions. The user's input will be turned lowercase and markes can be awarded by match expressions.
