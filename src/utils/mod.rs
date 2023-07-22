@@ -1,17 +1,19 @@
 use colored::Colorize;
-use shellexpand::tilde;
 use std::io;
 use std::io::Write;
 use std::path::Path;
 
 mod macros;
+mod constants;
 
-pub fn dotfile_is_valid() -> bool {
-    path_exists("~/.yarr/config") && path_exists("~/.yarr/sections")
-}
+pub use constants::*;
 
 pub fn path_exists<S: Into<String>>(dir: S) -> bool {
     Path::new(&dir.into()).exists()
+}
+
+pub fn dotfile_is_valid() -> bool {
+    path_exists(YARR_DIR.to_owned()) && path_exists(YARR_SECTIONS_DIR.to_owned())
 }
 
 pub fn print_error<S: std::fmt::Display>(msg: S) {
@@ -60,7 +62,7 @@ pub fn yes_or_no<S: std::fmt::Display>(msg: S, default: bool) -> bool {
     }
 }
 
-fn strip_newline(str: &mut String) {
+pub fn strip_newline(str: &mut String) {
     loop {
         if str.ends_with('\n') {
             *str = str.strip_suffix('\n').unwrap().to_owned();
@@ -71,8 +73,4 @@ fn strip_newline(str: &mut String) {
             break;
         }
     }
-}
-
-pub fn get_yarr_dir() -> String {
-    format!("{}/.yarr", tilde("~").clone().to_string())
 }
