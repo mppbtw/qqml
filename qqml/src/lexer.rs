@@ -97,12 +97,12 @@ impl Default for Lexer {
 }
 
 fn is_letter(ch: u8) -> bool {
-    b'a' <= ch && ch <= b'z' || b'A' <= ch && ch <= b'Z' || ch == b'_'
+    ch.is_ascii_uppercase() || ch.is_ascii_lowercase() || ch == b'_'
 }
 
 fn lookup_ident(ident: String) -> Token {
     match KEYWORDS.get(&ident) {
-        Some(i) => return i.clone(),
+        Some(i) => i.clone(),
         None => Token::Ident(ident),
     }
 }
