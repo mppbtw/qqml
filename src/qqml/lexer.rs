@@ -1,4 +1,6 @@
 use crate::qqml::error::{Result, Error};
+use crate::qqml::token::Token;
+
 #[allow(unused)]
 pub struct Lexer {
     input: String,
@@ -16,10 +18,9 @@ impl Lexer {
             return Err(Error::NonAsciiInput)
         }
 
-        Ok(Self {
-            input,
-            ..Default::default()
-        })
+        let mut lexer = Self {input, ..Default::default()};
+        lexer.read_char();
+        Ok(lexer)
     }
 
     fn read_char(&mut self) {
@@ -28,6 +29,31 @@ impl Lexer {
         } else {
             self.ch = self.input.as_bytes()[self.read_position];
         }
+        self.position = self.read_position;
+        self.read_position += 1;
+    }
+
+    pub fn next_token(&mut self) -> Token {
+        let tok: Token = match self.ch {
+            b'=' => Token::Equal,
+            b'*' => Token::Asterisk,
+            b';' => Token::Semicolon,
+            b'>' => Token::GThan,
+            b'<' => Token::LThan,
+            b'(' => Token::LParen,
+            b')' => Token::RParen,
+            b'{' => Token::LSquirly,
+            b'}' => Token::RSquirly,
+            b'[' => Token::LSquare,
+            b']' => Token::RSquare,
+            b',' => Token::Comma,
+            b':' => Token::Colon,
+            0    => Token::Eof,
+            _    => Token::Illegal,
+        };
+
+        self.read_char();
+        tok
     }
 }
 
@@ -36,7 +62,7 @@ impl Default for Lexer {
         Self {
             input: "".to_owned(),
             position: 0,
-            read_position: 1,
+            read_position: 0,
             ch: 0,
         }
     }
