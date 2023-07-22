@@ -1,4 +1,4 @@
-use super::error::{Result, Error};
+use super::error::{Error, Result};
 use super::token::{Token, KEYWORDS};
 
 const WHITESPACE_CHARS: [u8; 4] = [b' ', b'\n', b'\r', b'\t'];
@@ -17,10 +17,13 @@ impl Lexer {
         let input: String = input.into();
 
         if !input.is_ascii() {
-            return Err(Error::NonAsciiInput)
+            return Err(Error::NonAsciiInput);
         }
 
-        let mut lexer = Self {input, ..Default::default()};
+        let mut lexer = Self {
+            input,
+            ..Default::default()
+        };
         lexer.read_char();
         Ok(lexer)
     }
@@ -51,16 +54,16 @@ impl Lexer {
             b']' => Token::RSquare,
             b',' => Token::Comma,
             b':' => Token::Colon,
-            0    => Token::Eof,
-            _    => {
+            0 => Token::Eof,
+            _ => {
                 if is_letter(self.ch) {
                     let ident = self.read_ident();
                     dbg!(&ident);
                     lookup_ident(ident)
-                }  else {
+                } else {
                     Token::Illegal
                 }
-            },
+            }
         };
 
         self.read_char();
@@ -80,7 +83,6 @@ impl Lexer {
             self.read_char();
         }
     }
-
 }
 
 impl Default for Lexer {

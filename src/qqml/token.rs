@@ -1,7 +1,7 @@
-use lazy_static::lazy_static;
-use std::collections::HashMap;
 use crate::cow_map;
+use lazy_static::lazy_static;
 use std::borrow::Cow;
+use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 pub enum Token {
