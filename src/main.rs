@@ -1,10 +1,8 @@
 use std::env;
-use shellexpand::tilde;
-
-use crate::utils::{path_exists, get_yarr_dir};
 
 mod commands;
 mod utils;
+mod qqml;
 
 fn main() {
     let args: Vec<String> = env::args().collect::<Vec<String>>()[1..].to_vec();

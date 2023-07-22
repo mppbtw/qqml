@@ -4,6 +4,8 @@ use std::io::Write;
 use std::path::Path;
 use shellexpand::tilde;
 
+mod macros;
+
 pub fn dotfile_is_valid() -> bool {
     path_exists("~/.yarr/config") && path_exists("~/.yarr/sections")
 }
