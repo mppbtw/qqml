@@ -1,8 +1,8 @@
 use colored::Colorize;
+use shellexpand::tilde;
 use std::io;
 use std::io::Write;
 use std::path::Path;
-use shellexpand::tilde;
 
 mod macros;
 
