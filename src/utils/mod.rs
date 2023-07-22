@@ -2,13 +2,14 @@ use colored::Colorize;
 use std::io;
 use std::io::Write;
 use std::path::Path;
+use shellexpand::tilde;
 
 pub fn dotfile_is_valid() -> bool {
-    exists("~/.yarr/config") && exists("~/.yarr/sections")
+    path_exists("~/.yarr/config") && path_exists("~/.yarr/sections")
 }
 
-fn exists(dir: &str) -> bool {
-    Path::new(dir).exists()
+pub fn path_exists<S: Into<String>>(dir: S) -> bool {
+    Path::new(&dir.into()).exists()
 }
 
 pub fn print_error<S: std::fmt::Display>(msg: S) {
@@ -68,4 +69,8 @@ fn strip_newline(str: &mut String) {
             break;
         }
     }
+}
+
+pub fn get_yarr_dir() -> String {
+    format!("{}/.yarr", tilde("~").to_owned().to_string())
 }
