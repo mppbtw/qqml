@@ -1,7 +1,6 @@
 use std::env;
 
 mod commands;
-mod qqml;
 mod utils;
 
 fn main() {
