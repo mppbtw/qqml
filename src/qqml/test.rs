@@ -1,5 +1,5 @@
-use crate::qqml::Token;
 use crate::hashmap;
+use crate::qqml::Token;
 
 #[test]
 fn test_next_token_single_chars() {
@@ -24,7 +24,6 @@ fn test_next_token_single_chars() {
 
     let mut i = 0;
     loop {
-
         let expected_token = expected.get(i).unwrap();
         assert_eq!(expected_token, next_token());
         if expected_token == Token::Eof {

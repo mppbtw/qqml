@@ -1,3 +1,4 @@
+use crate::qqml::error::{Result, Error};
 #[allow(unused)]
 pub struct Lexer {
     input: String,
@@ -6,18 +7,19 @@ pub struct Lexer {
     ch: u8,
 }
 
+#[allow(unused)]
 impl Lexer {
-    pub fn new<S: Into<String>>(input: S) -> Self {
+    pub fn new<S: Into<String>>(input: S) -> Result<Self> {
         let input: String = input.into();
 
         if !input.is_ascii() {
-            panic!("QQML only supports ASCII encoding.")
+            return Err(Error::NonAsciiInput)
         }
 
-        return Self {
+        Ok(Self {
             input,
             ..Default::default()
-        }
+        })
     }
 
     fn read_char(&mut self) {
