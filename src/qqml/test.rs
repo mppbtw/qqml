@@ -1,10 +1,36 @@
-use crate::hashmap;
 use crate::qqml::token::Token;
 use crate::qqml::lexer::Lexer;
 
 #[test]
-fn test_next_token_single_chars() {
-    let input = ";=:{}[](),><#";
+fn test_keyword_tokens() {
+    let input = "ask multichoice calculation string inputs";
+    let expected = vec![
+        Token::Ask,
+        Token::Multichoice,
+        Token::Calculation,
+        Token::String,
+        Token::Inputs,
+        Token::Eof,
+    ];
+
+    let mut i = 0;
+    let mut lexer = Lexer::new(input).unwrap();
+
+    loop {
+        let expected_token = &expected[i];
+        let tok = lexer.next_token();
+        if matches!(tok, Token::Eof) {
+            break;
+        }
+        assert_eq!(tok, *expected_token);
+
+        i += 1;
+    }
+}
+
+#[test]
+fn test_single_char_tokens() {
+    let input = ";=:{}[](),><*_%$#";
 
     let expected = vec![
         Token::Semicolon,
@@ -19,6 +45,10 @@ fn test_next_token_single_chars() {
         Token::Comma,
         Token::GThan,
         Token::LThan,
+        Token::Asterisk,
+        Token::Illegal,
+        Token::Illegal,
+        Token::Illegal,
         Token::Illegal,
         Token::Eof,
     ];

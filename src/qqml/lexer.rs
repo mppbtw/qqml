@@ -1,5 +1,6 @@
-use crate::qqml::error::{Result, Error};
-use crate::qqml::token::Token;
+use super::error::{Result, Error};
+use super::token::{Token, KEYWORDS};
+use std::borrow::Cow;
 
 #[allow(unused)]
 pub struct Lexer {
@@ -49,12 +50,27 @@ impl Lexer {
             b',' => Token::Comma,
             b':' => Token::Colon,
             0    => Token::Eof,
-            _    => Token::Illegal,
+            _    => {
+                if is_letter(self.ch) {
+                    Token::Ident(self.read_ident())
+                }  else {
+                    Token::Illegal
+                }
+            },
         };
 
         self.read_char();
         tok
     }
+
+    fn read_ident(&mut self) -> String {
+        let pos = self.position;
+        while is_letter(self.ch) {
+            self.read_char();
+        }
+        self.input[pos..self.position].to_owned()
+    }
+
 }
 
 impl Default for Lexer {
@@ -66,4 +82,16 @@ impl Default for Lexer {
             ch: 0,
         }
     }
+}
+
+fn is_letter(ch: u8) -> bool {
+    b'a' <= ch && ch <= b'z' || b'A' <= ch && ch <= b'Z' || ch == b'_'
+}
+
+fn lookup_ident(ident: String) -> Token {
+    match KEYWORDS.get(&ident) {
+        Some(i) => return i.clone(),
+        None => (),
+    }
+    Token::Ident(ident)
 }
