@@ -1,5 +1,6 @@
 use crate::hashmap;
-use crate::qqml::Token;
+use crate::qqml::token::Token;
+use crate::qqml::lexer::Lexer;
 
 #[test]
 fn test_next_token_single_chars() {
@@ -23,12 +24,15 @@ fn test_next_token_single_chars() {
     ];
 
     let mut i = 0;
+    let mut lexer = Lexer::new(input).unwrap();
+
     loop {
-        let expected_token = expected.get(i).unwrap();
-        assert_eq!(expected_token, next_token());
-        if expected_token == Token::Eof {
+        let expected_token = &expected[i];
+        let tok = lexer.next_token();
+        if matches!(tok, Token::Eof) {
             break;
         }
+        assert_eq!(tok, *expected_token);
 
         i += 1;
     }
