@@ -1,4 +1,7 @@
 use std::env;
+use shellexpand::tilde;
+
+use crate::utils::{path_exists, get_yarr_dir};
 
 mod commands;
 mod utils;
