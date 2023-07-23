@@ -7,7 +7,7 @@ use std::process::exit;
 pub fn init() {
     if let Some(a) = next_arg() {
         match a.as_str() {
-            "-h" | "--help" | "help" => {
+            "-h" | "--help" => {
                 print_help(HelpCommand::Init);
                 exit(0);
             }

@@ -6,7 +6,7 @@ use std::process::exit;
 pub fn section() {
     if let Some(a) = next_arg() {
         match a.as_str() {
-            "-h" | "--help" | "help" => print_help(HelpCommand::Sections),
+            "-h" | "--help" => print_help(HelpCommand::Section),
             "play" => play(),
             _ => {
                 print_error(format!("Unexpected argument: {}", a));
