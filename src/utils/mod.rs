@@ -2,11 +2,14 @@ use colored::Colorize;
 use std::io;
 use std::io::Write;
 use std::path::Path;
+use std::process::exit;
 
-mod macros;
 mod constants;
+mod macros;
+mod next_arg;
 
 pub use constants::*;
+pub use next_arg::*;
 
 pub fn path_exists<S: Into<String>>(dir: S) -> bool {
     Path::new(&dir.into()).exists()
@@ -17,11 +20,12 @@ pub fn dotfile_is_valid() -> bool {
 }
 
 pub fn print_error<S: std::fmt::Display>(msg: S) {
-    println!("{}, {}", "error: ".red(), msg);
+    println!("{} {}", "error: ".red(), msg);
 }
 
 pub fn print_help(command: &str) {
     println!("Help text goes here for command: {}", command);
+    exit(0);
 }
 
 pub fn yes_or_no<S: std::fmt::Display>(msg: S, default: bool) -> bool {
@@ -73,4 +77,18 @@ pub fn strip_newline(str: &mut String) {
             break;
         }
     }
+}
+
+pub fn validate_section_name(name: &str) -> bool {
+    let bytes = name.bytes();
+    for ch in bytes {
+        if !(ch.is_ascii_lowercase()
+            || ch.is_ascii_uppercase()
+            || ch == b'_'
+            || ch.is_ascii_digit())
+        {
+            return false;
+        }
+    }
+    true
 }
