@@ -7,3 +7,4 @@ edition = "2021"
 colored = "2.0.4"
 lazy_static = "1.4.0"
 shellexpand = "3.1.0"
+help = { path = "./help" }

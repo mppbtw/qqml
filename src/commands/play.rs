@@ -1,4 +1,4 @@
-use crate::help::*;
+use help::*;
 use crate::utils::*;
 use std::process::exit;
 use std::fs;
@@ -19,11 +19,12 @@ pub fn play() {
                     exit(1);
                 }
                 println!("Playing section {}", a);
+                play_section(a);
                 exit(0);
             }
         }
         None => {
-            print_error("No section specified. Run yarr play --help for more info.");
+            print_error("No section specified. Run yarr section play --help for more info.");
             exit(1);
         }
     }
