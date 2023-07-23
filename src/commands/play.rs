@@ -1,11 +1,13 @@
+use crate::help::*;
 use crate::utils::*;
 use std::process::exit;
+use std::fs;
 
 pub fn play() {
     match next_arg() {
         Some(a) => {
-            if a == "-h".to_owned() || a == "--help".to_owned() {
-                print_help("play");
+            if a == *"-h" || a == *"--help" {
+                print_help(HelpCommand::Play);
                 exit(0);
             } else {
                 if !dotfile_is_valid() {
@@ -27,4 +29,16 @@ pub fn play() {
     }
 }
 
-fn play_section(sec: String) {}
+fn play_section(sec_name: String) {
+    let sec_path = format!("{}/{}", *YARR_SECTIONS_DIR, sec_name);
+    let sec = match fs::read_to_string(&sec_path) {
+        Ok(s) => s,
+        Err(e) => {
+            print_error(format!("Failed to read file {}: {}", sec_path, e));
+            exit(1);
+        }
+    };
+
+    println!("Section contents: {}", sec);
+    exit(0);
+}

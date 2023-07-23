@@ -23,11 +23,6 @@ pub fn print_error<S: std::fmt::Display>(msg: S) {
     println!("{} {}", "error: ".red(), msg);
 }
 
-pub fn print_help(command: &str) {
-    println!("Help text goes here for command: {}", command);
-    exit(0);
-}
-
 pub fn yes_or_no<S: std::fmt::Display>(msg: S, default: bool) -> bool {
     if default {
         loop {
@@ -99,6 +94,6 @@ where
     String: From<S>,
 {
     dotfile_is_valid()
-        && path_exists(format!("{}/{}", YARR_SECTIONS_DIR.to_string(), sec))
+        && path_exists(format!("{}/{}", *YARR_SECTIONS_DIR, sec))
         && validate_section_name(sec)
 }

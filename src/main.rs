@@ -1,8 +1,10 @@
 use std::process::exit;
 
 mod commands;
+mod help;
 mod utils;
 
+use help::*;
 use utils::*;
 
 fn main() {
@@ -16,7 +18,7 @@ fn main() {
 
     match arg.as_str() {
         "version" | "-v" | "--version" => commands::version(),
-        "help" | "-h" | "--help" => print_help(""),
+        "help" | "-h" | "--help" => print_help(HelpCommand::Yarr),
 
         "play" => commands::play(),
         "init" => commands::init(),
