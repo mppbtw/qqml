@@ -7,7 +7,7 @@ pub fn play() {
     match next_arg() {
         Some(a) => {
             if a == *"-h" || a == *"--help" {
-                print_help(HelpCommand::Play);
+                print_help(HelpCommand::SectionPlay);
                 exit(0);
             } else {
                 if !dotfile_is_valid() {
