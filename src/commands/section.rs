@@ -1,19 +1,19 @@
 use help::*;
+use crate::commands::play;
 use crate::utils::*;
 use std::process::exit;
 
-pub fn version() {
+pub fn section() {
     if let Some(a) = next_arg() {
         match a.as_str() {
-            "-h" | "--help" | "help" => print_help(HelpCommand::Version),
+            "-h" | "--help" | "help" => print_help(HelpCommand::Sections),
+            "play" => play(),
             _ => {
                 print_error(format!("Unexpected argument: {}", a));
                 exit(1);
             }
         }
     }
-    match option_env!("CARGO_PKG_VERSION") {
-        Some(v) => println!("yarr {}", v),
-        None => print_error("Failed to get version metadata!"),
-    }
+    print_error("No command specified. Run yarr section --help for more info.");
+    exit(0);
 }
