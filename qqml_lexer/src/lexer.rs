@@ -1,5 +1,5 @@
-use super::error::{Error, Result};
-use super::token::{Token, KEYWORDS};
+use crate::error::{Error, Result};
+use crate::token::{Token, KEYWORDS};
 
 const WHITESPACE_CHARS: [u8; 4] = [b' ', b'\n', b'\r', b'\t'];
 
