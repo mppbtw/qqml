@@ -72,12 +72,15 @@ impl Lexer {
             }
             0 => Token::Eof,
             _ => {
+                dbg!(self.ch);
+
                 if is_letter(self.ch) {
                     let ident = self.read_ident();
                     lookup_ident(ident)
+                } else if is_digit(self.ch) {
+                    Token::Number(self.read_number())
                 } else if is_quote(self.ch) {
-                    let literal = self.read_literal();
-                    Token::Literal(literal)
+                    Token::Literal(self.read_literal())
                 } else {
                     Token::Illegal
                 }
@@ -86,6 +89,16 @@ impl Lexer {
 
         self.read_char();
         tok
+    }
+
+    fn read_number(&mut self) -> usize {
+        let pos = self.position;
+        while is_digit(self.ch) {
+            self.read_char();
+        }
+        let num = self.input[pos..self.position].to_owned().parse().unwrap();
+        dbg!(num);
+        num
     }
 
     fn read_literal(&mut self) -> String {
@@ -133,10 +146,6 @@ impl Default for Lexer {
     }
 }
 
-fn is_letter(ch: u8) -> bool {
-    ch.is_ascii_uppercase() || ch.is_ascii_lowercase() || ch == b'_'
-}
-
 fn lookup_ident(ident: String) -> Token {
     match KEYWORDS.get(&ident) {
         Some(i) => i.clone(),
@@ -144,6 +153,14 @@ fn lookup_ident(ident: String) -> Token {
     }
 }
 
+fn is_letter(ch: u8) -> bool {
+    ch.is_ascii_uppercase() || ch.is_ascii_lowercase() || ch == b'_'
+}
+
 fn is_quote(ch: u8) -> bool {
     ch == b'\'' || ch == b'"'
+}
+
+pub fn is_digit(ch: u8) -> bool {
+    (b'0'..=b'9').contains(&ch)
 }
