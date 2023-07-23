@@ -61,7 +61,7 @@ impl Lexer {
                 } else {
                     Token::GThan
                 }
-            },
+            }
             b'<' => {
                 if self.peek_char() == b'=' {
                     self.read_char();
@@ -69,7 +69,7 @@ impl Lexer {
                 } else {
                     Token::LThan
                 }
-            },
+            }
             b'!' => {
                 if self.peek_char() == b'=' {
                     self.read_char();
@@ -109,8 +109,11 @@ impl Lexer {
         let pos = self.position;
         while is_digit(self.ch) {
             self.read_char();
+            dbg!(self.ch);
         }
         let num = self.input[pos..self.position].to_owned().parse().unwrap();
+        self.read_position -= 1;
+        self.position -= 1;
         num
     }
 
@@ -123,7 +126,7 @@ impl Lexer {
             }
             self.read_char();
         }
-        self.input[pos+1..self.position].to_owned()
+        self.input[pos + 1..self.position - 1].to_owned()
     }
 
     fn read_ident(&mut self) -> String {

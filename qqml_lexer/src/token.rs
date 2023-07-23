@@ -40,8 +40,25 @@ pub enum Token {
     Inputs,
 }
 impl PartialEq for Token {
-    fn eq(&self, _: &Self) -> bool {
-        matches!(self, _)
+    fn eq(&self, other: &Self) -> bool {
+        if !matches!(self, other) {
+            return false;
+        }
+        match self {
+            Self::Number(sn) => {
+                match other {
+                    Self::Number(n) => n == sn,
+                    _ => false,
+                }
+            }
+            Self::Literal(sl) => {
+                match other {
+                    Self::Literal(l) => l == sl,
+                    _ => false,
+                }
+            }
+            _ => true
+        }
     }
 }
 
