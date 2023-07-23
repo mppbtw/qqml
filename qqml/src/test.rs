@@ -2,6 +2,32 @@ use super::lexer::Lexer;
 use super::token::Token;
 
 #[test]
+fn test_tokenise_numbers() {
+    let input = "123;   2";
+    let expected = vec![
+        Token::Number(123),
+        Token::Semicolon,
+        Token::Number(2),
+        Token::Eof,
+    ];
+    let mut i = 0;
+    let mut lexer = Lexer::new(input).unwrap();
+
+    loop {
+        let expected_token = &expected[i];
+        let tok = lexer.next_token();
+        dbg!(&tok);
+        dbg!(&expected_token);
+        if matches!(tok, Token::Eof) {
+            break;
+        }
+        assert_eq!(tok, *expected_token);
+
+        i += 1;
+    }
+}
+
+#[test]
 fn test_tokenise_string_literals() {
     let input = "
         \"$!;=_()%@&->\";
