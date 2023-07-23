@@ -11,8 +11,8 @@ pub enum Token {
     Literal(String),
 
     RArrow,
-    Equal,    // =
-    NEqual,   // !=
+    Equal,  // =
+    NEqual, // !=
     Comma,
     Semicolon,
     Colon,

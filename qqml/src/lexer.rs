@@ -74,8 +74,10 @@ impl Lexer {
             _ => {
                 if is_letter(self.ch) {
                     let ident = self.read_ident();
-                    dbg!(&ident);
                     lookup_ident(ident)
+                } else if is_quote(self.ch) {
+                    let literal = self.read_literal();
+                    Token::Literal(literal)
                 } else {
                     Token::Illegal
                 }
@@ -84,6 +86,18 @@ impl Lexer {
 
         self.read_char();
         tok
+    }
+
+    fn read_literal(&mut self) -> String {
+        let pos = self.position;
+        let mut quotes_found = 0;
+        while quotes_found < 2 {
+            if is_quote(self.ch) {
+                quotes_found += 1;
+            }
+            self.read_char();
+        }
+        self.input[pos+1..self.position].to_owned()
     }
 
     fn read_ident(&mut self) -> String {
@@ -102,7 +116,7 @@ impl Lexer {
 
     fn peek_char(&self) -> u8 {
         if self.read_position >= self.input.len() {
-            return 0
+            return 0;
         }
         self.input.bytes().collect::<Vec<u8>>()[self.read_position]
     }
@@ -128,4 +142,8 @@ fn lookup_ident(ident: String) -> Token {
         Some(i) => i.clone(),
         None => Token::Ident(ident),
     }
+}
+
+fn is_quote(ch: u8) -> bool {
+    ch == b'\'' || ch == b'"'
 }
