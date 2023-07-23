@@ -10,7 +10,9 @@ pub enum Token {
     Number(usize),
     Literal(String),
 
-    Equal,
+    RArrow,
+    Equal,    // =
+    NEqual,   // !=
     Comma,
     Semicolon,
     Colon,

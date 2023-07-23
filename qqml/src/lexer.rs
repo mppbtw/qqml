@@ -42,6 +42,14 @@ impl Lexer {
         self.scran_whitespace();
         let tok: Token = match self.ch {
             b'=' => Token::Equal,
+            b'!' => {
+                if self.peek_char() == b'=' {
+                    self.read_char();
+                    Token::NEqual
+                } else {
+                    Token::Illegal
+                }
+            }
             b'*' => Token::Asterisk,
             b';' => Token::Semicolon,
             b'>' => Token::GThan,
@@ -54,6 +62,14 @@ impl Lexer {
             b']' => Token::RSquare,
             b',' => Token::Comma,
             b':' => Token::Colon,
+            b'-' => {
+                if self.peek_char() == b'>' {
+                    self.read_char();
+                    Token::RArrow
+                } else {
+                    Token::Illegal
+                }
+            }
             0 => Token::Eof,
             _ => {
                 if is_letter(self.ch) {
@@ -82,6 +98,13 @@ impl Lexer {
         while WHITESPACE_CHARS.contains(&self.ch) {
             self.read_char();
         }
+    }
+
+    fn peek_char(&self) -> u8 {
+        if self.read_position >= self.input.len() {
+            return 0
+        }
+        self.input.bytes().collect::<Vec<u8>>()[self.read_position]
     }
 }
 
