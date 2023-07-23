@@ -79,7 +79,8 @@ pub fn strip_newline(str: &mut String) {
     }
 }
 
-pub fn validate_section_name(name: &str) -> bool {
+pub fn validate_section_name<S: Into<String>>(name: S) -> bool {
+    let name = name.into();
     let bytes = name.bytes();
     for ch in bytes {
         if !(ch.is_ascii_lowercase()
@@ -91,4 +92,13 @@ pub fn validate_section_name(name: &str) -> bool {
         }
     }
     true
+}
+
+pub fn section_exists<S: std::fmt::Display>(sec: S) -> bool
+where
+    String: From<S>,
+{
+    dotfile_is_valid()
+        && path_exists(format!("{}/{}", YARR_SECTIONS_DIR.to_string(), sec))
+        && validate_section_name(sec)
 }

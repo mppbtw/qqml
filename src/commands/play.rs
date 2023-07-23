@@ -8,11 +8,12 @@ pub fn play() {
                 print_help("play");
                 exit(0);
             } else {
-                if !validate_section_name(&a) {
-                    print_error(
-                        format!("Invalid section name {}.", a)
-                            + "Run yarr play --help for guidelines on how to name sections.",
-                    );
+                if !dotfile_is_valid() {
+                    print_error("The ~/.yarr directory is not yet setup. Please run yarr init");
+                    exit(1);
+                }
+                if !section_exists(&a) {
+                    print_error(format!("No such section: {}", a));
                     exit(1);
                 }
                 println!("Playing section {}", a);
@@ -25,3 +26,5 @@ pub fn play() {
         }
     }
 }
+
+fn play_section(sec: String) {}
