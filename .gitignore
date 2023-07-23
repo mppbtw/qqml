@@ -1,3 +1,6 @@
 /target
 **/target
 **/target
+qqml_lexer/Cargo.lock
+qqml_parser/Cargo.lock
+help/Cargo.lock
