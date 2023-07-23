@@ -1,7 +1,7 @@
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Token {
     Illegal,
     Eof,
@@ -39,29 +39,6 @@ pub enum Token {
     Calculation,
     Inputs,
 }
-impl PartialEq for Token {
-    fn eq(&self, other: &Self) -> bool {
-        if !matches!(self, other) {
-            return false;
-        }
-        match self {
-            Self::Number(sn) => {
-                match other {
-                    Self::Number(n) => n == sn,
-                    _ => false,
-                }
-            }
-            Self::Literal(sl) => {
-                match other {
-                    Self::Literal(l) => l == sl,
-                    _ => false,
-                }
-            }
-            _ => true
-        }
-    }
-}
-
 lazy_static! {
     pub static ref KEYWORDS: HashMap<String, Token> = {
         let mut m = HashMap::new();
