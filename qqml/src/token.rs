@@ -10,6 +10,12 @@ pub enum Token {
     Number(usize),
     Literal(String),
 
+    Plus,
+    Subtract,
+    GThanOrEqual,
+    LThanOrEqual,
+    Divide,
+
     RArrow,
     Equal,  // =
     NEqual, // !=
@@ -33,7 +39,6 @@ pub enum Token {
     Calculation,
     Inputs,
 }
-
 impl PartialEq for Token {
     fn eq(&self, _: &Self) -> bool {
         matches!(self, _)

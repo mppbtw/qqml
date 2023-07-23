@@ -60,11 +60,16 @@ fn test_tokenise_string_literals() {
 
 #[test]
 fn test_multi_char_tokens() {
-    let input = "
-        !=   ->
-        ";
-
-    let expected = vec![Token::NEqual, Token::RArrow, Token::Eof];
+    let input = "!=>< >= <= ->";
+    let expected = vec![
+        Token::NEqual,
+        Token::GThan,
+        Token::LThan,
+        Token::GThanOrEqual,
+        Token::LThanOrEqual,
+        Token::RArrow,
+        Token::Eof,
+    ];
 
     let mut i = 0;
     let mut lexer = Lexer::new(input).unwrap();
@@ -144,9 +149,10 @@ fn test_keyword_tokens() {
 
 #[test]
 fn test_single_char_tokens() {
-    let input = ";=:{}[](),><*_%$#";
+    let input = "/;=:{}[](),><*_%$#";
 
     let expected = vec![
+        Token::Divide,
         Token::Semicolon,
         Token::Equal,
         Token::Colon,
