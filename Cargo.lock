@@ -91,6 +91,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "help"
+version = "0.1.0"
+
+[[package]]
 name = "hermit-abi"
 version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -305,6 +309,7 @@ name = "yarr"
 version = "0.1.0"
 dependencies = [
  "colored",
+ "help",
  "lazy_static",
  "shellexpand",
 ]

@@ -1,7 +1,6 @@
 use std::process::exit;
 
 mod commands;
-mod help;
 mod utils;
 
 use help::*;
@@ -11,7 +10,7 @@ fn main() {
     let arg = match next_arg() {
         Some(a) => a,
         None => {
-            println!("No command specified. Run yarr --help for a list of commands.");
+            print_error("No command specified. Run yarr --help for a list of commands.");
             exit(1);
         }
     };
@@ -20,11 +19,11 @@ fn main() {
         "version" | "-v" | "--version" => commands::version(),
         "help" | "-h" | "--help" => print_help(HelpCommand::Yarr),
 
-        "play" => commands::play(),
+        "section" => commands::section(),
         "init" => commands::init(),
 
         _ => {
-            println!("Unknown command. Run yarr --help for a list of commands.");
+            print_error("Unknown command. Run yarr --help for a list of commands.");
             exit(1);
         }
     }

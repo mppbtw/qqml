@@ -1,4 +1,4 @@
-use crate::help::*;
+use help::*;
 use crate::utils::*;
 use colored::Colorize;
 use std::fs;
