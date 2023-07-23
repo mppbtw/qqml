@@ -91,7 +91,7 @@ pub fn validate_section_name<S: Into<String>>(name: S) -> bool {
             return false;
         }
     }
-    true
+    !name.is_empty()
 }
 
 pub fn section_exists<S: std::fmt::Display>(sec: S) -> bool
