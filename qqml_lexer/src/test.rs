@@ -29,13 +29,15 @@ fn test_tokenise_numbers() {
 
 #[test]
 fn test_tokenise_string_literals() {
-    let input = ";'literal';\"literal\";";
+    let input = ";'literal';\"literal\";'l'\"l\"";
     let expected = vec![
         Token::Semicolon,
         Token::Literal("literal".to_owned()),
         Token::Semicolon,
         Token::Literal("literal".to_owned()),
         Token::Semicolon,
+        Token::Literal("l".to_owned()),
+        Token::Literal("l".to_owned()),
         Token::Eof,
     ];
 
@@ -143,7 +145,7 @@ fn test_keyword_tokens() {
 
 #[test]
 fn test_single_char_tokens() {
-    let input = "/;=:{}[](),><*_%$#";
+    let input = "/;=:{}[](),><*%$#";
 
     let expected = vec![
         Token::Divide,
@@ -160,7 +162,6 @@ fn test_single_char_tokens() {
         Token::GThan,
         Token::LThan,
         Token::Asterisk,
-        Token::Illegal,
         Token::Illegal,
         Token::Illegal,
         Token::Illegal,
