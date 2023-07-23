@@ -1,6 +1,6 @@
 use std::env;
 
-pub static mut ARG_COUNT: usize = 0;
+static mut ARG_COUNT: usize = 0;
 
 pub fn next_arg() -> Option<String> {
     let args = env::args().collect::<Vec<String>>()[1..].to_vec();
@@ -9,9 +9,6 @@ pub fn next_arg() -> Option<String> {
             return None;
         }
         ARG_COUNT += 1;
-        args.into_iter()
-            .collect::<Vec<String>>()
-            .get(ARG_COUNT - 1)
-            .cloned()
+        args.get(ARG_COUNT - 1).cloned()
     }
 }
