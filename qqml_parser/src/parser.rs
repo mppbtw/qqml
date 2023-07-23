@@ -96,38 +96,42 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     let mut answer = MultichoiceAnswer::default();
 
     tok = l.next_token();
+    dbg!(&tok);
     match tok {
         Token::Literal(l) => answer.text = l,
         _ => return Err(Error::UnexpectedToken(tok)),
     };
 
     tok = l.next_token();
+    dbg!(&tok);
     if tok != Token::LParen {
         return Err(Error::UnexpectedToken(tok));
     };
 
     tok = l.next_token();
+    dbg!(&tok);
     match tok {
         Token::Number(n) => answer.marks = n,
         _ => return Err(Error::UnexpectedToken(tok)),
     };
 
     tok = l.next_token();
+    dbg!(&tok);
     if tok != Token::RParen {
         return Err(Error::UnexpectedToken(tok));
     }
 
     tok = l.next_token();
+    dbg!(&tok);
     if tok == Token::Semicolon {
         return Ok(answer);
     }
-
-    tok = l.next_token();
     if tok != Token::RArrow {
         return Err(Error::UnexpectedToken(tok));
     }
 
     tok = l.next_token();
+    dbg!(&tok);
     match tok {
         Token::Literal(l) => answer.explanation = Some(l),
         _ => return Err(Error::UnexpectedToken(tok)),
