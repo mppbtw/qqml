@@ -42,18 +42,8 @@ impl Lexer {
         self.scran_whitespace();
         let tok: Token = match self.ch {
             b'=' => Token::Equal,
-            b'!' => {
-                if self.peek_char() == b'=' {
-                    self.read_char();
-                    Token::NEqual
-                } else {
-                    Token::Illegal
-                }
-            }
             b'*' => Token::Asterisk,
             b';' => Token::Semicolon,
-            b'>' => Token::GThan,
-            b'<' => Token::LThan,
             b'(' => Token::LParen,
             b')' => Token::RParen,
             b'{' => Token::LSquirly,
@@ -62,18 +52,42 @@ impl Lexer {
             b']' => Token::RSquare,
             b',' => Token::Comma,
             b':' => Token::Colon,
+            b'/' => Token::Divide,
+            b'+' => Token::Plus,
+            b'>' => {
+                if self.peek_char() == b'=' {
+                    self.read_char();
+                    Token::GThanOrEqual
+                } else {
+                    Token::GThan
+                }
+            },
+            b'<' => {
+                if self.peek_char() == b'=' {
+                    self.read_char();
+                    Token::LThanOrEqual
+                } else {
+                    Token::LThan
+                }
+            },
+            b'!' => {
+                if self.peek_char() == b'=' {
+                    self.read_char();
+                    Token::NEqual
+                } else {
+                    Token::Illegal
+                }
+            }
             b'-' => {
                 if self.peek_char() == b'>' {
                     self.read_char();
                     Token::RArrow
                 } else {
-                    Token::Illegal
+                    Token::Subtract
                 }
             }
             0 => Token::Eof,
             _ => {
-                dbg!(self.ch);
-
                 if is_letter(self.ch) {
                     let ident = self.read_ident();
                     lookup_ident(ident)
@@ -97,7 +111,6 @@ impl Lexer {
             self.read_char();
         }
         let num = self.input[pos..self.position].to_owned().parse().unwrap();
-        dbg!(num);
         num
     }
 
