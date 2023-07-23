@@ -1,5 +1,5 @@
-use super::lexer::Lexer;
-use super::token::Token;
+use crate::token::Token;
+use crate::lexer::Lexer;
 
 #[test]
 fn test_tokenise_numbers() {
