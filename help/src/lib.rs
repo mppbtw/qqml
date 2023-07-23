@@ -6,8 +6,8 @@ mod section_play;
 
 pub const TOPTEXT: &str = "\
 Yet Another Revision Resource - The pointless and overkill homework project.
-Yarr is free software, licensed under the GNU GPL v3.0 and the source code is
-available at https://github.com/MrPiggyPegasus/yarr
+Yarr is free software, licensed under the MIT License and the source code is
+available at https://github.com/MrPiggyPegasus/yarr.
 
 ";
 

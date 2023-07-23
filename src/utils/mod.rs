@@ -4,7 +4,6 @@ use std::io::Write;
 use std::path::Path;
 
 mod constants;
-mod macros;
 mod next_arg;
 
 pub use constants::*;
