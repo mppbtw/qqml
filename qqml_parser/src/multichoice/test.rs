@@ -1,5 +1,6 @@
-use crate::multichoice::*;
-use crate::parser::*;
+use super::MultichoiceAnswer;
+use super::parser::*;
+
 use qqml_lexer::*;
 
 #[test]
