@@ -38,7 +38,7 @@ pub fn parse(inp: String) -> Result<Vec<Question>, Error> {
 
 pub fn parse_multichoice(l: &mut Lexer) -> Result<Question, Error> {
     let mut dat = MultichoiceData::default();
-    let mut tok = Token::String; // dummy value
+    let mut tok; // dummy value
 
     // Example syntax:
     //  ask multichoice (2) "What is the best language?" {
@@ -92,37 +92,32 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<Question, Error> {
 /// Parse a single multichoice answer, assumes that the asterisk
 /// has already been consumed.
 pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Error> {
-    let mut tok = Token::String; // dummy value
+    let mut tok; // dummy value
     let mut answer = MultichoiceAnswer::default();
 
     tok = l.next_token();
-    dbg!(&tok);
     match tok {
         Token::Literal(l) => answer.text = l,
         _ => return Err(Error::UnexpectedToken(tok)),
     };
 
     tok = l.next_token();
-    dbg!(&tok);
     if tok != Token::LParen {
         return Err(Error::UnexpectedToken(tok));
     };
 
     tok = l.next_token();
-    dbg!(&tok);
     match tok {
         Token::Number(n) => answer.marks = n,
         _ => return Err(Error::UnexpectedToken(tok)),
     };
 
     tok = l.next_token();
-    dbg!(&tok);
     if tok != Token::RParen {
         return Err(Error::UnexpectedToken(tok));
     }
 
     tok = l.next_token();
-    dbg!(&tok);
     if tok == Token::Semicolon {
         return Ok(answer);
     }
@@ -131,7 +126,6 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     }
 
     tok = l.next_token();
-    dbg!(&tok);
     match tok {
         Token::Literal(l) => answer.explanation = Some(l),
         _ => return Err(Error::UnexpectedToken(tok)),
