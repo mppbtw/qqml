@@ -6,11 +6,10 @@ use super::MultichoiceData;
 use crate::error::expected_err;
 use crate::utils::is_empty_str;
 use crate::Error;
-use crate::Question;
 
 /// Parse the question assuming that the ask and multichoice keyword
 /// tokens have already been comsumed.
-pub fn parse_multichoice(l: &mut Lexer) -> Result<Question, Error> {
+pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, Error> {
     let mut dat = MultichoiceData::default();
     let mut tok;
 
@@ -57,17 +56,30 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<Question, Error> {
     // For each possible answer in the question body
     loop {
         tok = l.next_token();
-        if tok == Token::RSquirly {
-            break;
-        }
-        if tok != Token::Asterisk {
-            return Err(Error::UnexpectedToken(tok));
-        }
-
-        parse_multichoice_answer(l)?;
+        match tok {
+            Token::RSquirly => break,
+            Token::Semicolon => continue,
+            Token::Asterisk => dat.add_answer(parse_multichoice_answer(l)?),
+            _ => {
+                return expected_err(
+                    vec![Token::RSquirly, Token::Semicolon, Token::Asterisk],
+                    tok,
+                    "Expected another answer or the end of the question",
+                )
+            }
+        };
     }
 
-    Ok(Question::Multichoice(dat))
+    tok = l.next_token();
+    if tok != Token::Semicolon {
+        return expected_err(
+            vec![Token::Semicolon],
+            tok,
+            "Multichoice questions must end with a semicolon.",
+        );
+    }
+
+    Ok(dat)
 }
 
 /// Parse a single multichoice answer, assumes that the asterisk
@@ -96,7 +108,6 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
 
     tok = l.next_token();
     if tok == Token::LParen {
-
         tok = l.next_token();
         match tok {
             Token::Number(n) => answer.set_marks(n),
@@ -146,6 +157,15 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
                 "An answer explanation should be given as a string literal after the arrow.",
             )
         }
+    }
+
+    tok = l.next_token();
+    if tok != Token::Semicolon {
+        return expected_err(
+            Token::Semicolon,
+            tok,
+            "An answer should always end with a semicolon.",
+        );
     }
 
     Ok(answer)
