@@ -1,6 +1,6 @@
 use crate::error::Error;
-use crate::MultichoiceData;
 use crate::multichoice::parse_multichoice;
+use crate::MultichoiceData;
 
 use crate::Question;
 
