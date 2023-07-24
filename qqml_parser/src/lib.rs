@@ -2,8 +2,8 @@ mod error;
 mod multichoice;
 mod parser;
 
-pub use parser::parse;
-pub use multichoice::*;
+pub use crate::parser::parse;
+pub use crate::multichoice::*;
 
 #[cfg(test)]
 mod test;

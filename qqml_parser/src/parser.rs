@@ -42,7 +42,7 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<Question, Error> {
 
     // Example syntax:
     //  ask multichoice (2) "What is the best language?" {
-    //     * "rust" (1);
+    //     * "rust" (1) -> "explanation goes here";
     //     * "python" (1);
     //     * "C++";
     //  };
