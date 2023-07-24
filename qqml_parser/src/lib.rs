@@ -2,13 +2,10 @@ mod error;
 mod multichoice;
 mod parser;
 
-pub use crate::multichoice::*;
+pub use multichoice::MultichoiceData;
+pub use multichoice::MultichoiceAnswer;
 pub use crate::parser::parse;
-
-#[cfg(test)]
-mod test;
-
-use multichoice::MultichoiceData;
+pub use error::Error;
 
 pub enum Question {
     Multichoice(MultichoiceData),
