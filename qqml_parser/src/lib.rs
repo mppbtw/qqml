@@ -23,7 +23,7 @@ mod utils {
 
         for ch in str.bytes() {
             if !WHITESPACE_CHARS.contains(&ch) {
-                return false
+                return false;
             }
         }
         true
