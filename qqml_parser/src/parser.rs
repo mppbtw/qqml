@@ -1,6 +1,9 @@
 use crate::error::Error;
 use crate::MultichoiceData;
+use crate::multichoice::parse_multichoice;
+
 use crate::Question;
+
 use qqml_lexer::Lexer;
 use qqml_lexer::Token;
 

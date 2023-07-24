@@ -3,5 +3,5 @@ mod test;
 mod parser;
 mod data;
 
-pub use data::*;
-pub use parser::*;
+pub use self::data::*;
+pub use self::parser::*;
