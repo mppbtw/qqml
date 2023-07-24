@@ -1,6 +1,6 @@
-use help::*;
 use crate::commands::play;
 use crate::utils::*;
+use help::*;
 use std::process::exit;
 
 pub fn section() {

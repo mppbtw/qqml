@@ -1,7 +1,7 @@
-use help::*;
 use crate::utils::*;
-use std::process::exit;
+use help::*;
 use std::fs;
+use std::process::exit;
 
 pub fn play() {
     match next_arg() {
