@@ -1,5 +1,5 @@
-use super::MultichoiceAnswer;
 use super::parser::*;
+use super::MultichoiceAnswer;
 
 use qqml_lexer::*;
 

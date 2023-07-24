@@ -4,9 +4,13 @@ use std::fmt;
 #[derive(Debug, Clone)]
 pub enum Error {
     NonAsciiInput,
-    /// Stores the expected token/s, and then the token we recieved.
-    ExpectedToken(Vec<Token>, Token),
+    /// Stores the expected token/s, and then the token we recieved plus any extra info
+    /// for the end user.
+    ExpectedToken(Vec<Token>, Token, String),
     UnexpectedToken(Token),
+
+    EmptyQuestionText,
+    EmptyAnswerText,
 }
 
 impl From<qqml_lexer::Error> for Error {
@@ -21,16 +25,40 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let msg = match self {
             Self::UnexpectedToken(t) => format!("Unexpected token: {}", t),
-            Self::ExpectedToken(t, g) => {
+            Self::ExpectedToken(t, g, i) => {
                 if t.len() == 1 {
-                    format!("Expected token {}, got {}", t[0], g)
+                    if i.len() == 0 {
+                        format!("Expected token {}, got {}", t[0], g)
+                    } else {
+                        format!("{}. Expected token {}, got {}", i, t[0], g)
+                    }
                 } else {
                     let token_names = t.iter().map(|t| format!("{}", t)).collect::<Vec<String>>();
-                    format!("Expected one of {}, got {}", token_names.join(", "), g)
+                    if i.len() == 0 {
+                        format!("Expected one of {}, got {}", token_names.join(", "), g)
+                    } else {
+                        format!(
+                            "{}. Expected one of {}, got {}",
+                            i,
+                            token_names.join(", "),
+                            g
+                        )
+                    }
                 }
             }
-            Self::NonAsciiInput => "QQML doesn't support Unicode just yet!".to_owned(),
+            Self::NonAsciiInput => "QQML doesn't support Unicode just yet.".to_owned(),
+            Self::EmptyQuestionText => "Questions cannot contain only whitespace characters".to_owned(),
+            Self::EmptyAnswerText => "Answers cannot contain only whitespace characters".to_owned(),
         };
         write!(f, "{}", msg)
     }
+}
+
+/// Convenience function to create expected token errors.
+pub fn expected_err<X, S, T>(exp: X, gotten: Token, explanation: S) -> Result<T, Error>
+where
+    X: Into<Vec<Token>>,
+    S: Into<String>,
+{
+    Err(Error::ExpectedToken(exp.into(), gotten, explanation.into()))
 }

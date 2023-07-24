@@ -89,3 +89,9 @@ impl fmt::Display for Token {
         write!(f, "{}", name)
     }
 }
+
+impl Into<Vec<Token>> for Token {
+    fn into(self) -> Vec<Token> {
+        vec![self]
+    }
+}
