@@ -36,6 +36,8 @@ pub fn parse(inp: String) -> Result<Vec<Question>, Error> {
     Ok(vec![Question::Multichoice(MultichoiceData::default())])
 }
 
+/// Parse the question assuming that the ask and multichoice keyword
+/// tokens have already been comsumed.
 pub fn parse_multichoice(l: &mut Lexer) -> Result<Question, Error> {
     let mut dat = MultichoiceData::default();
     let mut tok; // dummy value
@@ -54,7 +56,7 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<Question, Error> {
 
     tok = l.next_token();
     match tok {
-        Token::Number(n) => dat.max_marks = n,
+        Token::Number(n) => dat.set_max_marks(n),
         _ => return Err(Error::UnexpectedToken(tok)),
     };
 
@@ -65,7 +67,7 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<Question, Error> {
 
     tok = l.next_token();
     match tok {
-        Token::Literal(l) => dat.text = l,
+        Token::Literal(l) => dat.set_text(l),
         _ => return Err(Error::UnexpectedToken(tok)),
     }
 
@@ -80,10 +82,11 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<Question, Error> {
         if tok == Token::RSquirly {
             break;
         }
-
         if tok != Token::Asterisk {
             return Err(Error::UnexpectedToken(tok));
         }
+
+        parse_multichoice_answer(l)?;
     }
 
     Ok(Question::Multichoice(dat))
@@ -97,7 +100,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
 
     tok = l.next_token();
     match tok {
-        Token::Literal(l) => answer.text = l,
+        Token::Literal(l) => answer.set_text(l),
         _ => return Err(Error::UnexpectedToken(tok)),
     };
 
@@ -108,7 +111,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
 
     tok = l.next_token();
     match tok {
-        Token::Number(n) => answer.marks = n,
+        Token::Number(n) => answer.set_marks(n),
         _ => return Err(Error::UnexpectedToken(tok)),
     };
 
@@ -127,7 +130,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
 
     tok = l.next_token();
     match tok {
-        Token::Literal(l) => answer.explanation = Some(l),
+        Token::Literal(l) => answer.set_explanation(l),
         _ => return Err(Error::UnexpectedToken(tok)),
     }
 
