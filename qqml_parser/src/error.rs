@@ -25,10 +25,10 @@ impl fmt::Display for Error {
                 if t.len() == 1 {
                     format!("Expected token {}, got {}", t[0], g)
                 } else {
-                    let token_names = t.iter().map(|t| format!("{}", t)) .collect::<Vec<String>>();
+                    let token_names = t.iter().map(|t| format!("{}", t)).collect::<Vec<String>>();
                     format!("Expected one of {}, got {}", token_names.join(", "), g)
                 }
-            },
+            }
             Self::NonAsciiInput => "QQML doesn't support Unicode just yet!".to_owned(),
         };
         write!(f, "{}", msg)
