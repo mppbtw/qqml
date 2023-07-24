@@ -84,7 +84,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
             } else {
                 answer.set_text(l);
             }
-        },
+        }
         _ => {
             return expected_err(
                 Token::Literal("".to_owned()),
@@ -95,40 +95,35 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     };
 
     tok = l.next_token();
-    if tok != Token::LParen {
-        if tok == Token::Semicolon {
-            answer.set_marks(0);
-            return Ok(answer);
-        }
-        return expected_err(
-            Token::LParen,
-            tok,
-            "The mark for this question should be enclosed in brackets, e.g. (2)",
-        );
-    };
+    if tok == Token::LParen {
 
-    tok = l.next_token();
-    match tok {
-        Token::Number(n) => answer.set_marks(n),
-        _ => {
+        tok = l.next_token();
+        match tok {
+            Token::Number(n) => answer.set_marks(n),
+            _ => {
+                return expected_err(
+                    Token::Number(0),
+                    tok,
+                    "The mark for this answer should be enclosed in brackets, e.g. (2)",
+                )
+            }
+        };
+
+        tok = l.next_token();
+        if tok != Token::RParen {
             return expected_err(
-                Token::Number(0),
+                Token::RParen,
                 tok,
                 "The mark for this answer should be enclosed in brackets, e.g. (2)",
-            )
+            );
         }
-    };
 
-    tok = l.next_token();
-    if tok != Token::RParen {
-        return expected_err(
-            Token::RParen,
-            tok,
-            "The mark for this answer should be enclosed in brackets, e.g. (2)",
-        );
+        tok = l.next_token();
+    } else {
+        // The mark is assumed to be 0 if not explicitly provided
+        answer.set_marks(0);
     }
 
-    tok = l.next_token();
     if tok == Token::Semicolon {
         return Ok(answer);
     }

@@ -47,7 +47,9 @@ impl fmt::Display for Error {
                 }
             }
             Self::NonAsciiInput => "QQML doesn't support Unicode just yet.".to_owned(),
-            Self::EmptyQuestionText => "Questions cannot contain only whitespace characters".to_owned(),
+            Self::EmptyQuestionText => {
+                "Questions cannot contain only whitespace characters".to_owned()
+            }
             Self::EmptyAnswerText => "Answers cannot contain only whitespace characters".to_owned(),
         };
         write!(f, "{}", msg)

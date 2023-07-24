@@ -1,8 +1,8 @@
 use std::process::exit;
 
 mod section;
-mod yarr;
 mod section_play;
+mod yarr;
 
 pub const TOPTEXT: &str = "\
 Yet Another Revision Resource - The pointless and overkill homework project.
