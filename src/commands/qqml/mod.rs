@@ -17,7 +17,7 @@ pub fn qqml() -> ! {
         "-h" | "--help" => print_help(HelpCommand::Qqml),
         "check" => check::check(),
         _ => {
-            print_error(format!("Unrecognised argument/command {}", arg));
+            print_error(format!("Unrecognised argument '{}'", arg));
             exit(1);
         }
     }
