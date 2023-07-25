@@ -26,15 +26,16 @@ pub fn check() -> ! {
 
     if arg.starts_with('-') {
         print_error(format!("Unrecognised option {}", arg));
+        exit(1);
     }
 
-    let mut buf = String::new();
-    match fs::read_to_string(&mut buf) {
-        Ok(_) => (),
+    let buff = match fs::read_to_string(&arg) {
+        Ok(f) => f,
         Err(e) => {
-            print_error(format!("Failed to read file '{}': {}", arg, e))
+            print_error(format!("Failed to read file '{}': {}", arg, e));
+            exit(1);
         }
-    }
+    };
 
     match next_arg() {
         Some(a) => {
