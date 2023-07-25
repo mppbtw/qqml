@@ -7,17 +7,16 @@ lazy_static! {
 
         format!( "{}{}", TOPTEXT,
 
-"Usage: yarr <command> <args>
+"Usage: yarr qqml <command> <file>
+Interact with QQML files.
 
 Options:
 
     [-h | --help]     Show this help menu
 
-    [-v | --version]  Display version information
-
 Commands:
 
-    qqml    Interact with local QQML files
+    check   Ensure validity of the specified QQML file
 ")
     };
 }

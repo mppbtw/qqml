@@ -1,30 +1,25 @@
 use std::process::exit;
 
-mod commands;
 mod utils;
+mod commands;
 
-use help::*;
+use help::{print_help, HelpCommand};
 use utils::*;
 
 fn main() {
     let arg = match next_arg() {
         Some(a) => a,
         None => {
-            print_error("No command specified. Run yarr --help for a list of commands.");
+            print_error("No command specified. Run yarr --help for more info.");
             exit(1);
-        }
+       },
     };
 
     match arg.as_str() {
-        "version" | "-v" | "--version" => commands::version(),
-        "help" | "-h" | "--help" => print_help(HelpCommand::Yarr),
+        "-h" | "--help" => print_help(HelpCommand::Yarr),
+        "-V" | "--version" => commands::version(),
+        "qqml" => commands::qqml(),
 
-        "section" => commands::section(),
-        "init" => commands::init(),
-
-        _ => {
-            print_error("Unknown command. Run yarr --help for a list of commands.");
-            exit(1);
-        }
+        _ => print_error("Unknown command. Run yarr --help for more info."),
     }
 }
