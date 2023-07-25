@@ -1,4 +1,3 @@
-use std::env;
 use crate::utils::*;
 use help::HelpCommand;
 use help::print_help;
