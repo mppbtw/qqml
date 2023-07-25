@@ -2,13 +2,16 @@ mod error;
 mod multichoice;
 mod parser;
 
+#[cfg(test)]
+mod test;
+
 pub use self::error::Error;
 pub use self::multichoice::MultichoiceAnswer;
 pub use self::multichoice::MultichoiceData;
 
 pub use crate::parser::parse;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Question {
     Multichoice(MultichoiceData),
     Calculation(),
