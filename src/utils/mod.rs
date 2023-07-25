@@ -3,18 +3,12 @@ use std::io;
 use std::io::Write;
 use std::path::Path;
 
-mod constants;
 mod next_arg;
 
-pub use constants::*;
 pub use next_arg::*;
 
 pub fn path_exists<S: Into<String>>(dir: S) -> bool {
     Path::new(&dir.into()).exists()
-}
-
-pub fn dotfile_is_valid() -> bool {
-    path_exists(YARR_DIR.to_owned()) && path_exists(YARR_SECTIONS_DIR.to_owned())
 }
 
 pub fn print_error<S: std::fmt::Display>(msg: S) {
@@ -70,28 +64,4 @@ pub fn strip_newline(str: &mut String) {
             break;
         }
     }
-}
-
-pub fn validate_section_name<S: Into<String>>(name: S) -> bool {
-    let name = name.into();
-    let bytes = name.bytes();
-    for ch in bytes {
-        if !(ch.is_ascii_lowercase()
-            || ch.is_ascii_uppercase()
-            || ch == b'_'
-            || ch.is_ascii_digit())
-        {
-            return false;
-        }
-    }
-    !name.is_empty()
-}
-
-pub fn section_exists<S: std::fmt::Display>(sec: S) -> bool
-where
-    String: From<S>,
-{
-    dotfile_is_valid()
-        && path_exists(format!("{}/{}", *YARR_SECTIONS_DIR, sec))
-        && validate_section_name(sec)
 }
