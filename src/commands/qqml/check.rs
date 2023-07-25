@@ -3,6 +3,7 @@ use std::fs;
 
 use crate::utils::*;
 
+use qqml_parser::*;
 use help::*;
 
 pub fn check() -> ! {
@@ -25,30 +26,43 @@ pub fn check() -> ! {
     }
 
     if arg.starts_with('-') {
-        print_error(format!("Unrecognised option {}", arg));
+        print_error(format!("Unrecognised option '{}'", arg));
+        exit(1);
     }
 
-    let mut buf = String::new();
-    match fs::read_to_string(&mut buf) {
-        Ok(_) => (),
+    let buff = match fs::read_to_string(&arg) {
+        Ok(f) => f,
         Err(e) => {
-            print_error(format!("Failed to read file '{}': {}", arg, e))
+            print_error(format!("Failed to read file '{}': {}", arg, e));
+            exit(1);
         }
-    }
+    };
 
     match next_arg() {
         Some(a) => {
             if a == *"-v" || a == *"--verbose" {
                 verbose = true;
+            } else {
+                print_error(format!("Unrecognised argument '{}'", a));
+                exit(1);
             }
         }
         None => ()
     }
 
+    println!("Checking {}.", arg);
+    let parsed = match parse(buff) {
+        Ok(o) => o,
+        Err(e) => {
+            print_error(format!("{}", e));
+            exit(1);
+        }
+    };
+
+    // And the most useless command flag award goes to...
     if verbose {
-        println!("*flamboyantly* looks good to me!");
-    } else {
-        println!("ok i think")
+        println!("{} Questions checked.", parsed.len());
     }
+    println!("0 errors reported.");
     exit(1);
 }

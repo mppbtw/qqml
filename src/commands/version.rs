@@ -1,4 +1,3 @@
-use std::env;
 use crate::utils::*;
 use help::HelpCommand;
 use help::print_help;
@@ -9,7 +8,7 @@ pub fn version() -> ! {
         match a.as_str() {
             "-h" | "--help" => print_help(HelpCommand::Version),
             _ => {
-                print_error(format!("Unexpected argument: {}", a));
+                print_error(format!("Unrecognised argument: '{}'", a));
                 exit(1);
             }
         }

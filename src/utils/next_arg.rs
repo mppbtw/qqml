@@ -1,4 +1,5 @@
 use std::env;
+use super::strip_newline;
 
 static mut ARG_COUNT: usize = 0;
 
@@ -9,6 +10,10 @@ pub fn next_arg() -> Option<String> {
             return None;
         }
         ARG_COUNT += 1;
-        args.get(ARG_COUNT - 1).cloned()
+        let arg = args.get(ARG_COUNT - 1).cloned();
+        match arg {
+            Some(a) => Some(strip_newline(a)),
+            None => None
+        }
     }
 }

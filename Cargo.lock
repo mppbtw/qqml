@@ -148,6 +148,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "qqml_lexer"
+version = "0.1.0"
+dependencies = [
+ "lazy_static",
+]
+
+[[package]]
+name = "qqml_parser"
+version = "0.1.0"
+dependencies = [
+ "qqml_lexer",
+]
+
+[[package]]
 name = "quote"
 version = "1.0.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -314,5 +328,6 @@ dependencies = [
  "colored",
  "help",
  "lazy_static",
+ "qqml_parser",
  "shellexpand",
 ]
