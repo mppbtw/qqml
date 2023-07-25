@@ -119,13 +119,14 @@ fn test_keyword_tokens_with_spaces() {
 
 #[test]
 fn test_keyword_tokens() {
-    let input = "ask multichoice calculation string inputs";
+    let input = "ask multichoice calculation string inputs hints";
     let expected = vec![
         Token::Ask,
         Token::Multichoice,
         Token::Calculation,
         Token::String,
         Token::Inputs,
+        Token::Hints,
         Token::Eof,
     ];
 
