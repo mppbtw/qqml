@@ -9,6 +9,7 @@ lazy_static! {
         m.insert("string".into(), Token::String);
         m.insert("calculation".into(), Token::Calculation);
         m.insert("inputs".into(), Token::Inputs);
+        m.insert("hints".into(), Token::Hints);
         m
     };
 }
@@ -50,6 +51,7 @@ pub enum Token {
     String,
     Calculation,
     Inputs,
+    Hints,
 }
 
 impl fmt::Display for Token {
@@ -84,6 +86,7 @@ impl fmt::Display for Token {
             Self::Ident(_) => "Identifier",
             Self::Colon => "Colon",
             Self::Multichoice => "Multichoice",
+            Self::Hints => "Hints",
             Self::Calculation => "Calculation",
         };
         write!(f, "{}", name)
