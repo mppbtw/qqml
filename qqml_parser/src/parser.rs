@@ -29,11 +29,13 @@ pub fn parse(inp: String) -> Result<Vec<Question>, Error> {
         let question_type = l.next_token();
         match question_type {
             Token::Multichoice => {
-                questions.push(Question::Multichoice(parse_multichoice(&mut l)?));
+                let p = parse_multichoice(&mut l)?;
+                dbg!(&p);
+                questions.push(Question::Multichoice(p));
             }
             _ => return Err(Error::UnexpectedToken(question_type)),
         };
     }
 
-    Ok(vec![Question::Multichoice(MultichoiceData::default())])
+    Ok(questions)
 }
