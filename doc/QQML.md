@@ -32,12 +32,31 @@ The above example displays the feature of answer explanations which are shown to
 
 This example also shows the slightly different behaviour when the maximum mark is 1. If this is the case then the first answer the user chooses will be selected and marked.
 
+## Hints
+Any question type can provide hints using the `hints` trailing keyword e.g. multichoice:
+
+``` javascript
+ask multichoice (2) "Foo" {
+  * "Bar" (1);
+  * "Bazz";
+} hints "first hint", "second hint";
+```
+
+For questions which need other trailing keywords such as `inputs`, the order of the keywords does not matter:
+``` javascript
+ask calculation (2) "What is 2+2" {
+  x = [4, 22] ();
+  x = [69, 420] (1);
+} inputs x
+  hints "the answer is less than 5"
+```
+
 ## Calculation Questions
 ``` javascript
 ask calculation (2) "What is 2+2" {
   x = [4, 22] ();
   x = [69, 420] (1);
-} inputs: [x];
+} inputs x;
 ```
 This example shows the syntax for the body of calculation questions. Each line is an expression which, if true, awards the mark given in brackets (if the brackets are empty, the full mark shall be awarded). Square brackets can contain multiple, comma separated values which allow the expression to be true if any of the values are matched. The inputs for the question are defined by the `inputs` keyword after the question body. 
 
@@ -46,6 +65,6 @@ This example shows the syntax for the body of calculation questions. Each line i
 ask string (2) "What is the plural of fish?" {
   x = ["fishes"] ();
   x = ["fishies", "fishices"] (1);
-} inputs: [x];
+} inputs x;
 ```
 String questions will accept a string which can be handled in a similar way to calculation questions. The user's input will be turned lowercase and markes can be awarded by match expressions.
