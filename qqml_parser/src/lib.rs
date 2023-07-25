@@ -8,6 +8,7 @@ pub use self::multichoice::MultichoiceData;
 
 pub use crate::parser::parse;
 
+#[derive(Debug)]
 pub enum Question {
     Multichoice(MultichoiceData),
     Calculation(),
