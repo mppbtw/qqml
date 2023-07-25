@@ -123,6 +123,9 @@ impl Lexer {
             if is_quote(self.ch) {
                 quotes_found += 1;
             }
+            if self.ch == 0 {
+                break
+            }
             self.read_char();
         }
         let literal = self.input[pos + 1..self.position - 1].to_owned();
