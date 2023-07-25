@@ -3,6 +3,7 @@ pub struct MultichoiceData {
     text: Option<String>,
     max_marks: Option<usize>,
     answers: Vec<MultichoiceAnswer>,
+    hints: Vec<String>,
 }
 
 #[derive(Debug, Default, PartialEq, Eq)]
@@ -43,6 +44,10 @@ impl MultichoiceAnswer {
 impl MultichoiceData {
     pub fn add_answer(&mut self, answer: MultichoiceAnswer) {
         self.answers.push(answer);
+    }
+
+    pub fn add_hint<S: Into<String>>(&mut self, hint: S) {
+        self.hints.push(hint.into());
     }
 
     pub fn set_text<S: Into<String>>(&mut self, text: S) {

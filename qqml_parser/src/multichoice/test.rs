@@ -10,6 +10,68 @@ use qqml_lexer::*;
 //
 
 #[test]
+fn test_parse_multichoice_no_explanations_hints() {
+    let input = "(2) 'foo' {
+        * 'bar' (2);
+        * 'bazz';
+    } hints 'fuzz', 'fozz';";
+
+    let mut l = Lexer::new(input).unwrap();
+
+    let mut expected = MultichoiceData::new();
+    expected.set_text("foo");
+    expected.set_max_marks(2);
+    expected.add_hint("fuzz");
+    expected.add_hint("fozz");
+
+    let mut bar = MultichoiceAnswer::new();
+    bar.set_text("bar");
+    bar.set_marks(2);
+
+    let mut bazz = MultichoiceAnswer::new();
+    bazz.set_marks(0);
+    bazz.set_text("bazz");
+
+    expected.add_answer(bar);
+    expected.add_answer(bazz);
+
+    let gotten = parse_multichoice(&mut l).unwrap();
+    assert_eq!(expected, gotten);
+}
+
+#[test]
+fn test_parse_multichoice_explanations_hints() {
+    let input = "(2) 'foo' {
+        * 'bar' (2) -> 'bar explanation';
+        * 'bazz' -> 'bazz explanation';
+    } hints 'fuzz', 'fozz';";
+
+    let mut l = Lexer::new(input).unwrap();
+
+    let mut expected = MultichoiceData::new();
+    expected.set_text("foo");
+    expected.set_max_marks(2);
+    expected.add_hint("fuzz");
+    expected.add_hint("fozz");
+
+    let mut bar = MultichoiceAnswer::new();
+    bar.set_text("bar");
+    bar.set_marks(2);
+    bar.set_explanation("bar explanation");
+
+    let mut bazz = MultichoiceAnswer::new();
+    bazz.set_marks(0);
+    bazz.set_text("bazz");
+    bazz.set_explanation("bazz explanation");
+
+    expected.add_answer(bar);
+    expected.add_answer(bazz);
+
+    let gotten = parse_multichoice(&mut l).unwrap();
+    assert_eq!(expected, gotten);
+}
+
+#[test]
 fn test_parse_multichoice_no_explanations() {
     let input = "(2) 'foo' {
         * 'bar' (2);
@@ -67,8 +129,10 @@ fn test_parse_multichoice_explanations() {
     assert_eq!(expected, gotten);
 }
 
+//
 // Exactly the same but with double not single quotes
 //
+
 #[test]
 fn test_parse_multichoice_no_explanations_double_quotes() {
     let input = "(2) \"foo\" {
@@ -89,6 +153,98 @@ fn test_parse_multichoice_no_explanations_double_quotes() {
     let mut bazz = MultichoiceAnswer::new();
     bazz.set_marks(0);
     bazz.set_text("bazz");
+
+    expected.add_answer(bar);
+    expected.add_answer(bazz);
+
+    let gotten = parse_multichoice(&mut l).unwrap();
+    assert_eq!(expected, gotten);
+}
+
+#[test]
+fn test_parse_multichoice_explanations_double_quotes() {
+    let input = "(2) \"foo\" {
+        * \"bar\" (2) -> \"bar explanation\";
+        * \"bazz\" -> \"bazz explanation\";
+    };";
+
+    let mut l = Lexer::new(input).unwrap();
+
+    let mut expected = MultichoiceData::new();
+    expected.set_text("foo");
+    expected.set_max_marks(2);
+
+    let mut bar = MultichoiceAnswer::new();
+    bar.set_text("bar");
+    bar.set_marks(2);
+    bar.set_explanation("bar explanation");
+
+    let mut bazz = MultichoiceAnswer::new();
+    bazz.set_marks(0);
+    bazz.set_text("bazz");
+    bazz.set_explanation("bazz explanation");
+
+    expected.add_answer(bar);
+    expected.add_answer(bazz);
+
+    let gotten = parse_multichoice(&mut l).unwrap();
+    assert_eq!(expected, gotten);
+}
+
+#[test]
+fn test_parse_multichoice_no_explanations_hints_double_quotes() {
+    let input = "(2) \"foo\" {
+        * \"bar\" (2);
+        * \"bazz\";
+    } hints \"fuzz\", \"fozz\";";
+
+    let mut l = Lexer::new(input).unwrap();
+
+    let mut expected = MultichoiceData::new();
+    expected.set_text("foo");
+    expected.set_max_marks(2);
+    expected.add_hint("fuzz");
+    expected.add_hint("fozz");
+
+    let mut bar = MultichoiceAnswer::new();
+    bar.set_text("bar");
+    bar.set_marks(2);
+
+    let mut bazz = MultichoiceAnswer::new();
+    bazz.set_marks(0);
+    bazz.set_text("bazz");
+
+    expected.add_answer(bar);
+    expected.add_answer(bazz);
+
+    let gotten = parse_multichoice(&mut l).unwrap();
+    assert_eq!(expected, gotten);
+}
+
+#[test]
+fn test_parse_multichoice_explanations_hints_double_quotes() {
+    let input = "(2) \"foo\" {
+        * \"bar\" (2) -> \"bar explanation\";
+        * \"bazz\" -> \"bazz explanation\";
+    } hints \"fuzz\", \"fozz\";";
+
+    let mut l = Lexer::new(input).unwrap();
+
+    let mut expected = MultichoiceData::new();
+    expected.set_text("foo");
+    expected.set_max_marks(2);
+    expected.add_hint("fuzz");
+    expected.add_hint("fozz");
+
+    let mut bar = MultichoiceAnswer::new();
+    bar.set_text("bar");
+    bar.set_marks(2);
+    bar.set_explanation("bar explanation");
+
+    let mut bazz = MultichoiceAnswer::new();
+    bazz.set_marks(0);
+    bazz.set_text("bazz");
+    bazz.set_explanation("bazz explanation");
 
     expected.add_answer(bar);
     expected.add_answer(bazz);

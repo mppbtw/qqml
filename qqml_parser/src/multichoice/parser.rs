@@ -71,12 +71,43 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, Error> {
     }
 
     tok = l.next_token();
-    if tok != Token::Semicolon {
-        return expected_err(
-            vec![Token::Semicolon],
-            tok,
-            "Multichoice questions must end with a semicolon.",
-        );
+
+    match tok {
+        Token::Semicolon => return Ok(dat),
+
+        Token::Hints => loop {
+            let mut tok = l.next_token();
+            match tok {
+                Token::Literal(l) => dat.add_hint(l),
+                _ => {
+                    return expected_err(
+                        Token::Literal("".to_owned()),
+                        tok,
+                        "The hints keyword and successive commas should always precede".to_owned()
+                            + " the hint in the form of a string literal.",
+                    )
+                }
+            }
+            tok = l.next_token();
+            if tok == Token::Semicolon {
+                break;
+            }
+            if tok == Token::Inputs {
+                return Err(Error::MultichoiceCantTakeInputs)
+            }
+            if tok == Token::Comma {
+                continue;
+            }
+        },
+
+        Token::Inputs => return Err(Error::MultichoiceCantTakeInputs),
+        _ => {
+            return expected_err(
+                vec![Token::Semicolon, Token::Hints],
+                tok,
+                "Expected either trailing keywords or semicolon to terminate this question.",
+            )
+        }
     }
 
     Ok(dat)
