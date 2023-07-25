@@ -327,7 +327,6 @@ version = "0.1.0"
 dependencies = [
  "colored",
  "help",
- "lazy_static",
  "qqml_parser",
  "shellexpand",
 ]
