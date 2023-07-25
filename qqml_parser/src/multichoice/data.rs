@@ -46,6 +46,10 @@ impl MultichoiceData {
         self.answers.push(answer);
     }
 
+    pub fn count_answers(&self) -> usize {
+        self.answers.len()
+    }
+
     pub fn add_hint<S: Into<String>>(&mut self, hint: S) {
         self.hints.push(hint.into());
     }
