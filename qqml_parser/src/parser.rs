@@ -1,6 +1,5 @@
 use crate::error::Error;
 use crate::multichoice::parse_multichoice;
-use crate::MultichoiceData;
 
 use crate::Question;
 
@@ -30,7 +29,11 @@ pub fn parse(inp: String) -> Result<Vec<Question>, Error> {
         match question_type {
             Token::Multichoice => {
                 let p = parse_multichoice(&mut l)?;
-                dbg!(&p);
+
+                if p.count_answers() < 2 {
+                    return Err(Error::Under2MultichoiceOptions)
+                }
+
                 questions.push(Question::Multichoice(p));
             }
             _ => return Err(Error::UnexpectedToken(question_type)),

@@ -12,6 +12,7 @@ pub enum Error {
     EmptyQuestionText,
     EmptyAnswerText,
 
+    Under2MultichoiceOptions,
     MultichoiceCantTakeInputs,
 }
 
@@ -55,6 +56,9 @@ impl fmt::Display for Error {
             Self::EmptyAnswerText => "Answers cannot contain only whitespace characters".to_owned(),
             Self::MultichoiceCantTakeInputs => {
                 "Multichoice questions cannot take inputs.".to_owned()
+            }
+            Self::Under2MultichoiceOptions => {
+                "Multichoice questions have at least 2 possible answers.".to_owned()
             }
         };
         write!(f, "{}", msg)
