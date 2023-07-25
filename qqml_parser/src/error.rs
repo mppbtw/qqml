@@ -11,6 +11,8 @@ pub enum Error {
 
     EmptyQuestionText,
     EmptyAnswerText,
+
+    MultichoiceCantTakeInputs,
 }
 
 impl From<qqml_lexer::Error> for Error {
@@ -51,6 +53,9 @@ impl fmt::Display for Error {
                 "Questions cannot contain only whitespace characters".to_owned()
             }
             Self::EmptyAnswerText => "Answers cannot contain only whitespace characters".to_owned(),
+            Self::MultichoiceCantTakeInputs => {
+                "Multichoice questions cannot take inputs.".to_owned()
+            }
         };
         write!(f, "{}", msg)
     }
