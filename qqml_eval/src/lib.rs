@@ -1,9 +1,10 @@
+mod error;
 mod tui;
 
-
-use std::process::exit;
 use qqml_parser::MultichoiceData;
+use std::process::exit;
 
+pub use error::Error;
 
 // Example TUI:
 
