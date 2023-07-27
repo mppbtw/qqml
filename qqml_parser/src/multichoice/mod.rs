@@ -1,5 +1,5 @@
 mod data;
-mod error;
+mod parser;
 
-pub use error::MultichoiceError;
+pub use self::parser::parse_multichoice;
 pub use self::data::*;
