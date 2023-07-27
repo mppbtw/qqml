@@ -10,31 +10,6 @@ pub struct MultichoiceData {
 }
 
 impl MultichoiceData {
-    pub fn validate(&self) -> Result<(), Error> {
-        match &self.text {
-            Some(t) => {
-                if t.is_empty() {
-                    return Err(Error::EmptyQuestionText);
-                }
-            }
-            None => return Err(Error::NoQuestionText),
-        }
-        if self.max_marks.unwrap() < 1 {
-            return Err(Error::MaximumMarkNotPositive);
-        }
-        let mut total_marks = 0;
-        for a in self.answers.iter() {
-            match a.marks {
-                Some(n) => total_marks += n,
-                None => continue,
-            }
-        }
-        if total_marks < self.max_marks.unwrap() {
-            return Err(Error::MaxMarksNotPossible);
-        }
-
-        Ok(())
-    }
     pub fn add_answer(&mut self, answer: MultichoiceAnswer) {
         self.answers.push(answer);
     }
@@ -68,6 +43,40 @@ impl MultichoiceData {
             ..Default::default()
         }
     }
+
+    pub fn validate(&self) -> Result<(), Error> {
+        match &self.text {
+            Some(t) => {
+                if t.is_empty() {
+                    return Err(Error::EmptyQuestionText);
+                }
+            }
+            None => return Err(Error::NoQuestionText),
+        }
+
+        match &self. max_marks {
+            Some(m) => if *m < 1 {
+                return Err(Error::MaximumMarkNotPositive);
+            },
+            None => return Err(Error::NoMaxMark),
+        }
+
+        let mut total_marks = 0;
+        for a in self.answers.iter() {
+            match a.marks {
+                Some(n) => total_marks += n,
+                None => continue,
+            }
+        }
+        if total_marks < self.max_marks.unwrap() {
+            return Err(Error::MaxMarksNotPossible);
+        }
+        for a in self.answers.iter() {
+            a.validate()?;
+        }
+
+        Ok(())
+    }
 }
 
 #[derive(Debug, Default, PartialEq, Eq, Clone)]
@@ -78,8 +87,8 @@ pub struct MultichoiceAnswer {
 }
 
 impl MultichoiceAnswer {
-    pub fn validate(&self) -> bool {
-        self.text.is_some() && self.marks.is_some()
+    pub fn validate(&self) -> Result<(), Error> {
+        Ok(())
     }
 
     pub fn set_explanation<S: Into<String>>(&mut self, explanation: S) {
