@@ -8,7 +8,7 @@ mod test;
 pub use self::error::Error;
 pub use self::multichoice::MultichoiceAnswer;
 pub use self::multichoice::MultichoiceData;
-
+pub use self::parser::ParsedSection;
 pub use crate::parser::parse;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
