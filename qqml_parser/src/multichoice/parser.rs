@@ -110,6 +110,8 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, Error> {
         }
     }
 
+    dat.validate()?;
+
     Ok(dat)
 }
 
