@@ -17,6 +17,7 @@ pub enum Error {
     NoQuestionText,
     Under2MultichoiceOptions,
     MultichoiceCantTakeInputs,
+    NoMaxMark,
 }
 
 impl From<qqml_lexer::Error> for Error {
@@ -63,6 +64,7 @@ impl fmt::Display for Error {
             Self::Under2MultichoiceOptions => {
                 "Multichoice questions have at least 2 possible answers.".to_owned()
             }
+            _ => unimplemented!("TODO: Will refactor"),
         };
         write!(f, "{}", msg)
     }
