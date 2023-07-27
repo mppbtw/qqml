@@ -1,15 +1,18 @@
-mod error;
-mod tui;
-mod quiz;
+#[cfg(test)]
+mod test;
 
-use quiz::Quiz;
-use qqml_parser::MultichoiceData;
-use std::process::exit;
+mod error;
+#[allow(unused)]
+mod render;
+mod section;
+mod utils;
 
 pub use error::Error;
 
 // Example TUI:
 
+// ~/.yarr/sections/geography.qqml
+//
 // < (23/25) > // h and l to move between questions
 //
 // Where is France? (2)

@@ -7,9 +7,6 @@ pub struct TermSize {
 }
 
 pub fn get_term_size() -> Result<TermSize, Error> {
-    let width: usize;
-    let height: usize;
-
     let height = match Command::new("tput").arg("lines").output() {
         Ok(o) => match String::from_utf8(o.stdout) {
             Ok(s) => {
