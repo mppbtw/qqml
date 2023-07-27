@@ -55,9 +55,7 @@ pub fn parse(inp: String) -> Result<ParsedSection, Error> {
             Token::Multichoice => {
                 let p = parse_multichoice(&mut l)?;
 
-                if p.count_answers() < 2 {
-                    return Err(Error::Under2MultichoiceOptions);
-                }
+                p.validate()?;
 
                 questions.push(Question::Multichoice(p));
             }
