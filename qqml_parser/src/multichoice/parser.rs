@@ -93,7 +93,7 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, Error> {
                 break;
             }
             if tok == Token::Inputs {
-                return Err(Error::MultichoiceCantTakeInputs)
+                return Err(Error::MultichoiceCantTakeInputs);
             }
             if tok == Token::Comma {
                 continue;

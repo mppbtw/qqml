@@ -1,12 +1,13 @@
-#[derive(Debug, Default, PartialEq, Eq)]
+#[derive(Debug, Default, PartialEq, Eq, Clone)]
 pub struct MultichoiceData {
     text: Option<String>,
     max_marks: Option<usize>,
     answers: Vec<MultichoiceAnswer>,
     hints: Vec<String>,
+    chosed_answer: Option<String>,
 }
 
-#[derive(Debug, Default, PartialEq, Eq)]
+#[derive(Debug, Default, PartialEq, Eq, Clone)]
 pub struct MultichoiceAnswer {
     text: Option<String>,
     marks: Option<usize>,

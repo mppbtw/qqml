@@ -1,6 +1,8 @@
 mod error;
 mod tui;
+mod quiz;
 
+use quiz::Quiz;
 use qqml_parser::MultichoiceData;
 use std::process::exit;
 
@@ -15,7 +17,3 @@ pub use error::Error;
 // Europe   <    // j and k to select the answer
 // Asia
 // Africa
-
-pub fn run(inp: Vec<MultichoiceData>) -> ! {
-    exit(0);
-}
