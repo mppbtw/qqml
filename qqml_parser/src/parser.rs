@@ -1,32 +1,23 @@
 use qqml_lexer::Lexer;
+use crate::error::ErrorReport;
 use crate::Error;
+use crate::multichoice::parse_multichoice;
 use qqml_lexer::Token;
 use crate::Question;
 use crate::Warning;
 
+#[derive(Clone, Default, Debug, PartialEq, Eq)]
 pub struct ParsedFile {
     pub questions: Vec<Question>,
     pub max_hints: usize,
     pub warnings: Vec<Warning>
 }
 
-pub struct ErrorReport {
-    pub errors: Vec<Error>,
-    pub warnings: Vec<Warning>
-}
-impl ErrorReport {
-    pub fn new() -> ErrorReport {
-        ErrorReport {
-            errors: vec![],
-            warnings: vec![],
-        }
-    }
-}
-
 pub fn parse(inp: String) -> Result<ParsedFile, Vec<Error>> {
     let mut max_hints = 0;
     let mut hints_directive_seen = false;
     let mut l = Lexer::new(inp);
+    let mut output = ParsedFile::default();
 
     let mut report = ErrorReport::new();
 
@@ -54,11 +45,18 @@ pub fn parse(inp: String) -> Result<ParsedFile, Vec<Error>> {
 
         // Parse questions
         if tok == Token::Ask {
+
             // Get the type of the next token
             tok = l.next_token();
             match tok {
-                Token::Multichoice => (),
-                _ => (),
+                Token::Multichoice => {
+                    match parse_multichoice(&mut l) {
+                        Ok(data) => output.questions.push(Question::Multichoice(data)),
+                        Err(r) => report.extend(r),
+                    }
+                },
+                Token::Ident(_) => report.errors.push(Error::InvalidQuestionType(tok)),
+                _ => ()
             }
             continue;
         }

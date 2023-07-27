@@ -1,3 +1,6 @@
+use crate::Warning;
+use crate::Error;
+
 #[derive(Debug, Default, PartialEq, Eq, Clone)]
 pub struct MultichoiceData {
     pub text: Option<String>,
@@ -5,6 +8,8 @@ pub struct MultichoiceData {
     pub answers: Vec<MultichoiceAnswer>,
     pub hints: Vec<String>,
     pub chosed_answer: Option<String>,
+    pub warnings: Vec<Warning>,
+    pub errors: Vec<Error>,
 }
 
 #[derive(Debug, Default, PartialEq, Eq, Clone)]

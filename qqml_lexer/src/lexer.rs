@@ -1,4 +1,3 @@
-use crate::error::{Error, Result};
 use crate::token::{Token, KEYWORDS};
 
 const WHITESPACE_CHARS: [u8; 4] = [b' ', b'\n', b'\r', b'\t'];
@@ -13,19 +12,15 @@ pub struct Lexer {
 
 #[allow(unused)]
 impl Lexer {
-    pub fn new<S: Into<String>>(input: S) -> Result<Self> {
+    pub fn new<S: Into<String>>(input: S) -> Self {
         let input: String = input.into();
-
-        if !input.is_ascii() {
-            return Err(Error::NonAsciiInput);
-        }
 
         let mut lexer = Self {
             input,
             ..Default::default()
         };
         lexer.read_char();
-        Ok(lexer)
+        lexer
     }
 
     fn read_char(&mut self) {
