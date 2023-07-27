@@ -12,6 +12,9 @@ pub enum Error {
     EmptyQuestionText,
     EmptyAnswerText,
 
+    MaxMarksNotPossible,
+    MaximumMarkNotPositive,
+    NoQuestionText,
     Under2MultichoiceOptions,
     MultichoiceCantTakeInputs,
 }
