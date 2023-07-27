@@ -1,4 +1,4 @@
-use qqml_parser::ParsedSection;
+use qqml_parser::ParsedFile;
 use qqml_parser::Question;
 
 #[derive(PartialEq, Debug, Clone)]
@@ -13,7 +13,7 @@ pub struct Section {
 }
 
 impl Section {
-    pub fn new(parsed: ParsedSection) -> Section {
+    pub fn new(parsed: ParsedFile) -> Section {
         Section {
             path_to_source: None,
             current_question: 0,
