@@ -15,7 +15,7 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, Error> {
 
     // Example syntax:
     //  ask multichoice (2) "What is the best language?" {
-    //     * "rust" (1) -> "explanation goes here";
+    //     * "rust" (1) -> "Explanation goes here";
     //     * "python" (1);
     //     * "C++";
     //  };
@@ -121,13 +121,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
 
     tok = l.next_token();
     match tok {
-        Token::Literal(l) => {
-            if is_empty_str(&l) {
-                return Err(Error::EmptyAnswerText);
-            } else {
-                answer.set_text(l);
-            }
-        }
+        Token::Literal(l) => answer.set_text(l),
         _ => {
             return expected_err(
                 Token::Literal("".to_owned()),
