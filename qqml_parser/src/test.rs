@@ -1,7 +1,7 @@
-use crate::Question;
-use crate::MultichoiceData;
-use crate::MultichoiceAnswer;
 use crate::parse;
+use crate::MultichoiceAnswer;
+use crate::MultichoiceData;
+use crate::Question;
 
 #[test]
 fn test_parse_multichoice_only() {
@@ -59,14 +59,11 @@ fn test_parse_multichoice_only() {
         ans.set_explanation("explanation 2");
         q2data.add_answer(ans);
     }
-    let expected = vec![
-        Question::Multichoice(q1data),
-        Question::Multichoice(q2data),
-    ];
+    let expected = vec![Question::Multichoice(q1data), Question::Multichoice(q2data)];
 
     let gotten = parse(input.to_owned()).unwrap();
 
-    for (i, g) in gotten.iter().enumerate() {
+    for (i, g) in gotten.questions.iter().enumerate() {
         assert_eq!(g, expected.get(i).unwrap());
     }
 }

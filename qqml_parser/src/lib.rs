@@ -11,7 +11,7 @@ pub use self::multichoice::MultichoiceData;
 
 pub use crate::parser::parse;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Question {
     Multichoice(MultichoiceData),
     Calculation(),
