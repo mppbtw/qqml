@@ -1,7 +1,5 @@
 mod data;
-mod parser;
-#[cfg(test)]
-mod test;
+mod error;
 
+pub use error::MultichoiceError;
 pub use self::data::*;
-pub use self::parser::*;
