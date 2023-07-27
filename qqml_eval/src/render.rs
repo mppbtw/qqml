@@ -1,3 +1,5 @@
+use qqml_parser::Question;
+
 use crate::utils::get_term_size;
 use crate::Error;
 
@@ -8,16 +10,39 @@ pub trait Render<E> {
 pub struct Screen {
     pathline: PathLine,
     q_select_line: QuestionSelectLine,
+    question_line: QuestionLine,
     hints_line: HintsLine,
+    hints_body: Option<HintsBody>,
 }
 impl Render<Error> for Screen {
     fn render(&self) -> Result<String, Error> {
         let mut output = String::new();
         output += &self.pathline.render()?;
+        output += "\n\n"; // The lines dont have their own \n
+        output += &self.q_select_line.render()?;
+        output += "\n\n";
 
         Ok(output)
     }
 }
+
+struct QuestionLine {
+    q: Question,
+
+}
+impl Render<Error> for QuestionLine {
+    fn render(&self) -> Result<String, Error> {
+        Ok(match &self.q {
+            Question::String() => "String questions are not supported.".to_owned(),
+            Question::Calculation() => "Calculation questions are not supported.".to_owned(),
+            Question::Multichoice(m) => {
+                m.get_text()
+            }
+        })
+    }
+}
+
+struct HintsBody { }
 
 struct PathLine {
     path: String,
