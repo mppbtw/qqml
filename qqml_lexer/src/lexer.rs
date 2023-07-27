@@ -124,7 +124,7 @@ impl Lexer {
                 quotes_found += 1;
             }
             if self.ch == 0 {
-                break
+                break;
             }
             self.read_char();
         }
