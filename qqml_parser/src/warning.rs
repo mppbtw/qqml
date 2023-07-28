@@ -1,4 +1,2 @@
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum Warning {
-
-}
+pub enum Warning {}
