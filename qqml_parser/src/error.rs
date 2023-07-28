@@ -1,23 +1,29 @@
-use qqml_lexer::Token;
 use crate::Warning;
+use qqml_lexer::Token;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Error {
     HintsDirectiveRequiresNumber,
     HintsDirectiveRepeated,
 
+    ExpectedLSquirlyForQuestion(Token),
+    ExpectedRParenForQuestionMaxMark(Token),
+    ExpectedLParenForQuestionMaxMark(Token),
+    ExpectedNumberForQuestionMaxMark(Token),
+    ExpectedQuestionText(Token),
+    ExpectedSemicolonAfterHintsDirective(Token),
+    ExpectedQuestionOrDirective(Token),
+    ExpectedQuestionType(Token),
+
     /// Stores the token (hopefully Token::Identifier) of the question
     /// which was invalid.
     InvalidQuestionType(Token),
-
-    /// Stores the token which we got instead
-    ExpectedQuestionOrDirective(Token),
 }
 
 #[derive(Default, Clone, PartialEq, Eq)]
 pub struct ErrorReport {
     pub errors: Vec<Error>,
-    pub warnings: Vec<Warning>
+    pub warnings: Vec<Warning>,
 }
 
 impl ErrorReport {
@@ -37,4 +43,3 @@ impl ErrorReport {
         }
     }
 }
-

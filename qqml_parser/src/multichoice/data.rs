@@ -1,5 +1,5 @@
-use crate::Warning;
 use crate::Error;
+use crate::Warning;
 
 #[derive(Debug, Default, PartialEq, Eq, Clone)]
 pub struct MultichoiceData {
