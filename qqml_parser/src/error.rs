@@ -17,6 +17,10 @@ pub enum Error {
 
     UnexpectedAnswerToken(Token, Vec<Token>),
     ExpectedAnswerText(Token),
+    ExpectedAnswerSemicolon(Token),
+    ExpectedAnswerExplanationText(Token),
+    ExpectedRParenForAnswerMark(Token),
+    ExpectedNumberForAnswerMark(Token),
 
     /// Stores the token (hopefully Token::Identifier) of the question
     /// which was invalid.
