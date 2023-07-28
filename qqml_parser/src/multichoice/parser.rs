@@ -56,7 +56,11 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
         }
     }
 
-    Ok(MultichoiceData::default())
+    if report.errors.len() != 0 {
+        Err(report)
+    } else {
+        Ok(dat)
+    }
 }
 
 pub fn parse_multichoice_question(l: &mut Lexer) -> Result<MultichoiceAnswer, ErrorReport> {
@@ -73,14 +77,36 @@ pub fn parse_multichoice_question(l: &mut Lexer) -> Result<MultichoiceAnswer, Er
     };
 
     tok = l.next_token();
-    match tok {
-        Token::LParen => {}
-        Token::RArrow => {},
-        Token::Semicolon => return Ok(dat),
-        _ => report.errors.push(Error::UnexpectedAnswerToken(
-            tok,
-            vec![Token::LParen, Token::RArrow, Token::Semicolon],
-        )),
+    if tok == Token::LParen {
+        tok = l.next_token();
+        match tok {
+            Token::Number(n) => dat.marks = Some(n),
+            _ => report.errors.push(Error::ExpectedNumberForAnswerMark(tok)),
+        };
+
+        tok = l.next_token();
+        if tok != Token::RParen {
+            report.errors.push(Error::ExpectedRParenForAnswerMark(tok));
+        }
+
+        tok = l.next_token();
     }
-    Ok(dat)
+
+    if tok == Token::RArrow {
+        tok = l.next_token();
+        match tok {
+            Token::Literal(l) => dat.explanation = Some(l),
+            _ => report.errors.push(Error::ExpectedAnswerExplanationText(&tok)),
+        };
+    }
+
+    if tok != Token::Semicolon {
+        report.errors.push(Error::ExpectedAnswerSemicolon(tok));
+    }
+
+    if report.errors.len() != 0 {
+        Err(report)
+    } else {
+        Ok(dat)
+    }
 }
