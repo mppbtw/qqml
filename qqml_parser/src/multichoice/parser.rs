@@ -60,6 +60,27 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
 }
 
 pub fn parse_multichoice_question(l: &mut Lexer) -> Result<MultichoiceAnswer, ErrorReport> {
+    // This function assumes that the '*' token has already been
+    // consumed and therefore assumes that the next token should
+    // be the question text.
+    let mut report = ErrorReport::default();
     let mut dat = MultichoiceAnswer::default();
+    let mut tok = l.next_token();
+
+    match tok {
+        Token::Literal(m) => dat.text = Some(m),
+        _ => report.errors.push(Error::ExpectedAnswerText(tok)),
+    };
+
+    tok = l.next_token();
+    match tok {
+        Token::LParen => {}
+        Token::RArrow => {},
+        Token::Semicolon => return Ok(dat),
+        _ => report.errors.push(Error::UnexpectedAnswerToken(
+            tok,
+            vec![Token::LParen, Token::RArrow, Token::Semicolon],
+        )),
+    }
     Ok(dat)
 }

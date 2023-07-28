@@ -15,6 +15,9 @@ pub enum Error {
     ExpectedQuestionOrDirective(Token),
     ExpectedQuestionType(Token),
 
+    UnexpectedAnswerToken(Token, Vec<Token>),
+    ExpectedAnswerText(Token),
+
     /// Stores the token (hopefully Token::Identifier) of the question
     /// which was invalid.
     InvalidQuestionType(Token),
