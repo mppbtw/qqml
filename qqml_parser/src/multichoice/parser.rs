@@ -95,9 +95,10 @@ pub fn parse_multichoice_question(l: &mut Lexer) -> Result<MultichoiceAnswer, Er
     if tok == Token::RArrow {
         tok = l.next_token();
         match tok {
-            Token::Literal(l) => dat.explanation = Some(l),
-            _ => report.errors.push(Error::ExpectedAnswerExplanationText(&tok)),
+            Token::Literal(ref l) => dat.explanation = Some(l.to_owned()),
+            _ => report.errors.push(Error::ExpectedAnswerExplanationText(tok.clone())),
         };
+        tok = l.next_token();
     }
 
     if tok != Token::Semicolon {
