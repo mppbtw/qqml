@@ -61,7 +61,7 @@ pub fn check() -> ! {
 
     // And the most useless command flag award goes to...
     if verbose {
-        println!("{} Questions checked.", parsed.len());
+        println!("{} Questions checked.", parsed.questions.len());
     }
     println!("0 errors reported.");
     exit(1);
