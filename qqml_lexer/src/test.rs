@@ -13,7 +13,7 @@ fn d() -> TokenData {
 fn test_token_column_numbers_for_long_tokens() {
     let input = "   ask
      multichoice
-=>";
+->";
     let mut l = Lexer::new(input);
     assert_eq!(l.next_token().get_data().col, 3);
     assert_eq!(l.next_token().get_data().col, 5);
