@@ -35,10 +35,7 @@ pub struct ErrorReport {
 
 impl ErrorReport {
     pub fn new() -> ErrorReport {
-        ErrorReport {
-            errors: vec![],
-            warnings: vec![],
-        }
+        Self::default()
     }
 
     pub fn extend(&mut self, other: ErrorReport) {

@@ -50,7 +50,7 @@ pub fn parse(inp: String) -> Result<ParsedFile, Vec<Error>> {
         }
 
         // Parse questions
-        if tok == Token::Ask {
+        if tok == Token::Ask(_) {
             // Get the type of the next token
             tok = l.next_token();
             match tok {

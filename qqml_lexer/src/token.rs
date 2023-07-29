@@ -4,90 +4,101 @@ use std::{collections::HashMap, fmt};
 lazy_static! {
     pub static ref KEYWORDS: HashMap<String, Token> = {
         let mut m = HashMap::new();
-        m.insert("ask".into(), Token::Ask);
-        m.insert("multichoice".into(), Token::Multichoice);
-        m.insert("string".into(), Token::String);
-        m.insert("calculation".into(), Token::Calculation);
-        m.insert("inputs".into(), Token::Inputs);
-        m.insert("hints".into(), Token::Hints);
+        m.insert("ask".into(), Token::Ask(TokenData::default()));
+        m.insert("multichoice".into(), Token::Multichoice(TokenData::default()));
+        m.insert("string".into(), Token::String(TokenData::default()));
+        m.insert("calculation".into(), Token::Calculation(TokenData::default()));
+        m.insert("inputs".into(), Token::Inputs(TokenData::default()));
+        m.insert("hints".into(), Token::Hints(TokenData::default()));
         m
     };
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Clone, Debug, Default)]
+pub struct TokenData {
+    pub col: usize,
+    pub line: usize,
+}
+impl PartialEq for TokenData {
+    fn eq(&self, _: &Self) -> bool {
+        true
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum Token {
-    Illegal,
-    Eof,
+    Illegal(TokenData),
+    Eof(TokenData),
 
-    Ident(String),
-    Number(usize),
-    Literal(String),
+    Ident(TokenData, String),
+    Number(TokenData, usize),
+    Literal(TokenData, String),
 
-    Plus,
-    Subtract,
-    GThanOrEqual,
-    LThanOrEqual,
-    Divide,
+    Plus(TokenData),
+    Subtract(TokenData),
+    GThanOrEqual(TokenData),
+    LThanOrEqual(TokenData),
+    Divide(TokenData),
 
-    RArrow,
-    Equal,  // =
-    NEqual, // !=
-    Comma,
-    Semicolon,
-    Colon,
-    Asterisk,
+    RArrow(TokenData),
+    Equal(TokenData),
+    NEqual(TokenData),
+    Comma(TokenData),
+    Semicolon(TokenData),
+    Colon(TokenData),
+    Asterisk(TokenData),
 
-    LParen,
-    RParen,
-    LSquirly,
-    RSquirly,
-    LSquare,
-    RSquare,
-    LThan,
-    GThan,
+    LParen(TokenData),
+    RParen(TokenData),
+    LSquirly(TokenData),
+    RSquirly(TokenData),
+    LSquare(TokenData),
+    RSquare(TokenData),
+    LThan(TokenData),
+    GThan(TokenData),
 
-    Ask,
-    Multichoice,
-    String,
-    Calculation,
-    Inputs,
-    Hints,
+    Ask(TokenData),
+    Multichoice(TokenData),
+    String(TokenData),
+    Calculation(TokenData),
+    Inputs(TokenData),
+    Hints(TokenData),
 }
 
 impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let name = match self {
-            Self::Eof => "EOF",
-            Self::RArrow => "RightArrow",
-            Self::Semicolon => "Semicolon",
-            Self::Literal(_) => "Literal",
-            Self::Divide => "Divide",
-            Self::Ask => "Ask",
-            Self::NEqual => "NotEqual",
-            Self::Equal => "Equal",
-            Self::String => "String",
-            Self::Plus => "Plus",
-            Self::Asterisk => "Asterisk",
-            Self::LThan => "LessThan",
-            Self::GThan => "GreaterThan",
-            Self::Number(_) => "Number",
-            Self::RParen => "RightParenthese",
-            Self::LParen => "LeftParenthese",
-            Self::RSquare => "RightSquareBracket",
-            Self::LSquare => "LeftSquareBracket",
-            Self::RSquirly => "RightSquirlyBracket",
-            Self::LSquirly => "LeftSquirlyBracket",
-            Self::Subtract => "Subtract",
-            Self::Illegal => "Illegal",
-            Self::Inputs => "Inputs",
-            Self::GThanOrEqual => "GreatherThanOrEqual",
-            Self::LThanOrEqual => "LessThanOrEqual",
-            Self::Comma => "Comma",
-            Self::Ident(_) => "Identifier",
-            Self::Colon => "Colon",
-            Self::Multichoice => "Multichoice",
-            Self::Hints => "Hints",
-            Self::Calculation => "Calculation",
+            Self::Literal(_, _) => "Literal",
+            Self::Number(_, _) => "Number",
+            Self::Ident(_, _) => "Identifier",
+            Self::Eof(_) => "EOF",
+            Self::RArrow(_) => "RightArrow",
+            Self::Semicolon(_) => "Semicolon",
+            Self::Divide(_) => "Divide",
+            Self::Ask(_) => "Ask",
+            Self::NEqual(_) => "NotEqual",
+            Self::Equal(_) => "Equal",
+            Self::String(_) => "String",
+            Self::Plus(_) => "Plus",
+            Self::Asterisk(_) => "Asterisk",
+            Self::LThan(_) => "LessThan",
+            Self::GThan(_) => "GreaterThan",
+            Self::RParen(_) => "RightParenthese",
+            Self::LParen(_) => "LeftParenthese",
+            Self::RSquare(_) => "RightSquareBracket",
+            Self::LSquare(_) => "LeftSquareBracket",
+            Self::RSquirly(_) => "RightSquirlyBracket",
+            Self::LSquirly(_) => "LeftSquirlyBracket",
+            Self::Subtract(_) => "Subtract",
+            Self::Illegal(_) => "Illegal",
+            Self::Inputs(_) => "Inputs",
+            Self::GThanOrEqual(_) => "GreatherThanOrEqual",
+            Self::LThanOrEqual(_) => "LessThanOrEqual",
+            Self::Comma(_) => "Comma",
+            Self::Colon(_) => "Colon",
+            Self::Multichoice(_) => "Multichoice",
+            Self::Hints(_) => "Hints",
+            Self::Calculation(_) => "Calculation",
         };
         write!(f, "{}", name)
     }
