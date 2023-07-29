@@ -5,9 +5,15 @@ lazy_static! {
     pub static ref KEYWORDS: HashMap<String, Token> = {
         let mut m = HashMap::new();
         m.insert("ask".into(), Token::Ask(TokenData::default()));
-        m.insert("multichoice".into(), Token::Multichoice(TokenData::default()));
+        m.insert(
+            "multichoice".into(),
+            Token::Multichoice(TokenData::default()),
+        );
         m.insert("string".into(), Token::String(TokenData::default()));
-        m.insert("calculation".into(), Token::Calculation(TokenData::default()));
+        m.insert(
+            "calculation".into(),
+            Token::Calculation(TokenData::default()),
+        );
         m.insert("inputs".into(), Token::Inputs(TokenData::default()));
         m.insert("hints".into(), Token::Hints(TokenData::default()));
         m
@@ -101,6 +107,44 @@ impl fmt::Display for Token {
             Self::Calculation(_) => "Calculation",
         };
         write!(f, "{}", name)
+    }
+}
+
+impl Token {
+    pub fn get_data(&self) -> &TokenData {
+        match self {
+            Self::Literal(d, _) => d,
+            Self::Number(d, _) => d,
+            Self::Ident(d, _) => d,
+            Self::Eof(d) => d,
+            Self::RArrow(d) => d,
+            Self::Semicolon(d) => d,
+            Self::Divide(d) => d,
+            Self::Ask(d) => d,
+            Self::NEqual(d) => d,
+            Self::Equal(d) => d,
+            Self::String(d) => d,
+            Self::Plus(d) => d,
+            Self::Asterisk(d) => d,
+            Self::LThan(d) => d,
+            Self::GThan(d) => d,
+            Self::RParen(d) => d,
+            Self::LParen(d) => d,
+            Self::RSquare(d) => d,
+            Self::LSquare(d) => d,
+            Self::RSquirly(d) => d,
+            Self::LSquirly(d) => d,
+            Self::Subtract(d) => d,
+            Self::Illegal(d) => d,
+            Self::Inputs(d) => d,
+            Self::GThanOrEqual(d) => d,
+            Self::LThanOrEqual(d) => d,
+            Self::Comma(d) => d,
+            Self::Colon(d) => d,
+            Self::Multichoice(d) => d,
+            Self::Hints(d) => d,
+            Self::Calculation(d) => d,
+        }
     }
 }
 
