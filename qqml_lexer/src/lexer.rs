@@ -1,4 +1,6 @@
-use crate::token::{Token, KEYWORDS};
+use crate::token::Token;
+use crate::token::TokenData;
+use crate::token::KEYWORDS;
 
 const WHITESPACE_CHARS: [u8; 4] = [b' ', b'\n', b'\r', b'\t'];
 
@@ -8,6 +10,7 @@ pub struct Lexer {
     position: usize,
     read_position: usize,
     ch: u8,
+    line_count: usize,
 }
 
 #[allow(unused)]
@@ -33,65 +36,77 @@ impl Lexer {
         self.read_position += 1;
     }
 
+    fn get_token_data(&self) -> TokenData {
+        TokenData {
+            col: self.position,
+            line: self.line_count,
+        }
+    }
+
     pub fn next_token(&mut self) -> Token {
         self.scran_whitespace();
         let tok: Token = match self.ch {
-            b'=' => Token::Equal,
-            b'*' => Token::Asterisk,
-            b';' => Token::Semicolon,
-            b'(' => Token::LParen,
-            b')' => Token::RParen,
-            b'{' => Token::LSquirly,
-            b'}' => Token::RSquirly,
-            b'[' => Token::LSquare,
-            b']' => Token::RSquare,
-            b',' => Token::Comma,
-            b':' => Token::Colon,
-            b'/' => Token::Divide,
-            b'+' => Token::Plus,
+            b'=' => Token::Equal(self.get_token_data()),
+            b'*' => Token::Asterisk(self.get_token_data()),
+            b';' => Token::Semicolon(self.get_token_data()),
+            b'(' => Token::LParen(self.get_token_data()),
+            b')' => Token::RParen(self.get_token_data()),
+            b'{' => Token::LSquirly(self.get_token_data()),
+            b'}' => Token::RSquirly(self.get_token_data()),
+            b'[' => Token::LSquare(self.get_token_data()),
+            b']' => Token::RSquare(self.get_token_data()),
+            b',' => Token::Comma(self.get_token_data()),
+            b':' => Token::Colon(self.get_token_data()),
+            b'/' => Token::Divide(self.get_token_data()),
+            b'+' => Token::Plus(self.get_token_data()),
+
             b'>' => {
                 if self.peek_char() == b'=' {
                     self.read_char();
-                    Token::GThanOrEqual
+                    Token::GThanOrEqual(self.get_token_data())
                 } else {
-                    Token::GThan
+                    Token::GThan(self.get_token_data())
                 }
             }
             b'<' => {
                 if self.peek_char() == b'=' {
                     self.read_char();
-                    Token::LThanOrEqual
+                    Token::LThanOrEqual(self.get_token_data())
                 } else {
-                    Token::LThan
+                    Token::LThan(self.get_token_data())
                 }
             }
             b'!' => {
                 if self.peek_char() == b'=' {
                     self.read_char();
-                    Token::NEqual
+                    Token::NEqual(self.get_token_data())
                 } else {
-                    Token::Illegal
+                    Token::Illegal(self.get_token_data())
                 }
             }
             b'-' => {
                 if self.peek_char() == b'>' {
                     self.read_char();
-                    Token::RArrow
+                    Token::RArrow(self.get_token_data())
                 } else {
-                    Token::Subtract
+                    Token::Subtract(self.get_token_data())
                 }
             }
-            0 => Token::Eof,
+            0 => Token::Eof(self.get_token_data()),
             _ => {
                 if is_letter(self.ch) {
                     let ident = self.read_ident();
-                    lookup_ident(ident)
+                    let found = lookup_ident(ident);
+                    match found {
+                        Token::Ident(_, i) => Token::Ident(self.get_token_data(), i),
+                        _ => found,
+                    }
                 } else if is_digit(self.ch) {
-                    Token::Number(self.read_number())
+                    Token::Number(self.get_token_data(), self.read_number())
                 } else if is_quote(self.ch) {
-                    Token::Literal(self.read_literal())
+                    Token::Literal(self.get_token_data(), self.read_literal())
                 } else {
-                    Token::Illegal
+                    Token::Illegal(self.get_token_data())
                 }
             }
         };
@@ -158,6 +173,7 @@ impl Default for Lexer {
             position: 0,
             read_position: 0,
             ch: 0,
+            line_count: 0,
         }
     }
 }
@@ -165,7 +181,7 @@ impl Default for Lexer {
 fn lookup_ident(ident: String) -> Token {
     match KEYWORDS.get(&ident) {
         Some(i) => i.clone(),
-        None => Token::Ident(ident),
+        None => Token::Ident(TokenData::default(), ident),
     }
 }
 

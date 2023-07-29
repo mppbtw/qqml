@@ -45,7 +45,10 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
 
     loop {
         tok = l.next_token();
-        if tok == Token::RParen {
+        if tok == Token::Semicolon {
+            continue;
+        }
+        if tok == Token::RSquirly {
             break;
         }
         if tok == Token::Asterisk {
