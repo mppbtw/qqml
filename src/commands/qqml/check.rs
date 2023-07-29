@@ -3,7 +3,6 @@ use std::fs;
 
 use crate::utils::*;
 
-use qqml_parser::*;
 use help::*;
 
 pub fn check() -> ! {
@@ -51,18 +50,5 @@ pub fn check() -> ! {
     }
 
     println!("Checking {}.", arg);
-    let parsed = match parse(buff) {
-        Ok(o) => o,
-        Err(e) => {
-            print_error(format!("{}", e));
-            exit(1);
-        }
-    };
-
-    // And the most useless command flag award goes to...
-    if verbose {
-        println!("{} Questions checked.", parsed.questions.len());
-    }
-    println!("0 errors reported.");
-    exit(1);
+    unimplemented!("Working on rewrite of parser");
 }

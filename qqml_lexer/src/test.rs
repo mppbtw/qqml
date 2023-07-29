@@ -1,18 +1,69 @@
 use crate::lexer::Lexer;
 use crate::token::Token;
+use crate::token::TokenData;
+
+/// Much quicker way to get the TokenData
+/// which saves me writing that out manually
+/// for Token::*.
+fn d() -> TokenData {
+    TokenData::default()
+}
+
+#[test]
+fn test_token_column_numbers_for_long_tokens() {
+    let input = "   ask
+     multichoice
+=>";
+    let mut l = Lexer::new(input);
+    assert_eq!(l.next_token().get_data().col, 3);
+    assert_eq!(l.next_token().get_data().col, 5);
+    assert_eq!(l.next_token().get_data().col, 0);
+}
+
+#[test]
+fn test_token_column_numbers_for_single_char_tokens() {
+    let input = "  2
+   =
+      (";
+    let mut l = Lexer::new(input);
+    assert_eq!(l.next_token().get_data().col, 2);
+    assert_eq!(l.next_token().get_data().col, 3);
+    assert_eq!(l.next_token().get_data().col, 6);
+}
+
+#[test]
+fn test_token_line_numbers() {
+    let input = "1
+        2
+        3
+        4
+        5";
+
+    let mut l = Lexer::new(input);
+    let mut i = 1;
+    loop {
+        let tok = l.next_token();
+        if matches!(tok, Token::Eof(_)) {
+            break;
+        }
+        let dat = tok.get_data();
+        assert_eq!(dat.line, i);
+        i += 1;
+    }
+}
 
 #[test]
 fn test_tokenise_numbers() {
     let input = "123;   2;";
     let expected = vec![
-        Token::Number(123),
-        Token::Semicolon,
-        Token::Number(2),
-        Token::Semicolon,
-        Token::Eof,
+        Token::Number(d(), 123),
+        Token::Semicolon(d()),
+        Token::Number(d(), 2),
+        Token::Semicolon(d()),
+        Token::Eof(d()),
     ];
     let mut i = 0;
-    let mut lexer = Lexer::new(input).unwrap();
+    let mut lexer = Lexer::new(input);
 
     loop {
         let expected_token = &expected[i];
@@ -20,7 +71,7 @@ fn test_tokenise_numbers() {
         dbg!(&tok);
         dbg!(&expected_token);
         assert_eq!(tok, *expected_token);
-        if matches!(tok, Token::Eof) {
+        if matches!(tok, Token::Eof(_)) {
             break;
         }
         i += 1;
@@ -31,18 +82,18 @@ fn test_tokenise_numbers() {
 fn test_tokenise_string_literals() {
     let input = ";'literal';\"literal\";'l'\"l\"";
     let expected = vec![
-        Token::Semicolon,
-        Token::Literal("literal".to_owned()),
-        Token::Semicolon,
-        Token::Literal("literal".to_owned()),
-        Token::Semicolon,
-        Token::Literal("l".to_owned()),
-        Token::Literal("l".to_owned()),
-        Token::Eof,
+        Token::Semicolon(d()),
+        Token::Literal(d(), "literal".to_owned()),
+        Token::Semicolon(d()),
+        Token::Literal(d(), "literal".to_owned()),
+        Token::Semicolon(d()),
+        Token::Literal(d(), "l".to_owned()),
+        Token::Literal(d(), "l".to_owned()),
+        Token::Eof(d()),
     ];
 
     let mut i = 0;
-    let mut lexer = Lexer::new(input).unwrap();
+    let mut lexer = Lexer::new(input);
 
     loop {
         let expected_token = &expected[i];
@@ -50,7 +101,7 @@ fn test_tokenise_string_literals() {
         dbg!(&tok);
         dbg!(&expected_token);
         assert_eq!(tok, *expected_token);
-        if matches!(tok, Token::Eof) {
+        if matches!(tok, Token::Eof(_)) {
             break;
         }
         i += 1;
@@ -61,24 +112,24 @@ fn test_tokenise_string_literals() {
 fn test_multi_char_tokens() {
     let input = "!=>< >= <= ->";
     let expected = vec![
-        Token::NEqual,
-        Token::GThan,
-        Token::LThan,
-        Token::GThanOrEqual,
-        Token::LThanOrEqual,
-        Token::RArrow,
-        Token::Eof,
+        Token::NEqual(d()),
+        Token::GThan(d()),
+        Token::LThan(d()),
+        Token::GThanOrEqual(d()),
+        Token::LThanOrEqual(d()),
+        Token::RArrow(d()),
+        Token::Eof(d()),
     ];
 
     let mut i = 0;
-    let mut lexer = Lexer::new(input).unwrap();
+    let mut lexer = Lexer::new(input);
 
     loop {
         let expected_token = &expected[i];
         let tok = lexer.next_token();
         dbg!(&tok);
         assert_eq!(tok, *expected_token);
-        if matches!(tok, Token::Eof) {
+        if matches!(tok, Token::Eof(_)) {
             break;
         }
         i += 1;
@@ -94,23 +145,23 @@ fn test_keyword_tokens_with_spaces() {
                 inputs";
 
     let expected = vec![
-        Token::Ask,
-        Token::Multichoice,
-        Token::Calculation,
-        Token::String,
-        Token::Inputs,
-        Token::Eof,
+        Token::Ask(d()),
+        Token::Multichoice(d()),
+        Token::Calculation(d()),
+        Token::String(d()),
+        Token::Inputs(d()),
+        Token::Eof(d()),
     ];
 
     let mut i = 0;
-    let mut lexer = Lexer::new(input).unwrap();
+    let mut lexer = Lexer::new(input);
 
     loop {
         let expected_token = &expected[i];
         let tok = lexer.next_token();
         dbg!(&tok);
         assert_eq!(tok, *expected_token);
-        if matches!(tok, Token::Eof) {
+        if matches!(tok, Token::Eof(_)) {
             break;
         }
         i += 1;
@@ -121,23 +172,23 @@ fn test_keyword_tokens_with_spaces() {
 fn test_keyword_tokens() {
     let input = "ask multichoice calculation string inputs hints";
     let expected = vec![
-        Token::Ask,
-        Token::Multichoice,
-        Token::Calculation,
-        Token::String,
-        Token::Inputs,
-        Token::Hints,
-        Token::Eof,
+        Token::Ask(d()),
+        Token::Multichoice(d()),
+        Token::Calculation(d()),
+        Token::String(d()),
+        Token::Inputs(d()),
+        Token::Hints(d()),
+        Token::Eof(d()),
     ];
 
     let mut i = 0;
-    let mut lexer = Lexer::new(input).unwrap();
+    let mut lexer = Lexer::new(input);
 
     loop {
         let expected_token = &expected[i];
         let tok = lexer.next_token();
         assert_eq!(tok, *expected_token);
-        if matches!(tok, Token::Eof) {
+        if matches!(tok, Token::Eof(_)) {
             break;
         }
         i += 1;
@@ -149,34 +200,34 @@ fn test_single_char_tokens() {
     let input = "/;=:{}[](),><*%$#";
 
     let expected = vec![
-        Token::Divide,
-        Token::Semicolon,
-        Token::Equal,
-        Token::Colon,
-        Token::LSquirly,
-        Token::RSquirly,
-        Token::LSquare,
-        Token::RSquare,
-        Token::LParen,
-        Token::RParen,
-        Token::Comma,
-        Token::GThan,
-        Token::LThan,
-        Token::Asterisk,
-        Token::Illegal,
-        Token::Illegal,
-        Token::Illegal,
-        Token::Eof,
+        Token::Divide(d()),
+        Token::Semicolon(d()),
+        Token::Equal(d()),
+        Token::Colon(d()),
+        Token::LSquirly(d()),
+        Token::RSquirly(d()),
+        Token::LSquare(d()),
+        Token::RSquare(d()),
+        Token::LParen(d()),
+        Token::RParen(d()),
+        Token::Comma(d()),
+        Token::GThan(d()),
+        Token::LThan(d()),
+        Token::Asterisk(d()),
+        Token::Illegal(d()),
+        Token::Illegal(d()),
+        Token::Illegal(d()),
+        Token::Eof(d()),
     ];
 
     let mut i = 0;
-    let mut lexer = Lexer::new(input).unwrap();
+    let mut lexer = Lexer::new(input);
 
     loop {
         let expected_token = &expected[i];
         let tok = lexer.next_token();
         assert_eq!(tok, *expected_token);
-        if matches!(tok, Token::Eof) {
+        if matches!(tok, Token::Eof(_)) {
             break;
         }
         i += 1;

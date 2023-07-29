@@ -36,7 +36,7 @@ impl Render<Error> for QuestionLine {
             Question::String() => "String questions are not supported.".to_owned(),
             Question::Calculation() => "Calculation questions are not supported.".to_owned(),
             Question::Multichoice(m) => {
-                m.get_text()
+                m.text.clone().unwrap()
             }
         })
     }
