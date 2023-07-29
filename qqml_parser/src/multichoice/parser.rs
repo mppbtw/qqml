@@ -1,7 +1,10 @@
 use crate::error::ErrorReport;
 use crate::Error;
-use crate::{MultichoiceAnswer, MultichoiceData};
-use qqml_lexer::{Lexer, Token};
+use crate::MultichoiceAnswer;
+use crate::MultichoiceData;
+use qqml_lexer::Lexer;
+use qqml_lexer::Token;
+use qqml_lexer::TokenData;
 
 pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> {
     // This function expects the 'ask' and 'multichoice' tokens
@@ -11,7 +14,7 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
     let mut tok = l.next_token();
     let mut dat = MultichoiceData::default();
 
-    if matches!(tok, Token::LParen(_)) {
+    if !matches!(tok, Token::LParen(_)) {
         report
             .errors
             .push(Error::ExpectedLParenForQuestionMaxMark(tok));
@@ -45,10 +48,10 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
 
     loop {
         tok = l.next_token();
-        if matches!(tok, Token::Semicolon(_)){
+        if matches!(tok, Token::Semicolon(_)) {
             continue;
         }
-        if matches!(tok, Token::RSquirly(_)){
+        if matches!(tok, Token::RSquirly(_)) {
             break;
         }
         if matches!(tok, Token::Asterisk(_)) {
@@ -84,7 +87,14 @@ pub fn parse_multichoice_question(l: &mut Lexer) -> Result<MultichoiceAnswer, Er
         tok = l.next_token();
         match tok {
             Token::Number(_, n) => dat.marks = Some(n),
-            _ => report.errors.push(Error::ExpectedNumberForAnswerMark(tok)),
+            _ => report.errors.push(Error::UnexpectedAnswerToken(
+                tok,
+                vec![
+                    Token::RArrow(TokenData::default()),
+                    Token::Semicolon(TokenData::default()),
+                    Token::Number(TokenData::default(), 0),
+                ],
+            )),
         };
 
         tok = l.next_token();
@@ -99,7 +109,9 @@ pub fn parse_multichoice_question(l: &mut Lexer) -> Result<MultichoiceAnswer, Er
         tok = l.next_token();
         match tok {
             Token::Literal(_, l) => dat.explanation = Some(l),
-            _ => report.errors.push(Error::ExpectedAnswerExplanationText(tok)),
+            _ => report
+                .errors
+                .push(Error::ExpectedAnswerExplanationText(tok)),
         };
         tok = l.next_token();
     }

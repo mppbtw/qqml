@@ -22,7 +22,10 @@ lazy_static! {
 
 #[derive(Clone, Debug, Default)]
 pub struct TokenData {
+    /// STARTS AT ZERO!
     pub col: usize,
+
+    /// STARTS AT ZERO!
     pub line: usize,
 }
 impl PartialEq for TokenData {
@@ -70,7 +73,6 @@ pub enum Token {
     Inputs(TokenData),
     Hints(TokenData),
 }
-
 impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let name = match self {
@@ -111,6 +113,46 @@ impl fmt::Display for Token {
 }
 
 impl Token {
+    pub fn set_data(&mut self, new_data: TokenData) {
+        let new = self.with_different_data(new_data);
+        *self = new;
+    }
+
+    pub fn with_different_data(&self, new_data: TokenData) -> Token {
+        match self {
+            Self::Literal(_, v) =>  Self::Literal(new_data, v.to_owned()),
+            Self::Number(_, v) => Self::Number(new_data, *v),
+            Self::Ident(_, v) => Self::Ident(new_data, v.to_owned()),
+            Self::Eof(_) => Self::Eof(new_data),
+            Self::RArrow(_) => Self::RArrow(new_data),
+            Self::Semicolon(_) => Self::Semicolon(new_data),
+            Self::Divide(_) => Self::Divide(new_data),
+            Self::Ask(_) => Self::Ask(new_data),
+            Self::NEqual(_) => Self::NEqual(new_data),
+            Self::Equal(_) => Self::Equal(new_data),
+            Self::String(_) => Self::String(new_data),
+            Self::Plus(_) => Self::Plus(new_data),
+            Self::Asterisk(_) => Self::Asterisk(new_data),
+            Self::LThan(_) => Self::LThan(new_data),
+            Self::GThan(_) => Self::GThan(new_data),
+            Self::RParen(_) => Self::RParen(new_data),
+            Self::LParen(_) => Self::LParen(new_data),
+            Self::RSquare(_) => Self::RSquare(new_data),
+            Self::LSquare(_) => Self::LSquare(new_data),
+            Self::RSquirly(_) => Self::RSquirly(new_data),
+            Self::LSquirly(_) => Self::LSquirly(new_data),
+            Self::Subtract(_) => Self::Subtract(new_data),
+            Self::Illegal(_) => Self::Illegal(new_data),
+            Self::Inputs(_) => Self::Inputs(new_data),
+            Self::GThanOrEqual(_) => Self::GThanOrEqual(new_data),
+            Self::LThanOrEqual(_) => Self::LThanOrEqual(new_data),
+            Self::Comma(_) => Self::Comma(new_data),
+            Self::Colon(_) => Self::Colon(new_data),
+            Self::Multichoice(_) => Self::Multichoice(new_data),
+            Self::Hints(_) => Self::Hints(new_data),
+            Self::Calculation(_) => Self::Calculation(new_data),
+        }
+    }
     pub fn get_data(&self) -> &TokenData {
         match self {
             Self::Literal(d, _) => d,
