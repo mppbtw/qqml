@@ -55,7 +55,7 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
             break;
         }
         if matches!(tok, Token::Asterisk(_)) {
-            match parse_multichoice_question(l) {
+            match parse_multichoice_answer(l) {
                 Ok(a) => dat.answers.push(a),
                 Err(r) => report.extend(r),
             }
@@ -69,7 +69,7 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
     }
 }
 
-pub fn parse_multichoice_question(l: &mut Lexer) -> Result<MultichoiceAnswer, ErrorReport> {
+pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, ErrorReport> {
     // This function assumes that the '*' token has already been
     // consumed and therefore assumes that the next token should
     // be the question text.
