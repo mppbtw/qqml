@@ -14,6 +14,8 @@ pub enum Error {
     ExpectedSemicolonAfterHintsDirective(Token),
     ExpectedQuestionOrDirective(Token),
     ExpectedQuestionType(Token),
+    ExpectedHintText(Token),
+    ExpectedCommaInHintsList(Token),
 
     UnexpectedAnswerToken(Token, Vec<Token>),
     ExpectedAnswerText(Token),

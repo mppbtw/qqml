@@ -61,6 +61,24 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
             }
         }
     }
+    tok = l.next_token();
+    if matches!(tok, Token::Hints(_)) {
+        loop {
+            tok = l.next_token();
+            match tok {
+                Token::Literal(_, h) => {
+                    dat.hints.push(h);
+                    tok = l.next_token();
+                    match tok {
+                        Token::Comma(_) => continue,
+                        Token::Semicolon(_) => break,
+                        _ => report.errors.push(Error::ExpectedCommaInHintsList(tok)),
+                    };
+                }
+                _ => report.errors.push(Error::ExpectedHintText(tok)),
+            };
+        }
+    }
 
     if report.errors.len() != 0 {
         Err(report)
@@ -118,6 +136,11 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
 
     if !matches!(tok, Token::Semicolon(_)) {
         report.errors.push(Error::ExpectedAnswerSemicolon(tok));
+    }
+
+
+    if dat.marks.is_none() {
+        dat.marks = Some(0);
     }
 
     if report.errors.len() != 0 {
