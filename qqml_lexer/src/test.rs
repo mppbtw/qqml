@@ -10,6 +10,28 @@ fn d() -> TokenData {
 }
 
 #[test]
+fn test_token_column_numbers_for_long_tokens() {
+    let input = "   ask
+     multichoice
+=>";
+    let mut l = Lexer::new(input);
+    assert_eq!(l.next_token().get_data().col, 3);
+    assert_eq!(l.next_token().get_data().col, 5);
+    assert_eq!(l.next_token().get_data().col, 0);
+}
+
+#[test]
+fn test_token_column_numbers_for_single_char_tokens() {
+    let input = "  2
+   =
+      (";
+    let mut l = Lexer::new(input);
+    assert_eq!(l.next_token().get_data().col, 2);
+    assert_eq!(l.next_token().get_data().col, 3);
+    assert_eq!(l.next_token().get_data().col, 6);
+}
+
+#[test]
 fn test_token_line_numbers() {
     let input = "1
         2
@@ -25,8 +47,6 @@ fn test_token_line_numbers() {
             break;
         }
         let dat = tok.get_data();
-        dbg!(dat.line);
-        dbg!(i);
         assert_eq!(dat.line, i);
         i += 1;
     }

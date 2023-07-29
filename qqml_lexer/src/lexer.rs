@@ -10,7 +10,15 @@ pub struct Lexer {
     position: usize,
     read_position: usize,
     ch: u8,
+
+    // For attaching token metadata
     line_count: usize,
+    last_newline: usize,
+
+    /// The position of the lexer when it began to
+    /// read a token (needed for getting the first
+    /// char of a token).
+    starting_position: usize,
 }
 
 #[allow(unused)]
@@ -26,6 +34,10 @@ impl Lexer {
         lexer
     }
 
+    pub fn get_input(&self) -> &String {
+        &self.input
+    }
+
     fn read_char(&mut self) {
         if self.read_position >= self.input.len() {
             self.ch = 0;
@@ -37,14 +49,25 @@ impl Lexer {
     }
 
     fn get_token_data(&self) -> TokenData {
-        TokenData {
-            col: self.position,
-            line: self.line_count + 1,
+        let token_len = self.position - self.starting_position;
+        if self.line_count == 0 {
+            dbg!(token_len);
+            dbg!(self.line_count);
+            TokenData {
+                col: self.position - token_len,
+                line: self.line_count + 1
+            }
+        } else {
+            TokenData {
+                col: ((self.position - self.last_newline) - 1) - token_len,
+                line: self.line_count + 1
+            }
         }
     }
 
     pub fn next_token(&mut self) -> Token {
         self.scran_whitespace();
+        self.starting_position = self.position;
         let tok: Token = match self.ch {
             b'=' => Token::Equal(self.get_token_data()),
             b'*' => Token::Asterisk(self.get_token_data()),
@@ -97,10 +120,7 @@ impl Lexer {
                 if is_letter(self.ch) {
                     let ident = self.read_ident();
                     let found = lookup_ident(ident);
-                    match found {
-                        Token::Ident(_, i) => Token::Ident(self.get_token_data(), i),
-                        _ => found,
-                    }
+                    found.with_different_data(self.get_token_data())
                 } else if is_digit(self.ch) {
                     Token::Number(self.get_token_data(), self.read_number())
                 } else if is_quote(self.ch) {
@@ -149,13 +169,20 @@ impl Lexer {
         while is_letter(self.ch) {
             self.read_char();
         }
+        self.read_position -= 1;
         self.input[pos..self.position].to_owned()
     }
 
     fn scran_whitespace(&mut self) {
         while WHITESPACE_CHARS.contains(&self.ch) {
+            dbg!(self.position);
+            dbg!(self.ch);
             if self.ch == b'\n' {
                 self.line_count += 1;
+                self.last_newline = self.position;
+            }
+            if self.ch == b'\r' {
+                self.last_newline = self.position;
             }
             self.read_char();
         }
@@ -177,6 +204,8 @@ impl Default for Lexer {
             read_position: 0,
             ch: 0,
             line_count: 0,
+            last_newline: 0,
+            starting_position: 0,
         }
     }
 }
