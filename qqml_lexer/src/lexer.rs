@@ -39,7 +39,7 @@ impl Lexer {
     fn get_token_data(&self) -> TokenData {
         TokenData {
             col: self.position,
-            line: self.line_count,
+            line: self.line_count + 1,
         }
     }
 
@@ -154,6 +154,9 @@ impl Lexer {
 
     fn scran_whitespace(&mut self) {
         while WHITESPACE_CHARS.contains(&self.ch) {
+            if self.ch == b'\n' {
+                self.line_count += 1;
+            }
             self.read_char();
         }
     }

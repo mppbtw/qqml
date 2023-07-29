@@ -10,6 +10,29 @@ fn d() -> TokenData {
 }
 
 #[test]
+fn test_token_line_numbers() {
+    let input = "1
+        2
+        3
+        4
+        5";
+
+    let mut l = Lexer::new(input);
+    let mut i = 1;
+    loop {
+        let tok = l.next_token();
+        if matches!(tok, Token::Eof(_)) {
+            break;
+        }
+        let dat = tok.get_data();
+        dbg!(dat.line);
+        dbg!(i);
+        assert_eq!(dat.line, i);
+        i += 1;
+    }
+}
+
+#[test]
 fn test_tokenise_numbers() {
     let input = "123;   2;";
     let expected = vec![
