@@ -11,9 +11,19 @@ pub struct MultichoiceData {
     pub line: usize,
 }
 
-#[derive(Debug, Default, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct MultichoiceAnswer {
     pub text: Option<String>,
     pub marks: Option<usize>,
     pub explanation: Option<String>,
+}
+
+impl Default for MultichoiceAnswer {
+    fn default() -> Self {
+        Self {
+            text: Some("".to_owned()),
+            marks: Some(0),
+            explanation: None,
+        }
+    }
 }

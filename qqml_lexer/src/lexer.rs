@@ -51,8 +51,6 @@ impl Lexer {
     fn get_token_data(&self) -> TokenData {
         let token_len = self.position - self.starting_position;
         if self.line_count == 0 {
-            dbg!(token_len);
-            dbg!(self.line_count);
             TokenData {
                 col: self.position - token_len,
                 line: self.line_count + 1
@@ -175,8 +173,6 @@ impl Lexer {
 
     fn scran_whitespace(&mut self) {
         while WHITESPACE_CHARS.contains(&self.ch) {
-            dbg!(self.position);
-            dbg!(self.ch);
             if self.ch == b'\n' {
                 self.line_count += 1;
                 self.last_newline = self.position;
