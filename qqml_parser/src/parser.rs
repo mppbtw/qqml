@@ -23,12 +23,12 @@ pub fn parse(inp: String) -> Result<ParsedFile, Vec<Error>> {
 
     loop {
         let mut tok = l.next_token();
-        if tok == Token::Semicolon {
+        if matches!(tok, Token::Semicolon(_)) {
             break;
         }
 
         // Parse 'hints' directive
-        if tok == Token::Hints {
+        if matches!(tok, Token::Hints(_)) {
             if hints_directive_seen {
                 report.errors.push(Error::HintsDirectiveRepeated);
                 continue;
@@ -36,11 +36,11 @@ pub fn parse(inp: String) -> Result<ParsedFile, Vec<Error>> {
                 hints_directive_seen = true;
                 tok = l.next_token();
                 match tok {
-                    Token::Number(n) => max_hints = n,
+                    Token::Number(_, n) => max_hints = n,
                     _ => report.errors.push(Error::HintsDirectiveRepeated),
                 }
                 tok = l.next_token();
-                if tok != Token::Semicolon {
+                if !matches!(tok, Token::Semicolon(_)) {
                     report
                         .errors
                         .push(Error::ExpectedSemicolonAfterHintsDirective(tok));
@@ -50,15 +50,15 @@ pub fn parse(inp: String) -> Result<ParsedFile, Vec<Error>> {
         }
 
         // Parse questions
-        if tok == Token::Ask(_) {
+        if matches!(tok, Token::Ask(_)) {
             // Get the type of the next token
             tok = l.next_token();
             match tok {
-                Token::Multichoice => match parse_multichoice(&mut l) {
+                Token::Multichoice(_) => match parse_multichoice(&mut l) {
                     Ok(data) => output.questions.push(Question::Multichoice(data)),
                     Err(r) => report.extend(r),
                 },
-                Token::Ident(_) => report.errors.push(Error::InvalidQuestionType(tok)),
+                Token::Ident(..) => report.errors.push(Error::InvalidQuestionType(tok)),
                 _ => report.errors.push(Error::ExpectedQuestionType(tok)),
             }
             continue;
