@@ -1,7 +1,7 @@
 use crate::Warning;
 use qqml_lexer::Token;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Error {
     HintsDirectiveRequiresNumber,
     HintsDirectiveRepeated,
@@ -27,7 +27,7 @@ pub enum Error {
     InvalidQuestionType(Token),
 }
 
-#[derive(Default, Clone, PartialEq, Eq)]
+#[derive(Default, Clone, PartialEq)]
 pub struct ErrorReport {
     pub errors: Vec<Error>,
     pub warnings: Vec<Warning>,

@@ -11,7 +11,7 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
     let mut tok = l.next_token();
     let mut dat = MultichoiceData::default();
 
-    if tok != Token::LParen {
+    if matches!(tok, Token::LParen(_)) {
         report
             .errors
             .push(Error::ExpectedLParenForQuestionMaxMark(tok));
@@ -19,14 +19,14 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
 
     tok = l.next_token();
     match tok {
-        Token::Number(n) => dat.max_marks = Some(n),
+        Token::Number(_, n) => dat.max_marks = Some(n),
         _ => report
             .errors
             .push(Error::ExpectedNumberForQuestionMaxMark(tok)),
     };
 
     tok = l.next_token();
-    if tok != Token::RParen {
+    if !matches!(tok, Token::RParen(_)) {
         report
             .errors
             .push(Error::ExpectedRParenForQuestionMaxMark(tok));
@@ -34,24 +34,24 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
 
     tok = l.next_token();
     match tok {
-        Token::Literal(l) => dat.text = Some(l),
+        Token::Literal(_, l) => dat.text = Some(l),
         _ => report.errors.push(Error::ExpectedQuestionText(tok)),
     };
 
     tok = l.next_token();
-    if tok != Token::LSquirly {
+    if !matches!(tok, Token::LSquirly(_)) {
         report.errors.push(Error::ExpectedLSquirlyForQuestion(tok));
     }
 
     loop {
         tok = l.next_token();
-        if tok == Token::Semicolon {
+        if matches!(tok, Token::Semicolon(_)){
             continue;
         }
-        if tok == Token::RSquirly {
+        if matches!(tok, Token::RSquirly(_)){
             break;
         }
-        if tok == Token::Asterisk {
+        if matches!(tok, Token::Asterisk(_)) {
             match parse_multichoice_question(l) {
                 Ok(a) => dat.answers.push(a),
                 Err(r) => report.extend(r),
@@ -75,36 +75,36 @@ pub fn parse_multichoice_question(l: &mut Lexer) -> Result<MultichoiceAnswer, Er
     let mut tok = l.next_token();
 
     match tok {
-        Token::Literal(m) => dat.text = Some(m),
+        Token::Literal(_, m) => dat.text = Some(m),
         _ => report.errors.push(Error::ExpectedAnswerText(tok)),
     };
 
     tok = l.next_token();
-    if tok == Token::LParen {
+    if matches!(tok, Token::LParen(_)) {
         tok = l.next_token();
         match tok {
-            Token::Number(n) => dat.marks = Some(n),
+            Token::Number(_, n) => dat.marks = Some(n),
             _ => report.errors.push(Error::ExpectedNumberForAnswerMark(tok)),
         };
 
         tok = l.next_token();
-        if tok != Token::RParen {
+        if !matches!(tok, Token::RParen(_)) {
             report.errors.push(Error::ExpectedRParenForAnswerMark(tok));
         }
 
         tok = l.next_token();
     }
 
-    if tok == Token::RArrow {
+    if matches!(tok, Token::RArrow(_)) {
         tok = l.next_token();
         match tok {
-            Token::Literal(ref l) => dat.explanation = Some(l.to_owned()),
-            _ => report.errors.push(Error::ExpectedAnswerExplanationText(tok.clone())),
+            Token::Literal(_, l) => dat.explanation = Some(l),
+            _ => report.errors.push(Error::ExpectedAnswerExplanationText(tok)),
         };
         tok = l.next_token();
     }
 
-    if tok != Token::Semicolon {
+    if !matches!(tok, Token::Semicolon(_)) {
         report.errors.push(Error::ExpectedAnswerSemicolon(tok));
     }
 

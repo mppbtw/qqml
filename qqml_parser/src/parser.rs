@@ -24,6 +24,10 @@ pub fn parse(inp: String) -> Result<ParsedFile, Vec<Error>> {
     loop {
         let mut tok = l.next_token();
         if matches!(tok, Token::Semicolon(_)) {
+            continue;
+        }
+
+        if matches!(tok, Token::Eof(_)) {
             break;
         }
 
