@@ -27,7 +27,7 @@ pub enum Error {
     InvalidQuestionType(Token),
 }
 
-#[derive(Default, Clone, PartialEq)]
+#[derive(Default, Clone, PartialEq, Debug)]
 pub struct ErrorReport {
     pub errors: Vec<Error>,
     pub warnings: Vec<Warning>,
