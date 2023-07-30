@@ -18,6 +18,8 @@ fn test_parse_hints_directive() {
 #[test]
 fn test_parse_multichoice_questions_with_hints() {
     let input = "
+        hints 2;
+
         ask multichoice (2) 'question1' {
             * 'correct1' (1) -> 'explan1';
             * 'incorrect1' -> 'explan1';
@@ -37,14 +39,14 @@ fn test_parse_multichoice_questions_with_hints() {
     let result = parse(input).unwrap();
     let expected = ParsedFile {
         warnings: vec![],
-        max_hints: 0,
+        max_hints: 2,
         questions: vec![
 
             // question1
             Question::Multichoice(MultichoiceData {
                 text: Some("question1".to_owned()),
                 warnings: vec![],
-                line: 1,
+                line: 3,
                 max_marks: Some(2),
                 hints: vec![],
                 chosen_answer: None,
@@ -76,7 +78,7 @@ fn test_parse_multichoice_questions_with_hints() {
             Question::Multichoice(MultichoiceData {
                 text: Some("question2".to_owned()),
                 warnings: vec![],
-                line: 9,
+                line: 11,
                 max_marks: Some(1),
                 hints: vec!["hint1".to_owned(), "hint2".to_owned()],
                 chosen_answer: None,
