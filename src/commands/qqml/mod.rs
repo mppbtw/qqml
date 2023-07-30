@@ -1,6 +1,6 @@
-use std::process::exit;
 use crate::utils::*;
 use help::*;
+use std::process::exit;
 
 mod check;
 

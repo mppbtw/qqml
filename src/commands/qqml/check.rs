@@ -1,5 +1,5 @@
-use std::process::exit;
 use std::fs;
+use std::process::exit;
 
 use crate::utils::*;
 
@@ -46,7 +46,7 @@ pub fn check() -> ! {
                 exit(1);
             }
         }
-        None => ()
+        None => (),
     }
 
     println!("Checking {}.", arg);

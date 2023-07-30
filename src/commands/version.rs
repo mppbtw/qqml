@@ -1,6 +1,6 @@
 use crate::utils::*;
-use help::HelpCommand;
 use help::print_help;
+use help::HelpCommand;
 use std::process::exit;
 
 pub fn version() -> ! {
