@@ -94,3 +94,15 @@ fn test_parse_multichoice_answer() {
     let gotten = multichoice::parse_multichoice_answer(&mut l).unwrap();
     assert_eq!(gotten, expected);
 }
+
+#[test]
+fn test_parse_multichoice_answer_double_quotes() {
+    let input = "\"text\";";
+    let expected = MultichoiceAnswer {
+        text: Some("text".to_owned()),
+        ..Default::default()
+    };
+    let mut l = Lexer::new(input);
+    let gotten = multichoice::parse_multichoice_answer(&mut l).unwrap();
+    assert_eq!(gotten, expected);
+}
