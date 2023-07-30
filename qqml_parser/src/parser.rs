@@ -41,7 +41,7 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, Vec<Error>> {
                 hints_directive_seen = true;
                 tok = l.next_token();
                 match tok {
-                    Token::Number(_, n) => max_hints = n,
+                    Token::Number(_, n) => output.max_hints = n,
                     _ => report.errors.push(Error::HintsDirectiveRepeated),
                 }
                 tok = l.next_token();
@@ -73,9 +73,5 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, Vec<Error>> {
         report.errors.push(Error::ExpectedQuestionOrDirective(tok));
     }
 
-    Ok(ParsedFile {
-        questions: vec![],
-        max_hints,
-        warnings: vec![],
-    })
+    Ok(output)
 }

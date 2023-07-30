@@ -29,19 +29,19 @@ fn test_parse_multichoice() {
 
     expected.answers.push(MultichoiceAnswer {
         text: Some("correct".to_owned()),
-        marks: Some(1),
+        marks: 1,
         explanation: Some("explanation".to_owned()),
     });
 
     expected.answers.push(MultichoiceAnswer {
         text: Some("incorrect".to_owned()),
-        marks: Some(0),
+        marks: 0,
         explanation: Some("explanation".to_owned()),
     });
 
     expected.answers.push(MultichoiceAnswer {
         text: Some("inc".to_owned()),
-        marks: Some(0),
+        marks: 0,
         explanation: None,
     });
 
@@ -72,19 +72,19 @@ fn test_parse_multichoice_double_quotes() {
 
     expected.answers.push(MultichoiceAnswer {
         text: Some("correct".to_owned()),
-        marks: Some(1),
+        marks: 1,
         explanation: Some("explanation".to_owned()),
     });
 
     expected.answers.push(MultichoiceAnswer {
         text: Some("incorrect".to_owned()),
-        marks: Some(0),
+        marks: 0,
         explanation: Some("explanation".to_owned()),
     });
 
     expected.answers.push(MultichoiceAnswer {
         text: Some("inc".to_owned()),
-        marks: Some(0),
+        marks: 0,
         explanation: None,
     });
 
