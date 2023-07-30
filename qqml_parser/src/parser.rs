@@ -56,10 +56,11 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, Vec<Error>> {
 
         // Parse questions
         if matches!(tok, Token::Ask(_)) {
+            let keyword = tok;
             // Get the type of the next token
             tok = l.next_token();
             match tok {
-                Token::Multichoice(_) => match parse_multichoice(&mut l) {
+                Token::Multichoice(_) => match parse_multichoice(&mut l, keyword) {
                     Ok(data) => output.questions.push(Question::Multichoice(data)),
                     Err(r) => report.extend(r),
                 },

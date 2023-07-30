@@ -6,7 +6,9 @@ use qqml_lexer::Lexer;
 use qqml_lexer::Token;
 use qqml_lexer::TokenData;
 
-pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> {
+/// 't' is the token for the ask keyword used to attach some more metadata to the data
+pub fn parse_multichoice<T: Into<Token>>(l: &mut Lexer, keyword: T) -> Result<MultichoiceData, ErrorReport> {
+    let keyword = keyword.into();
     // This function expects the 'ask' and 'multichoice' tokens
     // to have already been consumed by it's caller.
 
@@ -80,6 +82,8 @@ pub fn parse_multichoice(l: &mut Lexer) -> Result<MultichoiceData, ErrorReport> 
         }
     }
 
+    dat.line = keyword.get_data().line;
+
     if report.errors.len() != 0 {
         Err(report)
     } else {
@@ -137,7 +141,6 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     if !matches!(tok, Token::Semicolon(_)) {
         report.errors.push(Error::ExpectedAnswerSemicolon(tok));
     }
-
 
     if dat.marks.is_none() {
         dat.marks = Some(0);

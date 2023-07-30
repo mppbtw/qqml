@@ -1,7 +1,7 @@
 use qqml_lexer::Lexer;
 
-use crate::*;
 use crate::multichoice;
+use crate::*;
 
 #[test]
 fn test_parse_multichoice_answer_explanation_marks() {

@@ -120,7 +120,7 @@ impl Token {
 
     pub fn with_different_data(&self, new_data: TokenData) -> Token {
         match self {
-            Self::Literal(_, v) =>  Self::Literal(new_data, v.to_owned()),
+            Self::Literal(_, v) => Self::Literal(new_data, v.to_owned()),
             Self::Number(_, v) => Self::Number(new_data, *v),
             Self::Ident(_, v) => Self::Ident(new_data, v.to_owned()),
             Self::Eof(_) => Self::Eof(new_data),
