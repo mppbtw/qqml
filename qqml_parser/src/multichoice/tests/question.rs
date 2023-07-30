@@ -47,3 +47,46 @@ fn test_parse_multichoice() {
 
     assert_eq!(expected, result);
 }
+
+#[test]
+fn test_parse_multichoice_double_quotes() {
+    let input = "
+        (1) \"title\" {
+            * \"correct\" (1) -> \"explanation\";
+            * \"incorrect\" -> \"explanation\";
+            * \"inc\";
+        };
+    ";
+    let mut l = Lexer::new(input);
+    let result = parse_multichoice(&mut l, Token::Ask(TokenData {col: 0, line: 1})).unwrap();
+
+    let mut expected = MultichoiceData {
+        max_marks: Some(1),
+        hints: vec![],
+        answers: vec![],
+        line: 1,
+        chosen_answer: None,
+        text: Some("title".to_owned()),
+        warnings: vec![]
+    };
+
+    expected.answers.push(MultichoiceAnswer {
+        text: Some("correct".to_owned()),
+        marks: Some(1),
+        explanation: Some("explanation".to_owned()),
+    });
+
+    expected.answers.push(MultichoiceAnswer {
+        text: Some("incorrect".to_owned()),
+        marks: Some(0),
+        explanation: Some("explanation".to_owned()),
+    });
+
+    expected.answers.push(MultichoiceAnswer {
+        text: Some("inc".to_owned()),
+        marks: Some(0),
+        explanation: None,
+    });
+
+    assert_eq!(expected, result);
+}
