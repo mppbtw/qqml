@@ -108,7 +108,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     if matches!(tok, Token::LParen(_)) {
         tok = l.next_token();
         match tok {
-            Token::Number(_, n) => dat.marks = Some(n),
+            Token::Number(_, n) => dat.marks = n,
             _ => report.errors.push(Error::UnexpectedAnswerToken(
                 tok,
                 vec![
@@ -140,10 +140,6 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
 
     if !matches!(tok, Token::Semicolon(_)) {
         report.errors.push(Error::ExpectedAnswerSemicolon(tok));
-    }
-
-    if dat.marks.is_none() {
-        dat.marks = Some(0);
     }
 
     if report.errors.len() != 0 {
