@@ -1,8 +1,8 @@
 use std::process::exit;
 
-mod yarr;
 mod qqml;
 mod qqml_check;
+mod yarr;
 
 const TOPTEXT: &str = "\
 Yet Another Revision Resource - The pointless and overkill homework project.

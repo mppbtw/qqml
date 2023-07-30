@@ -11,7 +11,8 @@ pub fn print_error<S: std::fmt::Display>(msg: S) {
 }
 
 pub fn yes_or_no<S: std::fmt::Display>(msg: S, default: bool) -> bool {
-    if default { loop {
+    if default {
+        loop {
             print!("{}, [{}/{}]", msg, "Y".green(), "n".red());
             io::stdout().flush().unwrap();
             let mut buff = String::new();

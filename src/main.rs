@@ -1,7 +1,7 @@
 use std::process::exit;
 
-mod utils;
 mod commands;
+mod utils;
 
 use help::{print_help, HelpCommand};
 use utils::*;
@@ -12,7 +12,7 @@ fn main() {
         None => {
             print_error("No command specified. Run yarr --help for more info.");
             exit(1);
-       },
+        }
     };
 
     match arg.as_str() {
