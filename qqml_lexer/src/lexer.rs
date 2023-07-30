@@ -53,12 +53,12 @@ impl Lexer {
         if self.line_count == 0 {
             TokenData {
                 col: self.position - token_len,
-                line: self.line_count + 1,
+                line: self.line_count,
             }
         } else {
             TokenData {
                 col: ((self.position - self.last_newline) - 1) - token_len,
-                line: self.line_count + 1,
+                line: self.line_count,
             }
         }
     }

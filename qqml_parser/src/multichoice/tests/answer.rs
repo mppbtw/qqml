@@ -8,7 +8,7 @@ fn test_parse_multichoice_answer_explanation_marks() {
     let input = "'text' (1) -> 'this is the explanation';";
     let expected = MultichoiceAnswer {
         text: Some("text".to_owned()),
-        marks: Some(1),
+        marks: 1,
         explanation: Some("this is the explanation".to_owned()),
         ..Default::default()
     };
@@ -22,7 +22,7 @@ fn test_parse_multichoice_answer_explanation_marks_double_quotes() {
     let input = "\"text\" (1) -> \"this is the explanation\";";
     let expected = MultichoiceAnswer {
         text: Some("text".to_owned()),
-        marks: Some(1),
+        marks: 1,
         explanation: Some("this is the explanation".to_owned()),
         ..Default::default()
     };
@@ -36,7 +36,7 @@ fn test_parse_multichoice_answer_marks() {
     let input = "'text' (1);";
     let expected = MultichoiceAnswer {
         text: Some("text".to_owned()),
-        marks: Some(1),
+        marks: 1,
         ..Default::default()
     };
     let mut l = Lexer::new(input);
@@ -49,7 +49,7 @@ fn test_parse_multichoice_answer_marks_double_quotes() {
     let input = "\"text\" (1);";
     let expected = MultichoiceAnswer {
         text: Some("text".to_owned()),
-        marks: Some(1),
+        marks: 1,
         ..Default::default()
     };
     let mut l = Lexer::new(input);

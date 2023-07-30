@@ -40,7 +40,7 @@ fn test_token_line_numbers() {
         5";
 
     let mut l = Lexer::new(input);
-    let mut i = 1;
+    let mut i = 0;
     loop {
         let tok = l.next_token();
         if matches!(tok, Token::Eof(_)) {
