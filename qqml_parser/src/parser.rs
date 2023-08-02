@@ -15,7 +15,6 @@ pub struct ParsedFile {
 
 pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, Vec<Error>> {
     let inp: String = inp.into();
-    let mut max_hints = 0;
     let mut hints_directive_seen = false;
     let mut l = Lexer::new(inp);
     let mut output = ParsedFile::default();
