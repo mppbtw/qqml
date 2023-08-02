@@ -84,7 +84,7 @@ pub fn parse_multichoice<T: Into<Token>>(l: &mut Lexer, keyword: T) -> Result<Mu
 
     dat.line = keyword.get_data().line;
 
-    if report.errors.len() != 0 {
+    if !report.errors.is_empty() {
         Err(report)
     } else {
         Ok(dat)
@@ -142,7 +142,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
         report.errors.push(Error::ExpectedAnswerSemicolon(tok));
     }
 
-    if report.errors.len() != 0 {
+    if !report.errors.is_empty() {
         Err(report)
     } else {
         Ok(dat)
