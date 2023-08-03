@@ -22,17 +22,12 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
     let mut report = ErrorReport::new();
 
     loop {
-        let mut tok = l.next_token();
+        let mut tok = l.next_token()?;
         if matches!(tok, Token::Semicolon(_)) {
             continue;
         }
 
         if matches!(tok, Token::Eof(_)) {
-            break;
-        }
-
-        if matches!(tok, Token::UnterminatedLiteral(_)) {
-            report.errors.push(Error::UnterminatedLiteral(tok));
             break;
         }
 
@@ -43,12 +38,12 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
                 continue;
             } else {
                 hints_directive_seen = true;
-                tok = l.next_token();
+                tok = l.next_token()?;
                 match tok {
                     Token::Number(_, n) => output.max_hints = n,
                     _ => report.errors.push(Error::HintsDirectiveRepeated),
                 }
-                tok = l.next_token();
+                tok = l.next_token()?;
                 if !matches!(tok, Token::Semicolon(_)) {
                     report
                         .errors
@@ -62,7 +57,7 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
         if matches!(tok, Token::Ask(_)) {
             let keyword = tok;
             // Get the type of the next token
-            tok = l.next_token();
+            tok = l.next_token()?;
             match tok {
                 Token::Multichoice(_) => match parse_multichoice(&mut l, keyword) {
                     Ok(data) => output.questions.push(Question::Multichoice(data)),
