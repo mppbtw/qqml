@@ -3,7 +3,6 @@ use crate::multichoice::parse_multichoice;
 use crate::Error;
 use crate::Question;
 use crate::Warning;
-use crate::warning;
 use qqml_lexer::Lexer;
 use qqml_lexer::Token;
 
@@ -14,12 +13,11 @@ pub struct ParsedFile {
     pub warnings: Vec<Warning>,
 }
 
-pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, Vec<Error>> {
+pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
     let inp: String = inp.into();
     let mut hints_directive_seen = false;
     let mut l = Lexer::new(inp);
     let mut output = ParsedFile::default();
-    let mut warnings: Vec<Warning> = vec![];
 
     let mut report = ErrorReport::new();
 
@@ -30,6 +28,11 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, Vec<Error>> {
         }
 
         if matches!(tok, Token::Eof(_)) {
+            break;
+        }
+
+        if matches!(tok, Token::UnterminatedLiteral(_)) {
+            report.errors.push(Error::UnterminatedLiteral(tok));
             break;
         }
 
@@ -82,5 +85,9 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, Vec<Error>> {
         };
     };
 
-    Ok(output)
+    if report.errors.is_empty() {
+        Ok(output)
+    } else {
+        Err(report)
+    }
 }

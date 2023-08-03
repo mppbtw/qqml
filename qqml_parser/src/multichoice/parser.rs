@@ -16,15 +16,21 @@ pub fn parse_multichoice<T: Into<Token>>(l: &mut Lexer, keyword: T) -> Result<Mu
     let mut tok = l.next_token();
     let mut dat = MultichoiceData::default();
 
+
     if !matches!(tok, Token::LParen(_)) {
-        report
-            .errors
-            .push(Error::ExpectedLParenForQuestionMaxMark(tok));
+        if matches!(tok, Token::UnterminatedLiteral(_)) {
+            report.errors.push(Error::UnterminatedLiteral(tok.clone()));
+        } else {
+            report
+                .errors
+                .push(Error::ExpectedLParenForQuestionMaxMark(tok));
+        }
     }
 
     tok = l.next_token();
     match tok {
         Token::Number(_, n) => dat.max_marks = Some(n),
+        Token::UnterminatedLiteral(_) => report.errors.push(Error::UnterminatedLiteral(tok)),
         _ => report
             .errors
             .push(Error::ExpectedNumberForQuestionMaxMark(tok)),
@@ -32,6 +38,9 @@ pub fn parse_multichoice<T: Into<Token>>(l: &mut Lexer, keyword: T) -> Result<Mu
 
     tok = l.next_token();
     if !matches!(tok, Token::RParen(_)) {
+        if matches!(tok, Token::UnterminatedLiteral(_)) {
+            report.errors.push(Error::UnterminatedLiteral(tok.clone()));
+        }
         report
             .errors
             .push(Error::ExpectedRParenForQuestionMaxMark(tok));
@@ -40,30 +49,47 @@ pub fn parse_multichoice<T: Into<Token>>(l: &mut Lexer, keyword: T) -> Result<Mu
     tok = l.next_token();
     match tok {
         Token::Literal(_, l) => dat.text = Some(l),
+        Token::UnterminatedLiteral(_) => report.errors.push(Error::UnterminatedLiteral(tok)),
         _ => report.errors.push(Error::ExpectedQuestionText(tok)),
     };
 
     tok = l.next_token();
     if !matches!(tok, Token::LSquirly(_)) {
-        report.errors.push(Error::ExpectedLSquirlyForQuestion(tok));
+        if matches!(tok, Token::UnterminatedLiteral(_)) {
+            report.errors.push(Error::UnterminatedLiteral(tok.clone()));
+        } else {
+            report.errors.push(Error::ExpectedLSquirlyForQuestion(tok));
+        }
     }
 
     loop {
         tok = l.next_token();
+
         if matches!(tok, Token::Semicolon(_)) {
             continue;
         }
+
         if matches!(tok, Token::RSquirly(_)) {
             break;
         }
+
         if matches!(tok, Token::Asterisk(_)) {
             match parse_multichoice_answer(l) {
                 Ok(a) => dat.answers.push(a),
                 Err(r) => report.extend(r),
             }
+        } else {
+            if matches!(tok, Token::UnterminatedLiteral(_)) {
+                report.errors.push(Error::UnterminatedLiteral(tok.clone()));
+            }
+            report.errors.push(Error::UnexpectedBodyToken(tok));
+            break;
         }
     }
     tok = l.next_token();
+    if matches!(tok, Token::UnterminatedLiteral(_)) {
+        report.errors.push(Error::UnterminatedLiteral(tok.clone()));
+    }
     if matches!(tok, Token::Hints(_)) {
         loop {
             tok = l.next_token();

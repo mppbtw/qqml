@@ -7,7 +7,9 @@ use qqml_lexer::Token;
 pub enum Error {
     HintsDirectiveRequiresNumber,
     HintsDirectiveRepeated,
+    UnterminatedLiteral(Token),
 
+    UnexpectedBodyToken(Token),
     ExpectedLSquirlyForQuestion(Token),
     ExpectedRParenForQuestionMaxMark(Token),
     ExpectedLParenForQuestionMaxMark(Token),

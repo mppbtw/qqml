@@ -38,6 +38,7 @@ impl PartialEq for TokenData {
 pub enum Token {
     Illegal(TokenData),
     Eof(TokenData),
+    UnterminatedLiteral(TokenData),
 
     Ident(TokenData, String),
     Number(TokenData, usize),
@@ -107,6 +108,7 @@ impl fmt::Display for Token {
             Self::Multichoice(_) => "Multichoice",
             Self::Hints(_) => "Hints",
             Self::Calculation(_) => "Calculation",
+            Self::UnterminatedLiteral(_) => "UnterminatedLiteral",
         };
         write!(f, "{}", name)
     }
@@ -151,6 +153,7 @@ impl Token {
             Self::Multichoice(_) => Self::Multichoice(new_data),
             Self::Hints(_) => Self::Hints(new_data),
             Self::Calculation(_) => Self::Calculation(new_data),
+            Self::UnterminatedLiteral(_) => Self::UnterminatedLiteral(new_data),
         }
     }
     pub fn get_data(&self) -> &TokenData {
@@ -186,6 +189,7 @@ impl Token {
             Self::Multichoice(d) => d,
             Self::Hints(d) => d,
             Self::Calculation(d) => d,
+            Self::UnterminatedLiteral(d) => d,
         }
     }
 }
