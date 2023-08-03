@@ -1,12 +1,12 @@
-use std::panic;
-
 use crate::token::Token;
 use crate::token::TokenData;
 use crate::token::KEYWORDS;
 
 const WHITESPACE_CHARS: [u8; 4] = [b' ', b'\n', b'\r', b'\t'];
 
-#[allow(unused)]
+#[derive(Debug, Clone, PartialEq)]
+pub struct UnterminatedStringError(usize);
+
 pub struct Lexer {
     input: String,
     position: usize,
@@ -65,7 +65,7 @@ impl Lexer {
         }
     }
 
-    pub fn next_token(&mut self) -> Token {
+    pub fn next_token(&mut self) -> Result<Token, UnterminatedStringError> {
         self.scran_whitespace();
         self.starting_position = self.position;
         let tok: Token = match self.ch {
@@ -118,16 +118,12 @@ impl Lexer {
             0 => Token::Eof(self.get_token_data()),
             _ => {
                 if is_letter(self.ch) {
-                    let ident = match self.read_ident() {
-                        Err(t) => return t,
-                        Ok(i) => i
-                    };
-                    let found = lookup_ident(ident);
+                    let found = lookup_ident(self.read_ident());
                     found.with_different_data(self.get_token_data())
                 } else if is_digit(self.ch) {
                     Token::Number(self.get_token_data(), self.read_number())
                 } else if is_quote(self.ch) {
-                    Token::Literal(self.get_token_data(), self.read_literal())
+                    Token::Literal(self.get_token_data(), self.read_literal()?)
                 } else {
                     Token::Illegal(self.get_token_data())
                 }
@@ -135,7 +131,7 @@ impl Lexer {
         };
 
         self.read_char();
-        tok
+        Ok(tok)
     }
 
     fn read_number(&mut self) -> usize {
@@ -149,36 +145,32 @@ impl Lexer {
         num
     }
 
-    fn read_literal(&mut self) -> String {
+    fn read_literal(&mut self) -> Result<String, UnterminatedStringError> {
         let pos = self.position;
         let mut quotes_found = 0;
         while quotes_found < 2 {
+            if self.ch == 0 {
+                return Err(UnterminatedStringError(pos));
+            }
             if is_quote(self.ch) {
                 quotes_found += 1;
-            }
-            if self.ch == 0 {
-                break;
             }
             self.read_char();
         }
         let literal = self.input[pos + 1..self.position - 1].to_owned();
         self.position -= 1;
         self.read_position -= 1;
-        literal
+        Ok(literal)
     }
 
-    fn read_ident(&mut self) -> Result<String, Token> {
+    fn read_ident(&mut self) -> String {
         let pos = self.position;
         let mut c = 0;
         while is_letter(self.ch) {
-            c += 1;
             self.read_char();
-            if self.ch == 0 {
-                return Err(Token::UnterminatedLiteral(self.get_token_data()));
-            };
         }
         self.read_position -= 1;
-        Ok(self.input[pos..self.position].to_owned())
+        self.input[pos..self.position].to_owned()
     }
 
     fn scran_whitespace(&mut self) {
