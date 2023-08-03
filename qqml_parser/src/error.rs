@@ -1,3 +1,5 @@
+use std::fmt;
+
 use crate::Warning;
 use qqml_lexer::Token;
 
@@ -27,6 +29,24 @@ pub enum Error {
     /// Stores the token (hopefully Token::Identifier) of the question
     /// which was invalid.
     InvalidQuestionType(Token),
+}
+
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let msg = match self {
+            Self::InvalidQuestionType(t) =>
+                format!("The question type {} is invalid, see doc#", t),
+            Self::ExpectedHintText(_) =>
+                format!("The `hints` keyword should precede the hints themselves, see doc#hints"),
+            Self::ExpectedAnswerText(_) => 
+                format!("The answer should contain a string, see doc#multichoice"),
+            Self::HintsDirectiveRepeated => "".to_owned(),
+            _ => format!("guh")
+        };
+
+        let _ = msg.replace("$", "https://github.com/MrPiggyPegasus/yarr/blob/main/doc/QQML.md");
+        write!(f, "{}", msg)
+    }
 }
 
 #[derive(Default, Clone, PartialEq, Debug)]

@@ -3,6 +3,7 @@ use crate::multichoice::parse_multichoice;
 use crate::Error;
 use crate::Question;
 use crate::Warning;
+use crate::warning;
 use qqml_lexer::Lexer;
 use qqml_lexer::Token;
 
@@ -18,6 +19,7 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, Vec<Error>> {
     let mut hints_directive_seen = false;
     let mut l = Lexer::new(inp);
     let mut output = ParsedFile::default();
+    let mut warnings: Vec<Warning> = vec![];
 
     let mut report = ErrorReport::new();
 
@@ -71,6 +73,14 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, Vec<Error>> {
 
         report.errors.push(Error::ExpectedQuestionOrDirective(tok));
     }
+
+    // Semantic analasys to get warnings.
+    for q in output.questions.to_vec() {
+        match q {
+            Question::Multichoice(d) => { d.validate(); },
+            _ => ()
+        };
+    };
 
     Ok(output)
 }
