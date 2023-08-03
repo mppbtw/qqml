@@ -13,57 +13,44 @@ pub fn parse_multichoice<T: Into<Token>>(l: &mut Lexer, keyword: T) -> Result<Mu
     // to have already been consumed by it's caller.
 
     let mut report = ErrorReport::new();
-    let mut tok = l.next_token();
+    let mut tok = l.next_token()?;
     let mut dat = MultichoiceData::default();
 
 
     if !matches!(tok, Token::LParen(_)) {
-        if matches!(tok, Token::UnterminatedLiteral(_)) {
-            report.errors.push(Error::UnterminatedLiteral(tok.clone()));
-        } else {
-            report
-                .errors
-                .push(Error::ExpectedLParenForQuestionMaxMark(tok));
-        }
+        report
+            .errors
+            .push(Error::ExpectedLParenForQuestionMaxMark(tok));
     }
 
-    tok = l.next_token();
+    tok = l.next_token()?;
     match tok {
         Token::Number(_, n) => dat.max_marks = Some(n),
-        Token::UnterminatedLiteral(_) => report.errors.push(Error::UnterminatedLiteral(tok)),
         _ => report
             .errors
             .push(Error::ExpectedNumberForQuestionMaxMark(tok)),
     };
 
-    tok = l.next_token();
+    tok = l.next_token()?;
     if !matches!(tok, Token::RParen(_)) {
-        if matches!(tok, Token::UnterminatedLiteral(_)) {
-            report.errors.push(Error::UnterminatedLiteral(tok.clone()));
-        }
         report
             .errors
             .push(Error::ExpectedRParenForQuestionMaxMark(tok));
     }
 
-    tok = l.next_token();
+    tok = l.next_token()?;
     match tok {
         Token::Literal(_, l) => dat.text = Some(l),
-        Token::UnterminatedLiteral(_) => report.errors.push(Error::UnterminatedLiteral(tok)),
         _ => report.errors.push(Error::ExpectedQuestionText(tok)),
     };
 
-    tok = l.next_token();
+    tok = l.next_token()?;
     if !matches!(tok, Token::LSquirly(_)) {
-        if matches!(tok, Token::UnterminatedLiteral(_)) {
-            report.errors.push(Error::UnterminatedLiteral(tok.clone()));
-        } else {
-            report.errors.push(Error::ExpectedLSquirlyForQuestion(tok));
-        }
+        report.errors.push(Error::ExpectedLSquirlyForQuestion(tok));
     }
 
     loop {
-        tok = l.next_token();
+        tok = l.next_token()?;
 
         if matches!(tok, Token::Semicolon(_)) {
             continue;
@@ -79,24 +66,18 @@ pub fn parse_multichoice<T: Into<Token>>(l: &mut Lexer, keyword: T) -> Result<Mu
                 Err(r) => report.extend(r),
             }
         } else {
-            if matches!(tok, Token::UnterminatedLiteral(_)) {
-                report.errors.push(Error::UnterminatedLiteral(tok.clone()));
-            }
             report.errors.push(Error::UnexpectedBodyToken(tok));
             break;
         }
     }
-    tok = l.next_token();
-    if matches!(tok, Token::UnterminatedLiteral(_)) {
-        report.errors.push(Error::UnterminatedLiteral(tok.clone()));
-    }
+    tok = l.next_token()?;
     if matches!(tok, Token::Hints(_)) {
         loop {
-            tok = l.next_token();
+            tok = l.next_token()?;
             match tok {
                 Token::Literal(_, h) => {
                     dat.hints.push(h);
-                    tok = l.next_token();
+                    tok = l.next_token()?;
                     match tok {
                         Token::Comma(_) => continue,
                         Token::Semicolon(_) => break,
@@ -123,16 +104,16 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     // be the question text.
     let mut report = ErrorReport::default();
     let mut dat = MultichoiceAnswer::default();
-    let mut tok = l.next_token();
+    let mut tok = l.next_token()?;
 
     match tok {
         Token::Literal(_, m) => dat.text = Some(m),
         _ => report.errors.push(Error::ExpectedAnswerText(tok)),
     };
 
-    tok = l.next_token();
+    tok = l.next_token()?;
     if matches!(tok, Token::LParen(_)) {
-        tok = l.next_token();
+        tok = l.next_token()?;
         match tok {
             Token::Number(_, n) => dat.marks = n,
             _ => report.errors.push(Error::UnexpectedAnswerToken(
@@ -145,23 +126,23 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
             )),
         };
 
-        tok = l.next_token();
+        tok = l.next_token()?;
         if !matches!(tok, Token::RParen(_)) {
             report.errors.push(Error::ExpectedRParenForAnswerMark(tok));
         }
 
-        tok = l.next_token();
+        tok = l.next_token()?;
     }
 
     if matches!(tok, Token::RArrow(_)) {
-        tok = l.next_token();
+        tok = l.next_token()?;
         match tok {
             Token::Literal(_, l) => dat.explanation = Some(l),
             _ => report
                 .errors
                 .push(Error::ExpectedAnswerExplanationText(tok)),
         };
-        tok = l.next_token();
+        tok = l.next_token()?;
     }
 
     if !matches!(tok, Token::Semicolon(_)) {
