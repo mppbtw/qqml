@@ -15,9 +15,9 @@ fn test_token_column_numbers_for_long_tokens() {
      multichoice
 ->";
     let mut l = Lexer::new(input);
-    assert_eq!(l.next_token().get_data().col, 3);
-    assert_eq!(l.next_token().get_data().col, 5);
-    assert_eq!(l.next_token().get_data().col, 0);
+    assert_eq!(l.next_token().unwrap().get_data().col, 3);
+    assert_eq!(l.next_token().unwrap().get_data().col, 5);
+    assert_eq!(l.next_token().unwrap().get_data().col, 0);
 }
 
 #[test]
@@ -26,9 +26,9 @@ fn test_token_column_numbers_for_single_char_tokens() {
    =
       (";
     let mut l = Lexer::new(input);
-    assert_eq!(l.next_token().get_data().col, 2);
-    assert_eq!(l.next_token().get_data().col, 3);
-    assert_eq!(l.next_token().get_data().col, 6);
+    assert_eq!(l.next_token().unwrap().get_data().col, 2);
+    assert_eq!(l.next_token().unwrap().get_data().col, 3);
+    assert_eq!(l.next_token().unwrap().get_data().col, 6);
 }
 
 #[test]
@@ -42,7 +42,7 @@ fn test_token_line_numbers() {
     let mut l = Lexer::new(input);
     let mut i = 0;
     loop {
-        let tok = l.next_token();
+        let tok = l.next_token().unwrap();
         if matches!(tok, Token::Eof(_)) {
             break;
         }
@@ -67,7 +67,7 @@ fn test_tokenise_numbers() {
 
     loop {
         let expected_token = &expected[i];
-        let tok = lexer.next_token();
+        let tok = lexer.next_token().unwrap();
         dbg!(&tok);
         dbg!(&expected_token);
         assert_eq!(tok, *expected_token);
@@ -97,7 +97,7 @@ fn test_tokenise_string_literals() {
 
     loop {
         let expected_token = &expected[i];
-        let tok = lexer.next_token();
+        let tok = lexer.next_token().unwrap();
         dbg!(&tok);
         dbg!(&expected_token);
         assert_eq!(tok, *expected_token);
@@ -126,7 +126,7 @@ fn test_multi_char_tokens() {
 
     loop {
         let expected_token = &expected[i];
-        let tok = lexer.next_token();
+        let tok = lexer.next_token().unwrap();
         dbg!(&tok);
         assert_eq!(tok, *expected_token);
         if matches!(tok, Token::Eof(_)) {
@@ -158,7 +158,7 @@ fn test_keyword_tokens_with_spaces() {
 
     loop {
         let expected_token = &expected[i];
-        let tok = lexer.next_token();
+        let tok = lexer.next_token().unwrap();
         dbg!(&tok);
         assert_eq!(tok, *expected_token);
         if matches!(tok, Token::Eof(_)) {
@@ -186,7 +186,7 @@ fn test_keyword_tokens() {
 
     loop {
         let expected_token = &expected[i];
-        let tok = lexer.next_token();
+        let tok = lexer.next_token().unwrap();
         assert_eq!(tok, *expected_token);
         if matches!(tok, Token::Eof(_)) {
             break;
@@ -225,7 +225,7 @@ fn test_single_char_tokens() {
 
     loop {
         let expected_token = &expected[i];
-        let tok = lexer.next_token();
+        let tok = lexer.next_token().unwrap();
         assert_eq!(tok, *expected_token);
         if matches!(tok, Token::Eof(_)) {
             break;
