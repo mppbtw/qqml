@@ -2,12 +2,16 @@ use std::fmt;
 
 use crate::Warning;
 use qqml_lexer::Token;
+use qqml_lexer::TokenData;
+use qqml_lexer::UnterminatedStringError;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Error {
     HintsDirectiveRequiresNumber,
     HintsDirectiveRepeated,
-    UnterminatedLiteral(Token),
+
+    /// Stores the data of where the literal began.
+    UnterminatedLiteral(TokenData),
 
     UnexpectedBodyToken(Token),
     ExpectedLSquirlyForQuestion(Token),
@@ -55,6 +59,19 @@ impl fmt::Display for Error {
 pub struct ErrorReport {
     pub errors: Vec<Error>,
     pub warnings: Vec<Warning>,
+}
+impl From<UnterminatedStringError> for ErrorReport {
+    fn from(value: UnterminatedStringError) -> Self {
+        Self {
+            errors: vec![Error::UnterminatedLiteral(value.0)],
+            warnings: vec![]
+        }
+    }
+}
+impl Into<Vec<ErrorReport>> for ErrorReport {
+    fn into(self) -> Vec<ErrorReport> {
+        vec![self]
+    }
 }
 
 impl ErrorReport {

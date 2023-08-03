@@ -5,7 +5,7 @@ use crate::token::KEYWORDS;
 const WHITESPACE_CHARS: [u8; 4] = [b' ', b'\n', b'\r', b'\t'];
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct UnterminatedStringError(usize);
+pub struct UnterminatedStringError(pub TokenData);
 
 pub struct Lexer {
     input: String,
@@ -147,10 +147,11 @@ impl Lexer {
 
     fn read_literal(&mut self) -> Result<String, UnterminatedStringError> {
         let pos = self.position;
+        let dat = self.get_token_data();
         let mut quotes_found = 0;
         while quotes_found < 2 {
             if self.ch == 0 {
-                return Err(UnterminatedStringError(pos));
+                return Err(UnterminatedStringError(dat));
             }
             if is_quote(self.ch) {
                 quotes_found += 1;
