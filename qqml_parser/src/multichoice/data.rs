@@ -1,4 +1,4 @@
-use crate::Warning;
+use crate::{Warning, Error, warning};
 
 #[derive(Debug, Default, PartialEq, Eq, Clone)]
 pub struct MultichoiceData {
@@ -9,6 +9,29 @@ pub struct MultichoiceData {
     pub chosen_answer: Option<String>,
     pub warnings: Vec<Warning>,
     pub line: usize,
+}
+
+impl MultichoiceData {
+    pub fn validate(&self) -> Result<(), Vec<Warning>> {
+        let total_mark = self.get_total_marks();
+        let mut warnings: Vec<Warning> = vec![];
+        if self.max_marks.unwrap() < total_mark {
+            warnings.push(Warning::MaxMarkImpossible(self.max_marks.unwrap(), total_mark));
+        }
+        if warnings.is_empty() {
+            Ok(())
+        } else {
+            Err(warnings)
+        }
+    }
+
+    fn get_total_marks(&self) -> usize {
+        let mut total: usize = 0;
+        for i in self.answers.to_vec() {
+            total += i.marks;
+        }
+        total
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
