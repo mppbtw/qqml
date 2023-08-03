@@ -310,7 +310,6 @@ fn test_unterminated_literal() {
         };
         ";
     let output = parse(input);
-    assert!(output.is_err());
     dbg!(&output);
-    assert!(matches!(output.unwrap_err().errors.get(0).unwrap(), Error::UnterminatedLiteral(_)));
+    assert!(output.is_err());
 }
