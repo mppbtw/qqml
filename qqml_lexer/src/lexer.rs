@@ -1,3 +1,5 @@
+use std::panic;
+
 use crate::token::Token;
 use crate::token::TokenData;
 use crate::token::KEYWORDS;
@@ -116,7 +118,10 @@ impl Lexer {
             0 => Token::Eof(self.get_token_data()),
             _ => {
                 if is_letter(self.ch) {
-                    let ident = self.read_ident();
+                    let ident = match self.read_ident() {
+                        Err(t) => return t,
+                        Ok(i) => i
+                    };
                     let found = lookup_ident(ident);
                     found.with_different_data(self.get_token_data())
                 } else if is_digit(self.ch) {
@@ -162,13 +167,18 @@ impl Lexer {
         literal
     }
 
-    fn read_ident(&mut self) -> String {
+    fn read_ident(&mut self) -> Result<String, Token> {
         let pos = self.position;
+        let mut c = 0;
         while is_letter(self.ch) {
+            c += 1;
             self.read_char();
+            if self.ch == 0 {
+                return Err(Token::UnterminatedLiteral(self.get_token_data()));
+            };
         }
         self.read_position -= 1;
-        self.input[pos..self.position].to_owned()
+        Ok(self.input[pos..self.position].to_owned())
     }
 
     fn scran_whitespace(&mut self) {
