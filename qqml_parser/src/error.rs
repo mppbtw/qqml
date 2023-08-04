@@ -24,6 +24,7 @@ pub enum Error {
     ExpectedQuestionType(Token),
     ExpectedHintText(Token),
     ExpectedCommaInHintsList(Token),
+    ImpossibleMaxMark(Token),
 
     UnexpectedAnswerToken(Token, Vec<Token>),
     ExpectedAnswerText(Token),

@@ -4,7 +4,9 @@ mod parser;
 mod warning;
 
 #[cfg(test)]
-mod test;
+mod test_correct;
+#[cfg(test)]
+mod test_error;
 
 pub use self::error::Error;
 pub use self::multichoice::MultichoiceAnswer;
