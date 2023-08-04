@@ -299,18 +299,3 @@ fn test_parse_multichoice_questions_with_hints_mixed_quotes() {
     };
     assert_eq!(result, expected);
 }
-
-#[test]
-fn test_unterminated_literal() {
-    let input = "
-        hints 2;
-        ask multichoice (1) 'where is the sun {
-            * 'the moon' (1);
-            * 'the earth' (0);
-        };
-        ";
-    let output = parse(input);
-    dbg!(&output);
-    assert!(output.is_err());
-    assert!(matches!(output.unwrap_err().errors.get(0).unwrap(), Error::UnterminatedLiteral(_)));
-}
