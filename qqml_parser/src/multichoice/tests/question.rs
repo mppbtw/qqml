@@ -1,6 +1,6 @@
 use crate::multichoice::parse_multichoice;
-use crate::MultichoiceData;
 use crate::MultichoiceAnswer;
+use crate::MultichoiceData;
 use qqml_lexer::Lexer;
 use qqml_lexer::Token;
 use qqml_lexer::TokenData;
@@ -15,7 +15,7 @@ fn test_parse_multichoice() {
         };
     ";
     let mut l = Lexer::new(input);
-    let result = parse_multichoice(&mut l, Token::Ask(TokenData {col: 0, line: 1})).unwrap();
+    let result = parse_multichoice(&mut l, Token::Ask(TokenData { col: 0, line: 1 })).unwrap();
 
     let mut expected = MultichoiceData {
         max_marks: Some(1),
@@ -24,7 +24,7 @@ fn test_parse_multichoice() {
         line: 1,
         chosen_answer: None,
         text: Some("title".to_owned()),
-        warnings: vec![]
+        warnings: vec![],
     };
 
     expected.answers.push(MultichoiceAnswer {
@@ -58,7 +58,7 @@ fn test_parse_multichoice_double_quotes() {
         };
     ";
     let mut l = Lexer::new(input);
-    let result = parse_multichoice(&mut l, Token::Ask(TokenData {col: 0, line: 1})).unwrap();
+    let result = parse_multichoice(&mut l, Token::Ask(TokenData { col: 0, line: 1 })).unwrap();
 
     let mut expected = MultichoiceData {
         max_marks: Some(1),
@@ -67,7 +67,7 @@ fn test_parse_multichoice_double_quotes() {
         line: 1,
         chosen_answer: None,
         text: Some("title".to_owned()),
-        warnings: vec![]
+        warnings: vec![],
     };
 
     expected.answers.push(MultichoiceAnswer {

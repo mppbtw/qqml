@@ -2,7 +2,6 @@ use crate::error::ErrorReport;
 use crate::multichoice::parse_multichoice;
 use crate::Error;
 use crate::Question;
-use crate::Warning;
 use qqml_lexer::Lexer;
 use qqml_lexer::Token;
 
@@ -10,7 +9,6 @@ use qqml_lexer::Token;
 pub struct ParsedFile {
     pub questions: Vec<Question>,
     pub max_hints: usize,
-    pub warnings: Vec<Warning>,
 }
 
 pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
@@ -72,22 +70,26 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
         report.errors.push(Error::ExpectedQuestionOrDirective(tok));
     }
 
-    // Semantic analasys to get warnings.
+    // If we aren't returning the questions, the consumer
+    // may also want the warnings for each question, incase this
+    // is the case, they are included within the error report.
+    for (i, q) in output.questions.to_vec().iter_mut().enumerate() {
+        q.validate();
+        output.questions[i] = q.clone();
+    }
+
     for q in output.questions.to_vec() {
         match q {
             Question::Multichoice(d) => {
-                match d.validate() {
-                    Ok(_) => (),
-                    Err(mut w) => {
-                        report.warnings.append(&mut w);
-                    },
-                }
-            },
+                dbg!(d.warnings.len());
+                if d.warnings.len() != 0 {
+                    report.warnings.append(&mut d.into());
+                };
+            }
             _ => (),
         };
-    };
+    }
 
-    output.warnings = report.warnings.clone();
     if report.errors.is_empty() {
         Ok(output)
     } else {

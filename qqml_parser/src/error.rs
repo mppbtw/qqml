@@ -41,17 +41,21 @@ pub enum Error {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let msg = match self {
-            Self::InvalidQuestionType(t) =>
-                format!("The question type {} is invalid, see doc#", t),
-            Self::ExpectedHintText(_) =>
-                format!("The `hints` keyword should precede the hints themselves, see doc#hints"),
-            Self::ExpectedAnswerText(_) => 
-                format!("The answer should contain a string, see doc#multichoice"),
+            Self::InvalidQuestionType(t) => format!("The question type {} is invalid, see doc#", t),
+            Self::ExpectedHintText(_) => {
+                format!("The `hints` keyword should precede the hints themselves, see doc#hints")
+            }
+            Self::ExpectedAnswerText(_) => {
+                format!("The answer should contain a string, see doc#multichoice")
+            }
             Self::HintsDirectiveRepeated => "".to_owned(),
-            _ => format!("guh")
+            _ => format!("guh"),
         };
 
-        let _ = msg.replace("$", "https://github.com/MrPiggyPegasus/yarr/blob/main/doc/QQML.md");
+        let _ = msg.replace(
+            "$",
+            "https://github.com/MrPiggyPegasus/yarr/blob/main/doc/QQML.md",
+        );
         write!(f, "{}", msg)
     }
 }
@@ -65,7 +69,7 @@ impl From<UnterminatedStringError> for ErrorReport {
     fn from(value: UnterminatedStringError) -> Self {
         Self {
             errors: vec![Error::UnterminatedLiteral(value.0)],
-            warnings: vec![]
+            warnings: vec![],
         }
     }
 }
