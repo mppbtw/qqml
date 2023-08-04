@@ -7,22 +7,27 @@ pub struct MultichoiceData {
     pub answers: Vec<MultichoiceAnswer>,
     pub hints: Vec<String>,
     pub chosen_answer: Option<String>,
-    pub warnings: Vec<Warning>,
+    pub warnings: Vec<MultichoiceWarning>,
     pub line: usize,
 }
 
 impl MultichoiceData {
-    pub fn validate(&self) -> Result<(), Vec<Warning>> {
+    pub fn validate(&mut self) {
         let total_mark = self.get_total_marks();
-        let mut warnings: Vec<Warning> = vec![];
         if self.max_marks.unwrap() > total_mark {
-            warnings.push(Warning::MaxMarkImpossible(self.max_marks.unwrap(), total_mark));
+            self.warnings.push(MultichoiceWarning::MaxMarkImpossible(
+                self.max_marks.unwrap(),
+                total_mark,
+            ));
         }
-
-        if warnings.is_empty() {
-            Ok(())
-        } else {
-            Err(warnings)
+        match self.answers.len() {
+            0 => self
+                .warnings
+                .push(MultichoiceWarning::NoAnswersForMultichoiceQuestion),
+            1 => self
+                .warnings
+                .push(MultichoiceWarning::OnlyOneAnswerForMultichoiceQuestion),
+            _ => (),
         }
     }
 
@@ -49,5 +54,34 @@ impl Default for MultichoiceAnswer {
             marks: 0,
             explanation: None,
         }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum MultichoiceWarning {
+    /// The max mark and the
+    /// maximum possible mark.
+    MaxMarkImpossible(usize, usize),
+    OnlyOneAnswerForMultichoiceQuestion,
+    NoAnswersForMultichoiceQuestion,
+}
+
+impl Into<Vec<Warning>> for MultichoiceData {
+    fn into(self) -> Vec<Warning> {
+        self.warnings
+            .to_vec()
+            .iter()
+            .map(|w| match w {
+                MultichoiceWarning::OnlyOneAnswerForMultichoiceQuestion => {
+                    Warning::OnlyOneAnswerForMultichoiceQuestion(self.clone())
+                }
+                MultichoiceWarning::MaxMarkImpossible(..) => {
+                    Warning::MaxMarkImpossible(self.clone())
+                }
+                MultichoiceWarning::NoAnswersForMultichoiceQuestion => {
+                    Warning::NoAnswersForMultichoiceQuestion(self.clone())
+                }
+            })
+            .collect()
     }
 }
