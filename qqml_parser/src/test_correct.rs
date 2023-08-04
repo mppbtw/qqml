@@ -38,10 +38,8 @@ fn test_parse_multichoice_questions_with_hints() {
 
     let result = parse(input).unwrap();
     let expected = ParsedFile {
-        warnings: vec![],
         max_hints: 2,
         questions: vec![
-
             // question1
             Question::Multichoice(MultichoiceData {
                 text: Some("question1".to_owned()),
@@ -69,11 +67,10 @@ fn test_parse_multichoice_questions_with_hints() {
                     MultichoiceAnswer {
                         text: Some("right1".to_owned()),
                         marks: 1,
-                        explanation: None
+                        explanation: None,
                     },
                 ],
             }),
-
             // question2
             Question::Multichoice(MultichoiceData {
                 text: Some("question2".to_owned()),
@@ -101,11 +98,11 @@ fn test_parse_multichoice_questions_with_hints() {
                     MultichoiceAnswer {
                         text: Some("right2".to_owned()),
                         marks: 1,
-                        explanation: None
+                        explanation: None,
                     },
                 ],
-            })
-        ]
+            }),
+        ],
     };
     assert_eq!(result, expected);
 }
@@ -133,10 +130,8 @@ fn test_parse_multichoice_questions_with_hints_double_quotes() {
 
     let result = parse(input).unwrap();
     let expected = ParsedFile {
-        warnings: vec![],
         max_hints: 2,
         questions: vec![
-
             // question1
             Question::Multichoice(MultichoiceData {
                 text: Some("question1".to_owned()),
@@ -164,11 +159,10 @@ fn test_parse_multichoice_questions_with_hints_double_quotes() {
                     MultichoiceAnswer {
                         text: Some("right1".to_owned()),
                         marks: 1,
-                        explanation: None
+                        explanation: None,
                     },
                 ],
             }),
-
             // question2
             Question::Multichoice(MultichoiceData {
                 text: Some("question2".to_owned()),
@@ -196,11 +190,11 @@ fn test_parse_multichoice_questions_with_hints_double_quotes() {
                     MultichoiceAnswer {
                         text: Some("right2".to_owned()),
                         marks: 1,
-                        explanation: None
+                        explanation: None,
                     },
                 ],
-            })
-        ]
+            }),
+        ],
     };
     assert_eq!(result, expected);
 }
@@ -228,10 +222,8 @@ fn test_parse_multichoice_questions_with_hints_mixed_quotes() {
 
     let result = parse(input).unwrap();
     let expected = ParsedFile {
-        warnings: vec![],
         max_hints: 2,
         questions: vec![
-
             // question1
             Question::Multichoice(MultichoiceData {
                 text: Some("question1".to_owned()),
@@ -259,11 +251,10 @@ fn test_parse_multichoice_questions_with_hints_mixed_quotes() {
                     MultichoiceAnswer {
                         text: Some("right1".to_owned()),
                         marks: 1,
-                        explanation: None
+                        explanation: None,
                     },
                 ],
             }),
-
             // question2
             Question::Multichoice(MultichoiceData {
                 text: Some("question2".to_owned()),
@@ -291,11 +282,11 @@ fn test_parse_multichoice_questions_with_hints_mixed_quotes() {
                     MultichoiceAnswer {
                         text: Some("right2".to_owned()),
                         marks: 1,
-                        explanation: None
+                        explanation: None,
                     },
                 ],
-            })
-        ]
+            }),
+        ],
     };
     assert_eq!(result, expected);
 }

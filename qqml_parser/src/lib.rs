@@ -21,3 +21,16 @@ pub enum Question {
     Calculation(),
     String(),
 }
+
+impl Question {
+    pub fn validate(&mut self) {
+        *self = match *self {
+            Self::Multichoice(ref mut d) => {
+                d.validate();
+                Self::Multichoice(d.clone())
+            }
+            Self::Calculation() => Self::Calculation(),
+            Self::String() => Self::String(),
+        }
+    }
+}
