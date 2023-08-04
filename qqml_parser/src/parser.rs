@@ -75,11 +75,19 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
     // Semantic analasys to get warnings.
     for q in output.questions.to_vec() {
         match q {
-            Question::Multichoice(d) => { d.validate(); },
-            _ => ()
+            Question::Multichoice(d) => {
+                match d.validate() {
+                    Ok(_) => (),
+                    Err(mut w) => {
+                        report.warnings.append(&mut w);
+                    },
+                }
+            },
+            _ => (),
         };
     };
 
+    output.warnings = report.warnings.clone();
     if report.errors.is_empty() {
         Ok(output)
     } else {
