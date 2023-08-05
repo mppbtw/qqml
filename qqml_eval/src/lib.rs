@@ -3,7 +3,9 @@ mod test;
 
 mod render;
 mod target;
+mod repl;
 
+pub use repl::run;
 pub use render::Render;
 pub use render::Screen;
 pub use target::Target;
