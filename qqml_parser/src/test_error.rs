@@ -50,7 +50,7 @@ fn test_max_marks_impossible() {
 
     let questions = output.unwrap().questions;
 
-    // In the case that a warning is emitted even if the parsing fails,
+    // in the case that a warning is emitted even if the parsing fails,
     // the report should (if im not stupid (not guaranteed)) extract
     // the warnings which it can from questions and returns them as
     // part of the report.
@@ -64,4 +64,43 @@ fn test_max_marks_impossible() {
             _ => (),
         };
     }
+}
+
+#[test]
+fn test_only_one_multichoice_answer() {
+    let input = "
+        ask multichoice (1) 'how many of your bases are belong to us' {
+            * 'all of them' (1);
+        };
+        ";
+    let output = parse(input);
+    dbg!(output.clone().unwrap());
+    let questions = output.unwrap().questions;
+
+    assert!(matches!(questions[0], Question::Multichoice(_)));
+
+    for q in questions.to_vec() {
+        match q {
+            Question::Multichoice(d) => {
+                assert_eq!(d.warnings.len(), 1);
+            }
+            _ => (),
+        };
+    }
+}
+
+#[test]
+fn test_only_one_multichoice_answer_with_other_errors() {
+    let input = "
+        somethingUpHereToCauseAnError
+
+        ask multichoice (1) 'how many of your bases are belong to us' {
+            * 'all of them' (1);
+        };
+        ";
+    let output = parse(input);
+    dbg!(output.clone().unwrap_err());
+
+    assert_eq!(output.unwrap_err().warnings.len(), 1);
+
 }
