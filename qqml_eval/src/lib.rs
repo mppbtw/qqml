@@ -4,17 +4,20 @@ mod test;
 mod error;
 #[allow(unused)]
 mod render;
-mod section;
+mod target;
 mod utils;
 
 pub use error::Error;
+pub use render::Render;
+pub use render::Screen;
+pub use target::Target;
 
 // Example TUI:
 
 //          ~/.qpm/local/gcse/geography/countries.qqml // These lines should be centred
 //            QQML Version 1.0.0, press ? for help     // by the user's terminal width
 //
-// <-(23/25)-> // h and l to move between questions
+//                      <-(23/25)-> // h and l to move between questions
 //
 // Where is France? (2)
 //
@@ -27,14 +30,12 @@ pub use error::Error;
 //
 //  France is not in Africa
 
-
-
 // After answering the question:
 
 //          ~/.qpm/local/gcse/geography/countries.qqml
 //            QQML Version 1.0.0, press ? for help
 //
-// <-(23/25)-> // h and l to move between questions
+//                      <-(23/25)-> // h and l to move between questions
 // hints: 5 // How many hints the player has left in total
 //
 // Where is France? (2)

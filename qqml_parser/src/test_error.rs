@@ -102,5 +102,4 @@ fn test_only_one_multichoice_answer_with_other_errors() {
     dbg!(output.clone().unwrap_err());
 
     assert_eq!(output.unwrap_err().warnings.len(), 1);
-
 }
