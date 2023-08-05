@@ -193,7 +193,7 @@ pub struct VersionLine;
 impl Render for VersionLine {
     fn render(&self) -> String {
         let version = env!("CARGO_PKG_VERSION");
-        let mut output = format!("QQML Version {}, press ? for help", version);
+        let output = format!("QQML Version {}, press ? for help", version);
         output
     }
 }
