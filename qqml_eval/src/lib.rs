@@ -10,8 +10,8 @@ pub use target::Target;
 
 // Example TUI:
 
-//          ~/.qpm/local/gcse/geography/countries.qqml // These lines should be centred
-//            QQML Version 1.0.0, press ? for help     // by the user's terminal width
+// ~/.qpm/local/gcse/geography/countries.qqml
+// QQML Version 1.0.0, press ? for help
 //
 //                      <-(23/25)-> // h and l to move between questions
 //
@@ -28,8 +28,8 @@ pub use target::Target;
 
 // After answering the question:
 
-//          ~/.qpm/local/gcse/geography/countries.qqml
-//            QQML Version 1.0.0, press ? for help
+// ~/.qpm/local/gcse/geography/countries.qqml
+// QQML Version 1.0.0, press ? for help
 //
 //                      <-(23/25)-> // h and l to move between questions
 // hints: 5 // How many hints the player has left in total
