@@ -2,6 +2,8 @@ use qqml_parser::Question;
 
 use crate::Target;
 
+const INFO_SECTION_WIDTH: usize = 50;
+
 pub trait Render {
     fn render(&self) -> String;
 }
@@ -17,10 +19,7 @@ pub struct Screen {
 }
 impl From<Target> for Screen {
     fn from(value: Target) -> Self {
-        let pathline = match value.path_to_source {
-            Some(p) => Some(PathLine { path: p }),
-            None => None,
-        };
+        let pathline = value.path_to_source.map(|p| PathLine { path: p });
         let current_question = value.questions.get(value.current_question).unwrap().clone();
         Self {
             hints_line: HintsLine {
@@ -41,13 +40,13 @@ impl From<Target> for Screen {
                             answers.push(a.text.clone().unwrap());
                         }
                         answers
-                    },
+                    }
                     _ => vec![],
                 },
                 selected: match &current_question {
                     Question::Multichoice(d) => d.chosen_answer,
                     _ => 0,
-                }
+                },
             },
             pathline,
             question_line: QuestionLine {
@@ -113,7 +112,7 @@ impl Render for QuestionBody {
                 output += &("   ".to_owned() + a);
             }
             output += "\n";
-        };
+        }
         output
     }
 }
@@ -123,18 +122,13 @@ pub struct QuestionLine {
 }
 impl Render for QuestionLine {
     fn render(&self) -> String {
-        let mut output = match &self.q {
+        match &self.q {
             Question::String() => "String questions are not supported.".to_owned(),
             Question::Calculation() => "Calculation questions are not supported.".to_owned(),
             Question::Multichoice(m) => {
-                format!(
-                    "{} ({})",
-                    m.text.clone().unwrap(),
-                    m.max_marks.clone().unwrap()
-                )
+                format!("{} ({})", m.text.clone().unwrap(), m.max_marks.unwrap())
             }
-        };
-        output
+        }
     }
 }
 
@@ -157,7 +151,7 @@ pub struct PathLine {
 }
 impl Render for PathLine {
     fn render(&self) -> String {
-        self.path.clone()
+        pad_to_width(&self.path, INFO_SECTION_WIDTH).unwrap_or(self.path.clone())
     }
 }
 
@@ -167,11 +161,15 @@ pub struct QuestionSelectLine {
 }
 impl Render for QuestionSelectLine {
     fn render(&self) -> String {
-        format!(
-            "<--({} / {})-->",
-            &self.current_question.to_string(),
-            &self.max_questions.to_string()
+        pad_to_width(
+            &format!(
+                "<--({} / {})-->",
+                &self.current_question.to_string(),
+                &self.max_questions.to_string()
+            ),
+            INFO_SECTION_WIDTH,
         )
+        .unwrap()
     }
 }
 
@@ -193,7 +191,23 @@ pub struct VersionLine;
 impl Render for VersionLine {
     fn render(&self) -> String {
         let version = env!("CARGO_PKG_VERSION");
-        let output = format!("QQML Version {}, press ? for help", version);
-        output
+        pad_to_width(
+            &format!("QQML Version {}, press ? for help", version),
+            INFO_SECTION_WIDTH,
+        )
+        .unwrap()
     }
 }
+
+fn pad_to_width(input: &str, width: usize) -> Result<String, WidthTooSmall> {
+    let mut output = String::new();
+    if output.len() > width {
+        return Err(WidthTooSmall);
+    }
+    (0..(width - input.len()) / 2).for_each(|_| output += " ");
+    output += input;
+    Ok(output)
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct WidthTooSmall;
