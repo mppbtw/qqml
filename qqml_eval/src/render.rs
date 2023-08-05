@@ -1,11 +1,9 @@
 use qqml_parser::Question;
 
-use crate::utils::get_term_size;
-use crate::Error;
 use crate::Target;
 
-pub trait Render<E> {
-    fn render(&self) -> Result<String, E>;
+pub trait Render {
+    fn render(&self) -> String;
 }
 
 pub struct Screen {
@@ -13,6 +11,7 @@ pub struct Screen {
     pub version_line: VersionLine,
     pub q_select_line: QuestionSelectLine,
     pub question_line: QuestionLine,
+    pub question_body: QuestionBody,
     pub hints_line: HintsLine,
     pub hints_body: Option<HintsBody>,
 }
@@ -34,6 +33,22 @@ impl From<Target> for Screen {
                 },
                 hints_used_total: value.hints_used,
             },
+            question_body: QuestionBody {
+                answers: match &current_question {
+                    Question::Multichoice(d) => {
+                        let mut answers = vec![];
+                        for a in &d.answers {
+                            answers.push(a.text.clone().unwrap());
+                        }
+                        answers
+                    },
+                    _ => vec![],
+                },
+                selected: match &current_question {
+                    Question::Multichoice(d) => d.chosen_answer,
+                    _ => 0,
+                }
+            },
             pathline,
             question_line: QuestionLine {
                 q: current_question,
@@ -54,40 +69,60 @@ impl From<Target> for Screen {
         }
     }
 }
-impl Render<Error> for Screen {
-    fn render(&self) -> Result<String, Error> {
+impl Render for Screen {
+    fn render(&self) -> String {
         let mut output = String::new();
-        output += &self.version_line.render()?;
+        output += &self.version_line.render();
         output += "\n";
         match &self.pathline {
             Some(p) => {
-                output += &p.render()?;
+                output += &p.render();
                 output += "\n";
             }
             None => (),
         };
         output += "\n";
-        output += &self.q_select_line.render()?;
+        output += &self.q_select_line.render();
         output += "\n\n";
-        output += &self.question_line.render()?;
-        /* question body */
+        output += &self.question_line.render();
         output += "\n";
-        output += &self.hints_line.render()?;
+        output += &self.question_body.render();
+        output += "\n";
+        output += &self.hints_line.render();
         output += "\n";
         match &self.hints_body {
-            Some(h) => output += &h.render()?,
+            Some(h) => output += &h.render(),
             None => (),
         };
 
-        Ok(output)
+        output
+    }
+}
+
+pub struct QuestionBody {
+    pub answers: Vec<String>,
+    pub selected: usize,
+}
+impl Render for QuestionBody {
+    fn render(&self) -> String {
+        let mut output = String::new();
+        for (i, a) in self.answers.iter().enumerate() {
+            if i == self.selected {
+                output += &format!("   {} <", a);
+            } else {
+                output += &("   ".to_owned() + a);
+            }
+            output += "\n";
+        };
+        output
     }
 }
 
 pub struct QuestionLine {
     pub q: Question,
 }
-impl Render<Error> for QuestionLine {
-    fn render(&self) -> Result<String, Error> {
+impl Render for QuestionLine {
+    fn render(&self) -> String {
         let mut output = match &self.q {
             Question::String() => "String questions are not supported.".to_owned(),
             Question::Calculation() => "Calculation questions are not supported.".to_owned(),
@@ -99,30 +134,30 @@ impl Render<Error> for QuestionLine {
                 )
             }
         };
-        Ok(output)
+        output
     }
 }
 
 pub struct HintsBody {
     pub hints: Vec<String>,
 }
-impl Render<Error> for HintsBody {
-    fn render(&self) -> Result<String, Error> {
+impl Render for HintsBody {
+    fn render(&self) -> String {
         let mut output = String::new();
         for i in &self.hints {
-            output += i;
+            output += &("  ".to_owned() + i);
             output += "\n\n";
         }
-        Ok(output)
+        output
     }
 }
 
 pub struct PathLine {
     pub path: String,
 }
-impl Render<Error> for PathLine {
-    fn render(&self) -> Result<String, Error> {
-        Ok(pad_to_width(&self.path, get_term_size()?.width)?)
+impl Render for PathLine {
+    fn render(&self) -> String {
+        self.path.clone()
     }
 }
 
@@ -130,15 +165,13 @@ pub struct QuestionSelectLine {
     pub max_questions: usize,
     pub current_question: usize,
 }
-impl Render<Error> for QuestionSelectLine {
-    fn render(&self) -> Result<String, Error> {
-        let selector = format!(
+impl Render for QuestionSelectLine {
+    fn render(&self) -> String {
+        format!(
             "<--({} / {})-->",
             &self.current_question.to_string(),
             &self.max_questions.to_string()
-        );
-
-        Ok(pad_to_width(selector, get_term_size()?.width)?)
+        )
     }
 }
 
@@ -147,47 +180,20 @@ pub struct HintsLine {
     pub hints_used_total: usize,
     pub hints_available: usize,
 }
-impl Render<Error> for HintsLine {
-    fn render(&self) -> Result<String, Error> {
-        Ok(format!(
-            "Hints: (used {}/{}, {} available for this question)",
+impl Render for HintsLine {
+    fn render(&self) -> String {
+        format!(
+            "Hints (used {}/{}, {} available for this question):",
             &self.hints_used_total, &self.max_hints, &self.hints_available
-        ))
+        )
     }
 }
 
 pub struct VersionLine;
-impl Render<Error> for VersionLine {
-    fn render(&self) -> Result<String, Error> {
+impl Render for VersionLine {
+    fn render(&self) -> String {
         let version = env!("CARGO_PKG_VERSION");
         let mut output = format!("QQML Version {}, press ? for help", version);
-        output = pad_to_width(output, get_term_size()?.width)?;
-        Ok(output)
+        output
     }
-}
-
-fn pad_to_width<S: Into<String>>(str: S, width: usize) -> Result<String, Error> {
-    let mut output = String::new();
-    let str: String = str.into();
-
-    if str.len() > width {
-        return Err(Error::TerminalTooSmall);
-    }
-    if str.len() == width {
-        return Ok(str);
-    }
-
-    let total_needed_spaces = width - str.len();
-    let left_spaces = total_needed_spaces / 2;
-    let right_spaces = total_needed_spaces - left_spaces;
-
-    for i in 0..left_spaces {
-        output += " ";
-    }
-    output += &str;
-    for i in 0..right_spaces {
-        output += " ";
-    }
-
-    Ok(output)
 }

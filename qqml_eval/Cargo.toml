@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 qqml_parser = { path = "../qqml_parser" }
+termsize = "0.1.6"

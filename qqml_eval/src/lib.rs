@@ -1,13 +1,9 @@
 #[cfg(test)]
 mod test;
 
-mod error;
-#[allow(unused)]
 mod render;
 mod target;
-mod utils;
 
-pub use error::Error;
 pub use render::Render;
 pub use render::Screen;
 pub use target::Target;
