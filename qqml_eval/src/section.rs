@@ -13,9 +13,9 @@ pub struct Section {
 }
 
 impl Section {
-    pub fn new(parsed: ParsedFile) -> Section {
+    pub fn new(parsed: ParsedFile, path_to_source: Option<String>) -> Section {
         Section {
-            path_to_source: None,
+            path_to_source,
             current_question: 0,
             max_hints: parsed.max_hints,
             hints_used: 0,
