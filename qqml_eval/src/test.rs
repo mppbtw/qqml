@@ -44,3 +44,30 @@ fn manually_inspect_output() {
     // Change this to false to test the output lol
     assert!(true);
 }
+
+#[test]
+fn manually_inspect_output_from_source_code() {
+    let input = "
+        hints 10;
+
+        ask multichoice (1) 'What is the solution' {
+            * 'This one';
+            * 'The other one';
+        } hints 'The first hint', 'The second hint', 'The third hint';
+        ";
+    let parsed = parse(input).unwrap();
+    let t = Target {
+        max_hints: parsed.max_hints,
+        questions: parsed.questions,
+        hints_used: 2,
+        path_to_source: Some("~/.qpm/gcse/fishing_classes.qqml".to_owned()),
+        current_question: 0,
+    };
+
+    let screen = Screen::from(t);
+    let output = screen.render();
+    println!("{}", output);
+
+    // Change this to false to test the output lol
+    assert!(false);
+}
