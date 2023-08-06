@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <termios.h>
 #include <unistd.h>
+#include <termios.h>
 
 char read_single_char() {
     struct termios old_settings, new_settings;
