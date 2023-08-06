@@ -15,6 +15,7 @@ void switch_to_alt_screen() {
 
 void return_from_alt_screen() {
     printf(ALT_SCREEN_RETURN_ESCAPE);
+    fflush(stdout);
 }
 
 int clear_screen_with_width() {
