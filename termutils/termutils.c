@@ -3,51 +3,58 @@
 #include <unistd.h>
 #include <termios.h>
 
-const char ALT_SCREEN_ESCAPE[] = "\e[?1049h";
-const char ALT_SCREEN_RETURN_ESCAPE[] = "\e[?1049l";
-const char CLEAR_SCREEN[] = "\033[2J";
-const char GET_CURSOR_POS[] = "\033[6n";
-const char RESET_CURSOR_POS[] = "\033[1;1H";
+#define SIZE 1024
 
-void switch_to_alt_screen() {
-    printf(ALT_SCREEN_ESCAPE);
+struct TerminalSize clear_screen_with_termsize();
+
+struct TerminalSize {
+    int width;
+    int height;
+};
+
+void enter_alt_screen() {
+    printf("\033[?1049h");
+    fflush(stdout);
 }
-
-void return_from_alt_screen() {
-    printf(ALT_SCREEN_RETURN_ESCAPE);
+void exit_alt_screen() {
+    printf("\033[?1049l");
     fflush(stdout);
 }
 
 int clear_screen_with_width() {
-    // Pretty much a clone of
-    // https://stackoverflow.com/questions/74431114/get-terminal-size-using-ansi-escape-sequences
-    struct termios old_settings, new_settings;
+    return clear_screen_with_termsize().width;
+}
+int clear_screen_with_heigt() {
+    return clear_screen_with_termsize().height;
+}
 
-    char in[1024];
-    int each;
-    int ch;
-    int rows;
-    int cols;
+struct TerminalSize clear_screen_with_termsize() {
+    char in[SIZE] = "";
+    int each = 0;
+    int ch = 0;
+    int rows = 0;
+    int cols = 0;
+    struct termios original, changed;
 
-    // Set some terminal settings
-    tcgetattr(STDIN_FILENO, &old_settings);
-    new_settings = old_settings;
-    new_settings.c_lflag &= ~(ICANON | ECHO);
-    new_settings.c_cc[VMIN] = 1;
-    new_settings.c_cc[VTIME] = 0;
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_settings);
+    // change terminal settings
+    tcgetattr(STDIN_FILENO, &original);
+    changed = original;
+    changed.c_lflag &= ~(ICANON | ECHO);
+    changed.c_cc[VMIN] = 1;
+    changed.c_cc[VTIME] = 0;
+    tcsetattr(STDIN_FILENO, TCSANOW, &changed);
 
-    printf(CLEAR_SCREEN);
+    printf ("\033[2J"); //clear screen
 
-    printf("\033[9999;9999H"); // Move the cursor really far away
+    printf ("\033[9999;9999H"); // cursor should move as far as it can
 
-    printf(GET_CURSOR_POS);
-    while ((ch = getchar ()) != 'R') {
+    printf("\033[6n"); // ask for cursor position
+    while (( ch = getchar()) != 'R') { // R terminates the response
         if (EOF == ch) {
             break;
         }
         if (isprint (ch)) {
-            if (each + 1 < 1024) {
+            if (each + 1 < SIZE) {
                 in[each] = ch;
                 each++;
                 in[each] = '\0';
@@ -55,29 +62,14 @@ int clear_screen_with_width() {
         }
     }
 
-    printf("\033[1;1H"); // Reset the cursor position
-    sscanf(in, "[%d;%d", &rows, &cols);
+    printf("\033[1;1H"); // move to upper left corner
+    if ( 2 == sscanf ( in, "[%d;%d", &rows, &cols)) {
+    }
+
+    // restore terminal settings
+    tcsetattr( STDIN_FILENO, TCSANOW, &original);
     fflush(stdout);
 
-    // Revert to the old settings
-    tcsetattr(STDIN_FILENO, TCSANOW, &old_settings);
-
-    return cols;
-}
-
-char read_single_char() {
-    struct termios old_settings, new_settings;
-    tcgetattr(STDIN_FILENO, &old_settings);
-    new_settings = old_settings;
-    new_settings.c_lflag &= (~ICANON & ~ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_settings);
-
-    char c = getc(stdin);
-
-    tcsetattr(STDIN_FILENO, TCSANOW, &old_settings);
-
-    if (c == EOF || c == 0) {
-        return 0;
-    }
-    return c;
+    struct TerminalSize t = {cols, rows};
+    return t;
 }
