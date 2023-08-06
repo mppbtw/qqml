@@ -1,6 +1,6 @@
 /target
 **/target
-**/target
+testbin/
 qqml_lexer/Cargo.lock
 qqml_parser/Cargo.lock
 qqml_eval/Cargo.lock
