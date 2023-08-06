@@ -1,4 +1,4 @@
 #[link(name = "nocrates", kind = "static")]
 extern "C" {
-     pub fn does_it_work();
+     pub fn read_single_char() -> u8;
 }
