@@ -4,4 +4,5 @@ extern "C" {
      pub fn clear_screen_with_height() -> i32;
      pub fn enter_alt_screen();
      pub fn exit_alt_screen();
+     pub fn read_single_char() -> u8;
 }
