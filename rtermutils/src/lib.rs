@@ -1,4 +1,4 @@
-#[link(name = "nocrates", kind = "static")]
+#[link(name = "termutils", kind = "static")]
 extern "C" {
      pub fn read_single_char() -> u8;
      pub fn switch_to_alt_screen();
