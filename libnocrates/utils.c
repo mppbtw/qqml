@@ -1,5 +1,21 @@
 #include <stdio.h>
+#include <termios.h>
+#include <unistd.h>
 
-void does_it_work() {
-    printf("hello world from C\n");
+char read_single_char() {
+    struct termios old_settings, new_settings;
+
+    tcgetattr(STDIN_FILENO, &old_settings);
+    new_settings = old_settings;
+    new_settings.c_lflag &= (~ICANON & ~ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_settings);
+
+    char c = getc(stdin);
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &old_settings);
+
+    if (c == EOF || c == 0) {
+        return 0;
+    }
+    return c;
 }
