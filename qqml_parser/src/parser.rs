@@ -81,7 +81,6 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
     for q in output.questions.to_vec() {
         match q {
             Question::Multichoice(d) => {
-                dbg!(d.warnings.len());
                 if d.warnings.len() != 0 {
                     report.warnings.append(&mut d.into());
                 };
