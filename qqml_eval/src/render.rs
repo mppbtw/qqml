@@ -1,7 +1,5 @@
 use qqml_parser::Question;
 
-use crate::Target;
-
 const INFO_SECTION_WIDTH: usize = 50;
 
 pub trait Render {
@@ -16,57 +14,6 @@ pub struct Screen {
     pub question_body: QuestionBody,
     pub hints_line: HintsLine,
     pub hints_body: Option<HintsBody>,
-}
-impl From<Target> for Screen {
-    fn from(value: Target) -> Self {
-        let pathline = value.path_to_source.map(|p| PathLine { path: p });
-        let current_question = value.questions.get(value.current_question).unwrap().clone();
-        Self {
-            hints_line: HintsLine {
-                max_hints: value.max_hints,
-                hints_available: {
-                    match &current_question {
-                        Question::Multichoice(d) => d.hints.len() - d.used_hints,
-                        _ => 0,
-                    }
-                },
-                hints_used_total: value.hints_used,
-            },
-            question_body: QuestionBody {
-                answers: match &current_question {
-                    Question::Multichoice(d) => {
-                        let mut answers = vec![];
-                        for a in &d.answers {
-                            answers.push(a.text.clone().unwrap());
-                        }
-                        answers
-                    }
-                    _ => vec![],
-                },
-                selected: match &current_question {
-                    Question::Multichoice(d) => d.chosen_answer,
-                    _ => 0,
-                },
-            },
-            pathline,
-            question_line: QuestionLine {
-                q: current_question,
-            },
-            q_select_line: QuestionSelectLine {
-                max_questions: value.questions.len(),
-                current_question: value.current_question,
-            },
-            hints_body: {
-                Some(HintsBody {
-                    hints: match value.questions.get(value.current_question).unwrap().clone() {
-                        Question::Multichoice(d) => d.hints[0..d.used_hints].to_vec(),
-                        _ => vec![],
-                    },
-                })
-            },
-            version_line: VersionLine {},
-        }
-    }
 }
 impl Render for Screen {
     fn render(&self) -> String {
