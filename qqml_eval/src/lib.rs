@@ -3,10 +3,9 @@ mod test;
 
 mod render;
 mod repl;
+mod state;
 
 pub use repl::run;
-pub use render::Render;
-pub use render::Screen;
 
 // Example TUI:
 

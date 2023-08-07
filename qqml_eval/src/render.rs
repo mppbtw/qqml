@@ -6,16 +6,17 @@ pub trait Render {
     fn render(&self) -> String;
 }
 
-pub struct Screen {
-    pub pathline: Option<PathLine>,
+#[derive(Debug, Clone)]
+pub struct Screen<'a> {
+    pub pathline: Option<PathLine<'a>>,
     pub version_line: VersionLine,
-    pub q_select_line: QuestionSelectLine,
-    pub question_line: QuestionLine,
-    pub question_body: QuestionBody,
-    pub hints_line: HintsLine,
-    pub hints_body: Option<HintsBody>,
+    pub q_select_line: QuestionSelectLine<'a>,
+    pub question_line: QuestionLine<'a>,
+    pub question_body: QuestionBody<'a>,
+    pub hints_line: HintsLine<'a>,
+    pub hints_body: Option<HintsBody<'a>>,
 }
-impl Render for Screen {
+impl Render for Screen<'_> {
     fn render(&self) -> String {
         let mut output = String::new();
         output += &self.version_line.render();
@@ -45,15 +46,16 @@ impl Render for Screen {
     }
 }
 
-pub struct QuestionBody {
+#[derive(Debug, Clone)]
+pub struct QuestionBody<'a> {
     pub answers: Vec<String>,
-    pub selected: usize,
+    pub selected: &'a usize,
 }
-impl Render for QuestionBody {
+impl Render for QuestionBody<'_> {
     fn render(&self) -> String {
         let mut output = String::new();
         for (i, a) in self.answers.iter().enumerate() {
-            if i == self.selected {
+            if &i == self.selected {
                 output += &format!("   {} <", a);
             } else {
                 output += &("   ".to_owned() + a);
@@ -64,10 +66,11 @@ impl Render for QuestionBody {
     }
 }
 
-pub struct QuestionLine {
-    pub q: Question,
+#[derive(Debug, Clone)]
+pub struct QuestionLine<'a> {
+    pub q: &'a Question,
 }
-impl Render for QuestionLine {
+impl Render for QuestionLine<'_> {
     fn render(&self) -> String {
         match &self.q {
             Question::String() => "String questions are not supported.".to_owned(),
@@ -79,13 +82,14 @@ impl Render for QuestionLine {
     }
 }
 
-pub struct HintsBody {
-    pub hints: Vec<String>,
+#[derive(Debug, Clone)]
+pub struct HintsBody<'a> {
+    pub hints: &'a [String],
 }
-impl Render for HintsBody {
+impl Render for HintsBody<'_> {
     fn render(&self) -> String {
         let mut output = String::new();
-        for i in &self.hints {
+        for i in self.hints {
             output += &("  ".to_owned() + i);
             output += "\n\n";
         }
@@ -93,20 +97,22 @@ impl Render for HintsBody {
     }
 }
 
-pub struct PathLine {
-    pub path: String,
+#[derive(Debug, Clone)]
+pub struct PathLine<'a> {
+    pub path: &'a String,
 }
-impl Render for PathLine {
+impl Render for PathLine<'_> {
     fn render(&self) -> String {
         pad_to_width(&self.path, INFO_SECTION_WIDTH).unwrap_or(self.path.clone())
     }
 }
 
-pub struct QuestionSelectLine {
-    pub max_questions: usize,
-    pub current_question: usize,
+#[derive(Debug, Clone)]
+pub struct QuestionSelectLine<'a> {
+    pub max_questions: &'a usize,
+    pub current_question: &'a usize,
 }
-impl Render for QuestionSelectLine {
+impl Render for QuestionSelectLine<'_> {
     fn render(&self) -> String {
         pad_to_width(
             &format!(
@@ -120,12 +126,13 @@ impl Render for QuestionSelectLine {
     }
 }
 
-pub struct HintsLine {
-    pub max_hints: usize,
-    pub hints_used_total: usize,
-    pub hints_available: usize,
+#[derive(Debug, Clone)]
+pub struct HintsLine<'a> {
+    pub max_hints: &'a usize,
+    pub hints_used_total: &'a usize,
+    pub hints_available: &'a usize,
 }
-impl Render for HintsLine {
+impl Render for HintsLine<'_> {
     fn render(&self) -> String {
         format!(
             "Hints (used {}/{}, {} available for this question):",
@@ -134,6 +141,7 @@ impl Render for HintsLine {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct VersionLine;
 impl Render for VersionLine {
     fn render(&self) -> String {
@@ -146,10 +154,10 @@ impl Render for VersionLine {
     }
 }
 
-fn pad_to_width(input: &str, width: usize) -> Result<String, WidthTooSmall> {
+fn pad_to_width(input: &str, width: usize) -> Result<String, WidthTooSmallError> {
     let mut output = String::new();
     if output.len() > width {
-        return Err(WidthTooSmall);
+        return Err(WidthTooSmallError);
     }
     (0..(width - input.len()) / 2).for_each(|_| output += " ");
     output += input;
@@ -157,4 +165,4 @@ fn pad_to_width(input: &str, width: usize) -> Result<String, WidthTooSmall> {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-struct WidthTooSmall;
+struct WidthTooSmallError;
