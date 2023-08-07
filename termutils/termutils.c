@@ -6,6 +6,11 @@
 #define SIZE 1024
 #define cursorjmp(cols, lines) printf("\033[%d;%dH", cols, lines);
 
+const char ANSI_CLEAR[] = "\033[2J";
+const char ANSI_EXIT_ALT_SCREEN[] = "\033[?1049l";
+const char ANSI_ENTER_ALT_SCREEN[] = "\033[?1049h";
+const char ANSI_GET_CURSOR_POS[] = "\033[6n";
+
 struct TerminalSize clear_screen_with_termsize();
 
 struct TerminalSize {
@@ -30,7 +35,8 @@ struct CursorPosition get_cursor_position() {
     tcsetattr(STDIN_FILENO, TCSANOW, &changed);
 
     // Put the cursor pos into stdin
-    printf("\033[6n");
+    printf(ANSI_GET_CURSOR_POS);
+
     // Read from that buffer
     int i = 0;
     int ch = 0;
@@ -75,11 +81,11 @@ char read_single_char() {
 }
 
 void enter_alt_screen() {
-    printf("\033[?1049h");
+    printf(ANSI_ENTER_ALT_SCREEN);
     fflush(stdout);
 }
 void exit_alt_screen() {
-    printf("\033[?1049l");
+    printf(ANSI_EXIT_ALT_SCREEN);
     fflush(stdout);
 }
 
@@ -98,11 +104,6 @@ int clear_screen_with_height() {
 }
 
 struct TerminalSize clear_screen_with_termsize() {
-    char in[SIZE] = "";
-    int each = 0;
-    int ch = 0;
-    int rows = 0;
-    int cols = 0;
     struct termios original, changed;
 
     // change terminal settings
@@ -113,31 +114,24 @@ struct TerminalSize clear_screen_with_termsize() {
     changed.c_cc[VTIME] = 0;
     tcsetattr(STDIN_FILENO, TCSANOW, &changed);
 
-    printf ("\033[2J"); //clear screen
+    printf(ANSI_CLEAR);
 
-    printf ("\033[9999;9999H"); // cursor should move as far as it can
+    // Move the cursor really far awway
+    cursorjmp(999, 999);
 
-    printf("\033[6n"); // ask for cursor position
-    while ((ch = getchar()) != 'R') { // R terminates the response
-        if (EOF == ch) {
-            break;
-        }
-        if (isprint (ch)) {
-            if (each + 1 < SIZE) {
-                in[each] = ch;
-                each++;
-                in[each] = '\0';
-            }
-        }
-    }
+    struct CursorPosition pos = get_cursor_position();
 
-    printf("\033[1;1H"); // move to upper left corner
-    sscanf(in, "[%d;%d", &rows, &cols);
+    // move to upper left corner
+    cursorjmp(1, 1);
 
     // restore terminal settings
     tcsetattr(STDIN_FILENO, TCSANOW, &original);
     fflush(stdout);
 
-    struct TerminalSize t = {cols, rows};
+    struct TerminalSize t = {pos.cols, pos.lines};
     return t;
+}
+
+void clear_screen() {
+    printf(ANSI_CLEAR);
 }

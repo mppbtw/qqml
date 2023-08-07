@@ -46,6 +46,7 @@ pub struct MultichoiceAnswer {
     pub text: Option<String>,
     pub marks: usize,
     pub explanation: Option<String>,
+    pub is_chosen: bool,
 }
 
 impl Default for MultichoiceAnswer {
@@ -54,6 +55,7 @@ impl Default for MultichoiceAnswer {
             text: Some("".to_owned()),
             marks: 0,
             explanation: None,
+            is_chosen: false,
         }
     }
 }

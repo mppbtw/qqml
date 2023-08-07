@@ -70,9 +70,11 @@ impl State {
             question_body: QuestionBody {
                 answers: {
                     match &self.questions[self.current_question_index] {
-                        Question::Multichoice(d) => {
-                            d.answers.iter().map(|a| a.text.clone().unwrap()).collect()
-                        }
+                        Question::Multichoice(d) => d
+                            .answers
+                            .iter()
+                            .map(|a| (a.text.clone().unwrap(), a.is_chosen))
+                            .collect(),
                         _ => vec![],
                     }
                     .clone() // We can't move any data from this struct

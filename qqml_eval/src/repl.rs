@@ -1,7 +1,7 @@
 use crate::render::*;
 use crate::state::*;
-use qqml_parser::Question;
 use qqml_parser::parse;
+use qqml_parser::Question;
 use rtermutils::*;
 use std::process::exit;
 
@@ -29,6 +29,12 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
         refresh_needed = true;
         match unsafe { read_single_char() } {
             b'q' => break,
+            b' ' => match s.questions[s.current_question_index] {
+                Question::Multichoice(ref mut d) => {
+                    d.answers[d.chosen_answer].is_chosen = !d.answers[d.chosen_answer].is_chosen;
+                }
+                _ => (),
+            },
             b'n' => {
                 if s.current_question_index + 1 != s.questions.len() {
                     s.current_question_index += 1;
@@ -36,28 +42,24 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                     refresh_needed = false;
                 }
             }
-            b'k' => {
-                match s.questions[s.current_question_index] {
-                    qqml_parser::Question::Multichoice(ref mut d) => {
-                        if d.chosen_answer != 0 {
-                            d.chosen_answer -= 1;
-                            s.questions[s.current_question_index] = Question::Multichoice(d.clone());
-                        }
-                    },
-                    _ => ()
+            b'k' => match s.questions[s.current_question_index] {
+                Question::Multichoice(ref mut d) => {
+                    if d.chosen_answer != 0 {
+                        d.chosen_answer -= 1;
+                        s.questions[s.current_question_index] = Question::Multichoice(d.clone());
+                    }
                 }
-            }
-            b'j' => {
-                match s.questions[s.current_question_index] {
-                    qqml_parser::Question::Multichoice(ref mut d) => {
-                        if d.chosen_answer + 1 != d.answers.len() {
-                            d.chosen_answer += 1;
-                            s.questions[s.current_question_index] = Question::Multichoice(d.clone());
-                        }
-                    },
-                    _ => ()
+                _ => (),
+            },
+            b'j' => match s.questions[s.current_question_index] {
+                Question::Multichoice(ref mut d) => {
+                    if d.chosen_answer + 1 != d.answers.len() {
+                        d.chosen_answer += 1;
+                        s.questions[s.current_question_index] = Question::Multichoice(d.clone());
+                    }
                 }
-            }
+                _ => (),
+            },
             b'p' => {
                 if s.current_question_index != 0 {
                     s.current_question_index -= 1;
