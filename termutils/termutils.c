@@ -84,6 +84,13 @@ void exit_alt_screen() {
     fflush(stdout);
 }
 
+void hide_cursor() {
+    printf("\e[?25l");
+}
+void show_cursor() {
+    printf("\e[?25h");
+}
+
 int clear_screen_with_width() {
     return clear_screen_with_termsize().width;
 }
