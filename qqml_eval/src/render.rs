@@ -1,5 +1,9 @@
 use qqml_parser::Question;
 
+const ANSI_RESET: &'static str = "\x1b[0m";
+const ANSI_BG_WHITE: &'static str = "\x1b[47m";
+const ANSI_BLACK: &'static str = "\x1b[1;30m";
+
 pub trait Render {
     fn render(&self) -> String;
 }
@@ -46,17 +50,27 @@ impl Render for Screen<'_> {
 
 #[derive(Debug, Clone)]
 pub struct QuestionBody<'a> {
-    pub answers: Vec<String>,
+    pub answers: Vec<(String, bool)>,
     pub selected: &'a usize,
 }
 impl Render for QuestionBody<'_> {
     fn render(&self) -> String {
         let mut output = String::new();
         for (i, a) in self.answers.iter().enumerate() {
-            if &i == self.selected {
-                output += &format!("   {} <", a);
+            if a.1 {
+                output += ANSI_BLACK;
+                output += ANSI_BG_WHITE;
+                output += &("   ".to_owned() + &a.0);
+                output += ANSI_RESET;
+                if &i == self.selected {
+                    output += " <";
+                }
             } else {
-                output += &("   ".to_owned() + a);
+                if &i == self.selected {
+                    output += &format!("   {} <", a.0);
+                } else {
+                    output += &("   ".to_owned() + &a.0);
+                }
             }
             output += "\n";
         }
