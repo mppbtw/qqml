@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <ctype.h>
-#include <unistd.h>
 #include <termios.h>
 
+#define STDIN_FILENO 0
 #define SIZE 1024
 #define cursorjmp(cols, lines) printf("\033[%d;%dH", cols, lines);
 
@@ -37,7 +37,7 @@ struct CursorPosition get_cursor_position() {
     int lines = 0;
     int cols = 0;
     char response[SIZE] = "";
-    while (( ch = getchar()) != 'R') { // R terminates the response
+    while ((ch = getchar()) != 'R') { // R terminates the response
         if (EOF == ch) {
             break;
         }
@@ -61,7 +61,6 @@ int get_cursor_cols() {
 int get_cursor_lines() {
     return get_cursor_position().lines;
 }
-
 
 char read_single_char() {
     struct termios old_settings, new_settings;
@@ -119,7 +118,7 @@ struct TerminalSize clear_screen_with_termsize() {
     printf ("\033[9999;9999H"); // cursor should move as far as it can
 
     printf("\033[6n"); // ask for cursor position
-    while (( ch = getchar()) != 'R') { // R terminates the response
+    while ((ch = getchar()) != 'R') { // R terminates the response
         if (EOF == ch) {
             break;
         }
@@ -133,10 +132,10 @@ struct TerminalSize clear_screen_with_termsize() {
     }
 
     printf("\033[1;1H"); // move to upper left corner
-    sscanf( in, "[%d;%d", &rows, &cols);
+    sscanf(in, "[%d;%d", &rows, &cols);
 
     // restore terminal settings
-    tcsetattr( STDIN_FILENO, TCSANOW, &original);
+    tcsetattr(STDIN_FILENO, TCSANOW, &original);
     fflush(stdout);
 
     struct TerminalSize t = {cols, rows};
