@@ -1,7 +1,5 @@
 use qqml_parser::Question;
 
-const INFO_SECTION_WIDTH: usize = 50;
-
 pub trait Render {
     fn render(&self) -> String;
 }
@@ -9,7 +7,7 @@ pub trait Render {
 #[derive(Debug, Clone)]
 pub struct Screen<'a> {
     pub pathline: Option<PathLine<'a>>,
-    pub version_line: VersionLine,
+    pub version_line: VersionLine<'a>,
     pub q_select_line: QuestionSelectLine<'a>,
     pub question_line: QuestionLine<'a>,
     pub question_body: QuestionBody<'a>,
@@ -100,10 +98,11 @@ impl Render for HintsBody<'_> {
 #[derive(Debug, Clone)]
 pub struct PathLine<'a> {
     pub path: &'a String,
+    pub cols: &'a usize,
 }
 impl Render for PathLine<'_> {
     fn render(&self) -> String {
-        pad_to_width(&self.path, INFO_SECTION_WIDTH).unwrap_or(self.path.clone())
+        pad_to_width(&self.path, *(self).cols).unwrap_or(self.path.clone())
     }
 }
 
@@ -111,16 +110,17 @@ impl Render for PathLine<'_> {
 pub struct QuestionSelectLine<'a> {
     pub max_questions: &'a usize,
     pub current_question: &'a usize,
+    pub cols: &'a usize,
 }
 impl Render for QuestionSelectLine<'_> {
     fn render(&self) -> String {
         pad_to_width(
             &format!(
                 "<--({} / {})-->",
-                &self.current_question.to_string(),
+                self.current_question + 1,
                 &self.max_questions.to_string()
             ),
-            INFO_SECTION_WIDTH,
+            *(self).cols,
         )
         .unwrap()
     }
@@ -142,13 +142,15 @@ impl Render for HintsLine<'_> {
 }
 
 #[derive(Debug, Clone)]
-pub struct VersionLine;
-impl Render for VersionLine {
+pub struct VersionLine<'a> {
+    pub cols: &'a usize,
+}
+impl Render for VersionLine<'_> {
     fn render(&self) -> String {
         let version = env!("CARGO_PKG_VERSION");
         pad_to_width(
             &format!("QQML Version {}, press ? for help", version),
-            INFO_SECTION_WIDTH,
+            *(self).cols,
         )
         .unwrap()
     }
