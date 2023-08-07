@@ -36,6 +36,28 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                     refresh_needed = false;
                 }
             }
+            b'k' => {
+                match s.questions[s.current_question_index] {
+                    qqml_parser::Question::Multichoice(ref mut d) => {
+                        if d.chosen_answer != 0 {
+                            d.chosen_answer -= 1;
+                            s.questions[s.current_question_index] = Question::Multichoice(d.clone());
+                        }
+                    },
+                    _ => ()
+                }
+            }
+            b'j' => {
+                match s.questions[s.current_question_index] {
+                    qqml_parser::Question::Multichoice(ref mut d) => {
+                        if d.chosen_answer + 1 != d.answers.len() {
+                            d.chosen_answer += 1;
+                            s.questions[s.current_question_index] = Question::Multichoice(d.clone());
+                        }
+                    },
+                    _ => ()
+                }
+            }
             b'p' => {
                 if s.current_question_index != 0 {
                     s.current_question_index -= 1;
@@ -51,6 +73,5 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
         show_cursor();
         exit_alt_screen();
     }
-
     exit(0)
 }
