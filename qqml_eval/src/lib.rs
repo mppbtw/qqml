@@ -2,13 +2,10 @@
 mod test;
 
 mod render;
-mod target;
 mod repl;
+mod state;
 
 pub use repl::run;
-pub use render::Render;
-pub use render::Screen;
-pub use target::Target;
 
 // Example TUI:
 
