@@ -9,9 +9,7 @@ fn manually_inspect_output() {
         hints_used: 1,
         current_question: 0,
         questions: vec![Question::Multichoice(MultichoiceData {
-            text: Some("Which of the following statements about virtual memory is correct?".to_owned()),
-            max_marks: Some(1),
-            answers: vec![
+            text: Some("Which of the following statements about virtual memory is correct?".to_owned()), max_marks: Some(1), answers: vec![
                 MultichoiceAnswer {
                     text: Some("Virtual memory is used to store the Basic Input Output System.".to_owned()),
                     marks: 1,
