@@ -17,6 +17,7 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
     };
     unsafe {
         enter_alt_screen();
+        hide_cursor();
     }
     let mut refresh_needed = false;
     println!("{}", s.create_screen().render());
@@ -47,6 +48,7 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
         }
     }
     unsafe {
+        show_cursor();
         exit_alt_screen();
     }
 

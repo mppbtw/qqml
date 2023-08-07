@@ -7,4 +7,6 @@ extern "C" {
     pub fn read_single_char() -> u8;
     pub fn enter_alt_screen();
     pub fn exit_alt_screen();
+    pub fn hide_cursor();
+    pub fn show_cursor();
 }
