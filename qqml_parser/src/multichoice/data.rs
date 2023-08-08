@@ -7,7 +7,7 @@ pub struct MultichoiceData {
     pub answers: Vec<MultichoiceAnswer>,
     pub hints: Vec<String>,
     pub used_hints: usize,
-    pub chosen_answer: usize,
+    pub selected_answer: usize,
     pub warnings: Vec<MultichoiceWarning>,
     pub line: usize,
 }

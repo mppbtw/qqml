@@ -91,9 +91,11 @@ void exit_alt_screen() {
 
 void hide_cursor() {
     printf("\e[?25l");
+    fflush(stdout);
 }
 void show_cursor() {
     printf("\e[?25h");
+    fflush(stdout);
 }
 
 int clear_screen_with_width() {
@@ -134,4 +136,6 @@ struct TerminalSize clear_screen_with_termsize() {
 
 void clear_screen() {
     printf(ANSI_CLEAR);
+    cursorjmp(1, 1);
+    fflush(stdout);
 }

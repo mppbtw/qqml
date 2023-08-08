@@ -9,4 +9,5 @@ extern "C" {
     pub fn exit_alt_screen();
     pub fn hide_cursor();
     pub fn show_cursor();
+    pub fn clear_screen();
 }
