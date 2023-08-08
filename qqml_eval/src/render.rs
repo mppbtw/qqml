@@ -97,12 +97,8 @@ pub struct QuestionResultBody<'a> {
 impl Render for QuestionResultBody<'_> {
     fn render(&self) -> String {
         let mut output = String::new();
-        let mut answers = self.answers.clone();
 
-        answers.sort_by_key(|a| a.marks);
-        answers.reverse();
-
-        for a in answers {
+        for a in self.answers.clone() {
             if a.is_chosen {
                 if a.marks != 0 {
                     output += &format!("   {}{}{}{}", ANSI_BG_WHITE, ANSI_BLACK, a.text.unwrap(), ANSI_RESET);
