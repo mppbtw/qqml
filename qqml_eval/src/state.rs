@@ -67,25 +67,6 @@ impl State {
             question_line: QuestionLine {
                 q: &self.questions[self.current_question_index],
             },
-            question_body: QuestionBody {
-                answers: {
-                    match &self.questions[self.current_question_index] {
-                        Question::Multichoice(d) => d
-                            .answers
-                            .iter()
-                            .map(|a| (a.text.clone().unwrap(), a.is_chosen))
-                            .collect(),
-                        _ => vec![],
-                    }
-                    .clone() // We can't move any data from this struct
-                },
-                selected: {
-                    match &self.questions[self.current_question_index] {
-                        Question::Multichoice(d) => &d.selected_answer,
-                        _ => &0,
-                    }
-                },
-            },
             hints_body: {
                 match &self.questions[self.current_question_index] {
                     Question::Multichoice(d) => Some(HintsBody {
@@ -93,6 +74,49 @@ impl State {
                     }),
                     _ => None,
                 }
+            },
+
+            question_body: match &self.questions[self.current_question_index] {
+                Question::Multichoice(d) => {
+                    if d.is_answered {
+                        None
+                    } else {
+                        Some(QuestionBody {
+                            answers: {
+                                match &self.questions[self.current_question_index] {
+                                    Question::Multichoice(d) => d
+                                        .answers
+                                        .iter()
+                                        .map(|a| (a.text.clone().unwrap(), a.is_chosen))
+                                        .collect(),
+                                    _ => vec![],
+                                }
+                                .clone() // We can't move any data from this struct
+                            },
+                            selected: {
+                                match &self.questions[self.current_question_index] {
+                                    Question::Multichoice(d) => &d.selected_answer,
+                                    _ => &0,
+                                }
+                            },
+                        })
+                    }
+                }
+                _ => None,
+            },
+            question_result_body: match &self.questions[self.current_question_index] {
+                Question::Multichoice(d) => {
+                    if !d.is_answered {
+                        None
+                    } else {
+                        Some(QuestionResultBody {
+                            answers: &d.answers,
+                            question: &d,
+                            cols: &self.cols
+                        })
+                    }
+                }
+                _ => None,
             },
         }
     }
