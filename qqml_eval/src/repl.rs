@@ -29,6 +29,7 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
         refresh_needed = true;
         match unsafe { read_single_char() } {
             b'q' => break,
+            b'?' => help_menu(),
             b' ' => match s.questions[s.current_question_index] {
                 Question::Multichoice(ref mut d) => {
                     let mut total_chosen = 0;
@@ -38,13 +39,13 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                         }
                     });
 
-                    if total_chosen == d.max_marks.unwrap() || d.answers[d.chosen_answer].is_chosen
+                    if total_chosen == d.max_marks.unwrap() || d.answers[d.selected_answer].is_chosen
                     {
-                        d.answers[d.chosen_answer].is_chosen = false;
+                        d.answers[d.selected_answer].is_chosen = false;
                     } else if !(total_chosen == d.max_marks.unwrap()
-                        || d.answers[d.chosen_answer].is_chosen)
+                        || d.answers[d.selected_answer].is_chosen)
                     {
-                        d.answers[d.chosen_answer].is_chosen = true;
+                        d.answers[d.selected_answer].is_chosen = true;
                     } else {
                         refresh_needed = false;
                     }
@@ -60,8 +61,8 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
             }
             b'k' => match s.questions[s.current_question_index] {
                 Question::Multichoice(ref mut d) => {
-                    if d.chosen_answer != 0 {
-                        d.chosen_answer -= 1;
+                    if d.selected_answer != 0 {
+                        d.selected_answer -= 1;
                         s.questions[s.current_question_index] = Question::Multichoice(d.clone());
                     }
                 }
@@ -69,8 +70,8 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
             },
             b'j' => match s.questions[s.current_question_index] {
                 Question::Multichoice(ref mut d) => {
-                    if d.chosen_answer + 1 != d.answers.len() {
-                        d.chosen_answer += 1;
+                    if d.selected_answer + 1 != d.answers.len() {
+                        d.selected_answer += 1;
                         s.questions[s.current_question_index] = Question::Multichoice(d.clone());
                     }
                 }
@@ -92,4 +93,12 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
         exit_alt_screen();
     }
     exit(0)
+}
+
+fn help_menu() {
+    unsafe {
+        clear_screen();
+        println!("Help menu goes here");
+        read_single_char();
+    }
 }
