@@ -14,46 +14,52 @@ pub trait Render {
 
 #[derive(Debug, Clone)]
 pub struct Screen<'a> {
+    // Each component of the TUI is modular,
+    // such that this system can be used to
+    // render multiple different question types.
+
     pub pathline: Option<PathLine<'a>>,
-    pub version_line: VersionLine<'a>,
-    pub q_select_line: QuestionSelectLine<'a>,
-    pub question_line: QuestionLine<'a>,
+    pub version_line: Option<VersionLine<'a>>,
+    pub q_select_line: Option<QuestionSelectLine<'a>>,
+    pub question_line: Option<QuestionLine<'a>>,
     pub question_body: Option<QuestionBody<'a>>,
     pub question_result_body: Option<QuestionResultBody<'a>>,
-    pub hints_line: HintsLine<'a>,
+    pub hints_line: Option<HintsLine<'a>>,
     pub hints_body: Option<HintsBody<'a>>,
 }
 impl Render for Screen<'_> {
     fn render(&self) -> String {
         let mut output = String::new();
-        output += &self.version_line.render();
-        output += "\n";
+        match &self.version_line {
+            Some(c) => output += &(c.render() + "\n"),
+            None => (),
+        }
         match &self.pathline {
-            Some(p) => {
-                output += &p.render();
-                output += "\n";
-            }
+            Some(c) => output += &(c.render() + "\n"),
             None => (),
         };
-        output += "\n";
-        output += &self.q_select_line.render();
-        output += "\n\n";
-        output += &self.question_line.render();
-        output += "\n";
-
-        match &self.question_body {
-            Some(b) => output += &b.render(),
-            None => match &self.question_result_body {
-                Some(b) => output += &(b.render() + "\n"),
-                None => (),
-            },
+        match &self.q_select_line {
+            Some(c) => output += &(c.render() + "\n\n"),
+            None => ()
         }
-
-        output += "\n";
-        output += &self.hints_line.render();
-        output += "\n";
+        match &self.question_line {
+            Some(c) => output += &(c.render() + "\n"),
+            None => ()
+        }
+        match &self.question_body {
+            Some(c) => output += &(c.render() + "\n\n"),
+            None => () 
+        };
+        match &self.question_result_body {
+            Some(c) => output += &(c.render() + "\n\n"),
+            None => (),
+        };
+        match &self.hints_line {
+            Some(c) => output += &(c.render() + "\n"),
+            None => (),
+        }
         match &self.hints_body {
-            Some(h) => output += &h.render(),
+            Some(c) => output += &c.render(),
             None => (),
         };
 
