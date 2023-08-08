@@ -27,7 +27,7 @@ pub fn parse_multichoice<T: Into<Token>>(
 
     tok = l.next_token()?;
     match tok {
-        Token::Number(_, n) => dat.max_marks = Some(n),
+        Token::Number(_, n) => dat.max_marks = n,
         _ => report
             .errors
             .push(Error::ExpectedNumberForQuestionMaxMark(tok)),
@@ -42,7 +42,7 @@ pub fn parse_multichoice<T: Into<Token>>(
 
     tok = l.next_token()?;
     match tok {
-        Token::Literal(_, l) => dat.text = Some(l),
+        Token::Literal(_, l) => dat.text = l,
         _ => report.errors.push(Error::ExpectedQuestionText(tok)),
     };
 

@@ -1,6 +1,3 @@
-#[cfg(test)]
-mod test;
-
 mod render;
 mod repl;
 mod state;

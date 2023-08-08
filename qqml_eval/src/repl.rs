@@ -42,7 +42,7 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                             total_chosen += 1;
                         }
                     });
-                    if total_chosen == d.max_marks.unwrap() {
+                    if total_chosen == d.max_marks {
                         d.is_answered = true;
                     }
                 }
@@ -61,11 +61,11 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                         }
                     });
 
-                    if total_chosen == d.max_marks.unwrap()
+                    if total_chosen == d.max_marks
                         || d.answers[d.selected_answer].is_chosen
                     {
                         d.answers[d.selected_answer].is_chosen = false;
-                    } else if !(total_chosen == d.max_marks.unwrap()
+                    } else if !(total_chosen == d.max_marks
                         || d.answers[d.selected_answer].is_chosen)
                     {
                         d.answers[d.selected_answer].is_chosen = true;
