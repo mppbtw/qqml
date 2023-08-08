@@ -63,15 +63,15 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
 
                     if total_chosen == d.max_marks.unwrap()
                         || d.answers[d.selected_answer].is_chosen
-                        {
-                            d.answers[d.selected_answer].is_chosen = false;
-                        } else if !(total_chosen == d.max_marks.unwrap()
-                                    || d.answers[d.selected_answer].is_chosen)
-                        {
-                            d.answers[d.selected_answer].is_chosen = true;
-                        } else {
-                            refresh_needed = false;
-                        }
+                    {
+                        d.answers[d.selected_answer].is_chosen = false;
+                    } else if !(total_chosen == d.max_marks.unwrap()
+                        || d.answers[d.selected_answer].is_chosen)
+                    {
+                        d.answers[d.selected_answer].is_chosen = true;
+                    } else {
+                        refresh_needed = false;
+                    }
                 }
                 _ => (),
             },
