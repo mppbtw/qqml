@@ -5,7 +5,10 @@ use crate::token::KEYWORDS;
 const WHITESPACE_CHARS: [u8; 4] = [b' ', b'\n', b'\r', b'\t'];
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct UnterminatedStringError(pub TokenData);
+pub enum LexerError {
+    UnterminatedStringError(TokenData),
+    IntegerTooLarge(TokenData),
+}
 
 pub struct Lexer {
     input: String,
@@ -65,7 +68,7 @@ impl Lexer {
         }
     }
 
-    pub fn next_token(&mut self) -> Result<Token, UnterminatedStringError> {
+    pub fn next_token(&mut self) -> Result<Token, LexerError> {
         self.scran_whitespace();
         self.starting_position = self.position;
         let tok: Token = match self.ch {
@@ -121,7 +124,7 @@ impl Lexer {
                     let found = lookup_ident(self.read_ident());
                     found.with_different_data(self.get_token_data())
                 } else if is_digit(self.ch) {
-                    Token::Number(self.get_token_data(), self.read_number())
+                    Token::Number(self.get_token_data(), self.read_number()?)
                 } else if is_quote(self.ch) {
                     Token::Literal(self.get_token_data(), self.read_literal()?)
                 } else {
@@ -134,24 +137,28 @@ impl Lexer {
         Ok(tok)
     }
 
-    fn read_number(&mut self) -> usize {
+    fn read_number(&mut self) -> Result<usize, LexerError> {
         let pos = self.position;
+        let dat = self.get_token_data();
         while is_digit(self.ch) {
             self.read_char();
         }
-        let num = self.input[pos..self.position].to_owned().parse().unwrap();
+        let num = match self.input[pos..self.position].to_owned().parse::<usize>() {
+            Ok(n) => n,
+            Err(_) => return Err(LexerError::IntegerTooLarge(dat)),
+        };
         self.read_position -= 1;
         self.position -= 1;
-        num
+        Ok(num)
     }
 
-    fn read_literal(&mut self) -> Result<String, UnterminatedStringError> {
+    fn read_literal(&mut self) -> Result<String, LexerError> {
         let pos = self.position;
         let dat = self.get_token_data();
         let mut quotes_found = 0;
         while quotes_found < 2 {
             if self.ch == 0 {
-                return Err(UnterminatedStringError(dat));
+                return Err(LexerError::UnterminatedStringError(dat));
             }
             if is_quote(self.ch) {
                 quotes_found += 1;

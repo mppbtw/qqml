@@ -233,3 +233,11 @@ fn test_single_char_tokens() {
         i += 1;
     }
 }
+
+#[test]
+fn test_read_massive_numbers() {
+    let input =
+        "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
+    let mut l = Lexer::new(input);
+    assert!(l.next_token().is_err());
+}
