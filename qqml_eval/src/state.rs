@@ -48,7 +48,7 @@ impl State {
                     None => None,
                 }
             },
-            hints_line: HintsLine {
+            hints_line: Some(HintsLine {
                 max_hints: &self.max_hints,
                 hints_available: {
                     match &self.questions[self.current_question_index] {
@@ -57,16 +57,16 @@ impl State {
                     }
                 },
                 hints_used_total: &self.hints_used,
-            },
-            version_line: VersionLine { cols: &self.cols },
-            q_select_line: QuestionSelectLine {
+            }),
+            version_line: Some(VersionLine { cols: &self.cols }),
+            q_select_line: Some(QuestionSelectLine {
                 max_questions: &(self.questions_len),
                 current_question: &self.current_question_index,
                 cols: &self.cols,
-            },
-            question_line: QuestionLine {
+            }),
+            question_line: Some(QuestionLine {
                 q: &self.questions[self.current_question_index],
-            },
+            }),
             hints_body: {
                 match &self.questions[self.current_question_index] {
                     Question::Multichoice(d) => Some(HintsBody {
