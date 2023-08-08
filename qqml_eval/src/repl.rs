@@ -31,7 +31,23 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
             b'q' => break,
             b' ' => match s.questions[s.current_question_index] {
                 Question::Multichoice(ref mut d) => {
-                    d.answers[d.chosen_answer].is_chosen = !d.answers[d.chosen_answer].is_chosen;
+                    let mut total_chosen = 0;
+                    d.answers.iter().for_each(|a| {
+                        if a.is_chosen {
+                            total_chosen += 1;
+                        }
+                    });
+
+                    if total_chosen == d.max_marks.unwrap() || d.answers[d.chosen_answer].is_chosen
+                    {
+                        d.answers[d.chosen_answer].is_chosen = false;
+                    } else if !(total_chosen == d.max_marks.unwrap()
+                        || d.answers[d.chosen_answer].is_chosen)
+                    {
+                        d.answers[d.chosen_answer].is_chosen = true;
+                    } else {
+                        refresh_needed = false;
+                    }
                 }
                 _ => (),
             },
