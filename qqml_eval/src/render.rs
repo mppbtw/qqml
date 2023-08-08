@@ -1,8 +1,12 @@
+use qqml_parser::MultichoiceAnswer;
+use qqml_parser::MultichoiceData;
 use qqml_parser::Question;
 
 const ANSI_RESET: &'static str = "\x1b[0m";
 const ANSI_BG_WHITE: &'static str = "\x1b[47m";
 const ANSI_BLACK: &'static str = "\x1b[1;30m";
+const ANSI_GREEN: &'static str = "\x1b[32m";
+const ANSI_RED: &'static str = "\x1b[31m";
 
 pub trait Render {
     fn render(&self) -> String;
@@ -14,7 +18,8 @@ pub struct Screen<'a> {
     pub version_line: VersionLine<'a>,
     pub q_select_line: QuestionSelectLine<'a>,
     pub question_line: QuestionLine<'a>,
-    pub question_body: QuestionBody<'a>,
+    pub question_body: Option<QuestionBody<'a>>,
+    pub question_result_body: Option<QuestionResultBody<'a>>,
     pub hints_line: HintsLine<'a>,
     pub hints_body: Option<HintsBody<'a>>,
 }
@@ -35,7 +40,15 @@ impl Render for Screen<'_> {
         output += "\n\n";
         output += &self.question_line.render();
         output += "\n";
-        output += &self.question_body.render();
+
+        match &self.question_body {
+            Some(b) => output += &b.render(),
+            None => match &self.question_result_body {
+                Some(b) => output += &(b.render() + "\n"),
+                None => (),
+            },
+        }
+
         output += "\n";
         output += &self.hints_line.render();
         output += "\n";
@@ -44,6 +57,49 @@ impl Render for Screen<'_> {
             None => (),
         };
 
+        output
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct QuestionResultBody<'a> {
+    pub answers: &'a Vec<MultichoiceAnswer>,
+    pub cols: &'a usize,
+    pub question: &'a MultichoiceData,
+}
+impl Render for QuestionResultBody<'_> {
+    fn render(&self) -> String {
+        let mut body = String::new();
+        let mut output = String::new();
+        let mut qline = String::new();
+        let mut answers = self.answers.clone();
+
+        answers.sort_by_key(|a| a.marks);
+        answers.reverse();
+
+        let mut total_marks = 0;
+        for a in answers {
+            total_marks += a.marks;
+            if a.marks != 0 {
+                body += &format!("{}(+{}) '{}'\n", ANSI_GREEN, a.marks, a.text.unwrap());
+            } else {
+                body += &format!("{}(+{}) '{}'\n", ANSI_RED, a.marks, a.text.unwrap());
+            }
+            body += ANSI_RESET;
+            if let Some(x) = a.explanation {
+                body += &wrap_text_to_width(&x, self.cols / 2).unwrap();
+            }
+        }
+
+        qline += &format!(
+            "{} ({}/{})",
+            self.question.text.clone().unwrap(),
+            total_marks,
+            self.question.max_marks.unwrap(),
+        );
+
+        output += &(qline + "\n");
+        output += &body;
         output
     }
 }
@@ -178,6 +234,10 @@ fn pad_to_width(input: &str, width: usize) -> Result<String, WidthTooSmallError>
     (0..(width - input.len()) / 2).for_each(|_| output += " ");
     output += input;
     Ok(output)
+}
+
+fn wrap_text_to_width(input: &str, width: usize) -> Result<String, WidthTooSmallError> {
+    return Ok(input.to_owned());
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
