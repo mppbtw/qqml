@@ -10,6 +10,7 @@ pub struct MultichoiceData {
     pub selected_answer: usize,
     pub warnings: Vec<MultichoiceWarning>,
     pub line: usize,
+    pub is_answered: bool,
 }
 
 impl MultichoiceData {

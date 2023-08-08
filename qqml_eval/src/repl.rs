@@ -30,8 +30,30 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
         match unsafe { read_single_char() } {
             b'q' => break,
             b'?' => help_menu(),
+            b'\n' => match s.questions[s.current_question_index] {
+                Question::Multichoice(ref mut d) => 'block: {
+                    if d.is_answered {
+                        refresh_needed = false;
+                        break 'block;
+                    }
+                    let mut total_chosen = 0;
+                    d.answers.iter().for_each(|a| {
+                        if a.is_chosen {
+                            total_chosen += 1;
+                        }
+                    });
+                    if total_chosen == d.max_marks.unwrap() {
+                        d.is_answered = true;
+                    }
+                }
+                _ => (),
+            },
             b' ' => match s.questions[s.current_question_index] {
-                Question::Multichoice(ref mut d) => {
+                Question::Multichoice(ref mut d) => 'block: {
+                    if d.is_answered {
+                        refresh_needed = false;
+                        break 'block;
+                    }
                     let mut total_chosen = 0;
                     d.answers.iter().for_each(|a| {
                         if a.is_chosen {
@@ -39,22 +61,35 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                         }
                     });
 
-                    if total_chosen == d.max_marks.unwrap() || d.answers[d.selected_answer].is_chosen
-                    {
-                        d.answers[d.selected_answer].is_chosen = false;
-                    } else if !(total_chosen == d.max_marks.unwrap()
-                        || d.answers[d.selected_answer].is_chosen)
-                    {
-                        d.answers[d.selected_answer].is_chosen = true;
-                    } else {
-                        refresh_needed = false;
-                    }
+                    if total_chosen == d.max_marks.unwrap()
+                        || d.answers[d.selected_answer].is_chosen
+                        {
+                            d.answers[d.selected_answer].is_chosen = false;
+                        } else if !(total_chosen == d.max_marks.unwrap()
+                                    || d.answers[d.selected_answer].is_chosen)
+                        {
+                            d.answers[d.selected_answer].is_chosen = true;
+                        } else {
+                            refresh_needed = false;
+                        }
                 }
                 _ => (),
             },
             b'n' => {
-                if s.current_question_index + 1 != s.questions.len() {
+                if s.current_question_index + 1 != s.questions.len()
+                    && match s.questions[s.current_question_index] {
+                        Question::Multichoice(ref d) => d.is_answered,
+                        _ => true,
+                    }
+                {
                     s.current_question_index += 1;
+                } else {
+                    refresh_needed = false;
+                }
+            }
+            b'p' => {
+                if s.current_question_index != 0 {
+                    s.current_question_index -= 1;
                 } else {
                     refresh_needed = false;
                 }
@@ -77,13 +112,6 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                 }
                 _ => (),
             },
-            b'p' => {
-                if s.current_question_index != 0 {
-                    s.current_question_index -= 1;
-                } else {
-                    refresh_needed = false;
-                }
-            }
             b'r' => (), // Refresh the page
             _ => refresh_needed = false,
         }
