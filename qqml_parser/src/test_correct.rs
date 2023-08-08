@@ -42,13 +42,14 @@ fn test_parse_multichoice_questions_with_hints() {
         questions: vec![
             // question1
             Question::Multichoice(MultichoiceData {
-                text: Some("question1".to_owned()),
+                is_answered: false,
+                selected_answer: 0,
+                text: "question1".to_owned(),
                 warnings: vec![],
                 line: 3,
                 used_hints: 0,
-                max_marks: Some(2),
+                max_marks: 2,
                 hints: vec![],
-                chosen_answer: None,
                 answers: vec![
                     MultichoiceAnswer {
                         text: Some("correct1".to_owned()),
@@ -78,13 +79,14 @@ fn test_parse_multichoice_questions_with_hints() {
             }),
             // question2
             Question::Multichoice(MultichoiceData {
-                text: Some("question2".to_owned()),
+                text: "question2".to_owned(),
                 warnings: vec![],
                 line: 11,
-                max_marks: Some(1),
+                max_marks: 1,
                 hints: vec!["hint1".to_owned(), "hint2".to_owned()],
                 used_hints: 0,
-                chosen_answer: None,
+                selected_answer: 0,
+                is_answered: false,
                 answers: vec![
                     MultichoiceAnswer {
                         is_chosen: false,
@@ -144,63 +146,75 @@ fn test_parse_multichoice_questions_with_hints_double_quotes() {
         questions: vec![
             // question1
             Question::Multichoice(MultichoiceData {
-                text: Some("question1".to_owned()),
+                used_hints: 0,
+                is_answered: false,
+                selected_answer: 0,
+                text: "question1".to_owned(),
                 warnings: vec![],
                 line: 3,
-                max_marks: Some(2),
+                max_marks: 2,
                 hints: vec![],
-                chosen_answer: None,
                 answers: vec![
                     MultichoiceAnswer {
                         text: Some("correct1".to_owned()),
                         explanation: Some("explan1".to_owned()),
                         marks: 1,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("incorrect1".to_owned()),
                         explanation: Some("explan1".to_owned()),
                         marks: 0,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("wrong1".to_owned()),
                         marks: 0,
                         explanation: None,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("right1".to_owned()),
                         marks: 1,
                         explanation: None,
+                        is_chosen: false,
                     },
                 ],
             }),
             // question2
             Question::Multichoice(MultichoiceData {
-                text: Some("question2".to_owned()),
+                text: "question2".to_owned(),
+                used_hints: 0,
+                is_answered: false,
+                selected_answer: 0,
                 warnings: vec![],
                 line: 11,
-                max_marks: Some(1),
+                max_marks: 1,
                 hints: vec!["hint1".to_owned(), "hint2".to_owned()],
-                chosen_answer: None,
                 answers: vec![
                     MultichoiceAnswer {
                         text: Some("correct2".to_owned()),
                         explanation: Some("explan2".to_owned()),
                         marks: 1,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("incorrect2".to_owned()),
                         explanation: Some("explan2".to_owned()),
                         marks: 0,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("wrong2".to_owned()),
                         marks: 0,
                         explanation: None,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("right2".to_owned()),
                         marks: 1,
                         explanation: None,
+                        is_chosen: false,
                     },
                 ],
             }),
@@ -236,63 +250,75 @@ fn test_parse_multichoice_questions_with_hints_mixed_quotes() {
         questions: vec![
             // question1
             Question::Multichoice(MultichoiceData {
-                text: Some("question1".to_owned()),
+                text: "question1".to_owned(),
+                used_hints: 0,
+                is_answered: false,
+                selected_answer: 0,
                 warnings: vec![],
                 line: 3,
-                max_marks: Some(2),
+                max_marks: 2,
                 hints: vec![],
-                chosen_answer: None,
                 answers: vec![
                     MultichoiceAnswer {
                         text: Some("correct1".to_owned()),
                         explanation: Some("explan1".to_owned()),
                         marks: 1,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("incorrect1".to_owned()),
                         explanation: Some("explan1".to_owned()),
                         marks: 0,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("wrong1".to_owned()),
                         marks: 0,
                         explanation: None,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("right1".to_owned()),
                         marks: 1,
                         explanation: None,
+                        is_chosen: false,
                     },
                 ],
             }),
             // question2
             Question::Multichoice(MultichoiceData {
-                text: Some("question2".to_owned()),
+                text: "question2".to_owned(),
+                used_hints: 0,
                 warnings: vec![],
+                is_answered: false,
+                selected_answer: 0,
                 line: 11,
-                max_marks: Some(1),
+                max_marks: 1,
                 hints: vec!["hint1".to_owned(), "hint2".to_owned()],
-                chosen_answer: None,
                 answers: vec![
                     MultichoiceAnswer {
                         text: Some("correct2".to_owned()),
                         explanation: Some("explan2".to_owned()),
                         marks: 1,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("incorrect2".to_owned()),
                         explanation: Some("explan2".to_owned()),
                         marks: 0,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("wrong2".to_owned()),
                         marks: 0,
                         explanation: None,
+                        is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("right2".to_owned()),
                         marks: 1,
                         explanation: None,
+                        is_chosen: false,
                     },
                 ],
             }),

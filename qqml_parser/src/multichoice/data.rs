@@ -2,8 +2,8 @@ use crate::Warning;
 
 #[derive(Debug, Default, PartialEq, Eq, Clone)]
 pub struct MultichoiceData {
-    pub text: Option<String>,
-    pub max_marks: Option<usize>,
+    pub text: String,
+    pub max_marks: usize,
     pub answers: Vec<MultichoiceAnswer>,
     pub hints: Vec<String>,
     pub used_hints: usize,
@@ -16,9 +16,9 @@ pub struct MultichoiceData {
 impl MultichoiceData {
     pub fn validate(&mut self) {
         let total_mark = self.get_total_marks();
-        if self.max_marks.unwrap() > total_mark {
+        if self.max_marks > total_mark {
             self.warnings.push(MultichoiceWarning::MaxMarkImpossible(
-                self.max_marks.unwrap(),
+                self.max_marks,
                 total_mark,
             ));
         }

@@ -1,23 +1,22 @@
 use qqml_parser::MultichoiceAnswer;
 use qqml_parser::MultichoiceData;
-use qqml_parser::Question;
 
 const ANSI_RESET: &'static str = "\x1b[0m";
 const ANSI_BG_WHITE: &'static str = "\x1b[47m";
 const ANSI_BLACK: &'static str = "\x1b[1;30m";
 const ANSI_GREEN: &'static str = "\x1b[32m";
+const ANSI_YELLOW: &'static str = "\x1b[0;33m";
 const ANSI_RED: &'static str = "\x1b[31m";
 
 pub trait Render {
     fn render(&self) -> String;
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Screen<'a> {
     // Each component of the TUI is modular,
     // such that this system can be used to
     // render multiple different question types.
-
     pub pathline: Option<PathLine<'a>>,
     pub version_line: Option<VersionLine<'a>>,
     pub q_select_line: Option<QuestionSelectLine<'a>>,
@@ -26,6 +25,7 @@ pub struct Screen<'a> {
     pub question_result_body: Option<QuestionResultBody<'a>>,
     pub hints_line: Option<HintsLine<'a>>,
     pub hints_body: Option<HintsBody<'a>>,
+    pub question_result_line: Option<QuestionResultLine<'a>>,
 }
 impl Render for Screen<'_> {
     fn render(&self) -> String {
@@ -33,22 +33,26 @@ impl Render for Screen<'_> {
         match &self.version_line {
             Some(c) => output += &(c.render() + "\n"),
             None => (),
-        }
+        };
         match &self.pathline {
             Some(c) => output += &(c.render() + "\n"),
             None => (),
         };
         match &self.q_select_line {
             Some(c) => output += &(c.render() + "\n\n"),
-            None => ()
-        }
+            None => (),
+        };
         match &self.question_line {
-            Some(c) => output += &(c.render() + "\n"),
-            None => ()
-        }
+            Some(c) => output += &(c.render() + "\n\n"),
+            None => (),
+        };
         match &self.question_body {
             Some(c) => output += &(c.render() + "\n\n"),
-            None => () 
+            None => (),
+        };
+        match &self.question_result_line {
+            Some(c) => output += &(c.render() + "\n\n"),
+            None => (),
         };
         match &self.question_result_body {
             Some(c) => output += &(c.render() + "\n\n"),
@@ -57,7 +61,7 @@ impl Render for Screen<'_> {
         match &self.hints_line {
             Some(c) => output += &(c.render() + "\n"),
             None => (),
-        }
+        };
         match &self.hints_body {
             Some(c) => output += &c.render(),
             None => (),
@@ -68,44 +72,58 @@ impl Render for Screen<'_> {
 }
 
 #[derive(Debug, Clone)]
+pub struct QuestionResultLine<'a> {
+    pub question: &'a String,
+    pub achieved_marks: &'a usize,
+    pub max_marks: &'a usize,
+}
+impl Render for QuestionResultLine<'_> {
+    fn render(&self) -> String {
+        if *self.achieved_marks == 0 {
+            format!("{}{} ({}/{}){}", self.question, ANSI_RED, self.achieved_marks, self.max_marks, ANSI_RESET)
+        } else if self.achieved_marks == self.max_marks {
+            format!("{}{} ({}/{}){}", self.question, ANSI_GREEN, self.achieved_marks, self.max_marks, ANSI_RESET)
+        } else {
+            format!("{}{} ({}/{}){}", self.question, ANSI_YELLOW, self.achieved_marks, self.max_marks, ANSI_RESET)
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct QuestionResultBody<'a> {
     pub answers: &'a Vec<MultichoiceAnswer>,
     pub cols: &'a usize,
-    pub question: &'a MultichoiceData,
 }
 impl Render for QuestionResultBody<'_> {
     fn render(&self) -> String {
-        let mut body = String::new();
         let mut output = String::new();
-        let mut qline = String::new();
         let mut answers = self.answers.clone();
 
         answers.sort_by_key(|a| a.marks);
         answers.reverse();
 
-        let mut total_marks = 0;
         for a in answers {
-            total_marks += a.marks;
-            if a.marks != 0 {
-                body += &format!("{}(+{}) '{}'\n", ANSI_GREEN, a.marks, a.text.unwrap());
+            if a.is_chosen {
+                if a.marks != 0 {
+                    output += &format!("   {}{}{}{}", ANSI_BG_WHITE, ANSI_BLACK, a.text.unwrap(), ANSI_RESET);
+                    output += &format!(" {}(+{}) \n", ANSI_GREEN, a.marks);
+                } else {
+                    output += &format!("   {}{}{}{}", ANSI_BG_WHITE, ANSI_BLACK, a.text.unwrap(), ANSI_RESET);
+                    output += &format!(" {}(X) \n", ANSI_RED);
+                }
             } else {
-                body += &format!("{}(+{}) '{}'\n", ANSI_RED, a.marks, a.text.unwrap());
+                if a.marks != 0 {
+                    output += &format!("   {}{} (+{}) \n", a.text.unwrap(), ANSI_GREEN, a.marks);
+                } else {
+                    output += &format!("   {}{} (X) \n", a.text.unwrap(), ANSI_RED);
+                }
             }
-            body += ANSI_RESET;
+            output += ANSI_RESET;
             if let Some(x) = a.explanation {
-                body += &wrap_text_to_width(&x, self.cols / 2).unwrap();
+                output += &wrap_text_to_width(&x, self.cols / 2).unwrap();
             }
         }
 
-        qline += &format!(
-            "{} ({}/{})",
-            self.question.text.clone().unwrap(),
-            total_marks,
-            self.question.max_marks.unwrap(),
-        );
-
-        output += &(qline + "\n");
-        output += &body;
         output
     }
 }
@@ -120,9 +138,10 @@ impl Render for QuestionBody<'_> {
         let mut output = String::new();
         for (i, a) in self.answers.iter().enumerate() {
             if a.1 {
+                output += "  ";
                 output += ANSI_BLACK;
                 output += ANSI_BG_WHITE;
-                output += &("   ".to_owned() + &a.0);
+                output += &a.0;
                 output += ANSI_RESET;
                 if &i == self.selected {
                     output += " <";
@@ -142,17 +161,15 @@ impl Render for QuestionBody<'_> {
 
 #[derive(Debug, Clone)]
 pub struct QuestionLine<'a> {
-    pub q: &'a Question,
+    pub q: &'a MultichoiceData,
 }
 impl Render for QuestionLine<'_> {
     fn render(&self) -> String {
-        match &self.q {
-            Question::String() => "String questions are not supported.".to_owned(),
-            Question::Calculation() => "Calculation questions are not supported.".to_owned(),
-            Question::Multichoice(m) => {
-                format!("{} ({})", m.text.clone().unwrap(), m.max_marks.unwrap())
-            }
-        }
+        format!(
+            "{} ({})",
+            self.q.text.clone(),
+            self.q.max_marks
+        )
     }
 }
 
