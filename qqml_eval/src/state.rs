@@ -81,7 +81,7 @@ impl State {
                 },
                 selected: {
                     match &self.questions[self.current_question_index] {
-                        Question::Multichoice(d) => &d.chosen_answer,
+                        Question::Multichoice(d) => &d.selected_answer,
                         _ => &0,
                     }
                 },
