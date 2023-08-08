@@ -1,9 +1,9 @@
 use std::fmt;
 
 use crate::Warning;
+use qqml_lexer::LexerError;
 use qqml_lexer::Token;
 use qqml_lexer::TokenData;
-use qqml_lexer::UnterminatedStringError;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Error {
@@ -12,6 +12,7 @@ pub enum Error {
 
     /// Stores the data of where the literal began.
     UnterminatedLiteral(TokenData),
+    IntegerTooLarge(TokenData),
 
     UnexpectedBodyToken(Token),
     ExpectedLSquirlyForQuestion(Token),
@@ -65,11 +66,14 @@ pub struct ErrorReport {
     pub errors: Vec<Error>,
     pub warnings: Vec<Warning>,
 }
-impl From<UnterminatedStringError> for ErrorReport {
-    fn from(value: UnterminatedStringError) -> Self {
+impl From<LexerError> for ErrorReport {
+    fn from(value: LexerError) -> Self {
         Self {
-            errors: vec![Error::UnterminatedLiteral(value.0)],
             warnings: vec![],
+            errors: vec![match value {
+                LexerError::IntegerTooLarge(d) => Error::IntegerTooLarge(d),
+                LexerError::UnterminatedStringError(d) => Error::UnterminatedLiteral(d),
+            }],
         }
     }
 }
