@@ -247,7 +247,7 @@ impl Render for VersionLine<'_> {
 
 fn pad_to_width(input: &str, width: usize) -> Result<String, WidthTooSmallError> {
     let mut output = String::new();
-    if output.len() > width {
+    if input.len() > width {
         return Err(WidthTooSmallError);
     }
     (0..(width - input.len()) / 2).for_each(|_| output += " ");
