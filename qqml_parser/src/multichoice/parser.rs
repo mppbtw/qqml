@@ -31,7 +31,7 @@ pub fn parse_multichoice<T: Into<Token>>(
         Token::Number(_, n) => {
             dat.max_marks = n;
             tok = l.next_token()?;
-        },
+        }
         _ => report
             .errors
             .push(Error::ExpectedNumberForQuestionMaxMark(tok.clone())),
@@ -49,14 +49,16 @@ pub fn parse_multichoice<T: Into<Token>>(
         Token::Literal(_, s) => {
             dat.text = s;
             tok = l.next_token()?;
-        },
+        }
         _ => report.errors.push(Error::ExpectedQuestionText(tok.clone())),
     };
 
     let mut skip_next_tok = false;
 
     if !matches!(tok, Token::LSquirly(_)) {
-        report.errors.push(Error::ExpectedLSquirlyForQuestion(tok.clone()));
+        report
+            .errors
+            .push(Error::ExpectedLSquirlyForQuestion(tok.clone()));
         skip_next_tok = true;
     }
 
@@ -100,14 +102,14 @@ pub fn parse_multichoice<T: Into<Token>>(
                         Token::Eof(_) => {
                             report.errors.push(Error::ExpectedCommaInHintsList(tok));
                             break;
-                        },
+                        }
                         _ => report.errors.push(Error::ExpectedCommaInHintsList(tok)),
                     };
                 }
                 Token::Eof(_) => {
                     report.errors.push(Error::ExpectedCommaInHintsList(tok));
                     break;
-                },
+                }
                 Token::Semicolon(_) => break,
                 _ => report.errors.push(Error::ExpectedHintText(tok)),
             };

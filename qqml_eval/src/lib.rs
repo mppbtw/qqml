@@ -1,7 +1,7 @@
+mod diagnostics;
 mod render;
 mod repl;
 mod state;
-mod diagnostics;
 
 pub use repl::run;
 

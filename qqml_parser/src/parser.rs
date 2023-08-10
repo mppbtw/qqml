@@ -71,7 +71,8 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
             continue;
         }
 
-        report.errors.push(Error::ExpectedQuestionOrDirective(tok));
+        report.errors.push(Error::ExpectedQuestionType(tok.clone()));
+        break;
     }
 
     // If we aren't returning the questions, the consumer
