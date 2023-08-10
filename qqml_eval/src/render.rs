@@ -80,11 +80,20 @@ pub struct QuestionResultLine<'a> {
 impl Render for QuestionResultLine<'_> {
     fn render(&self) -> String {
         if *self.achieved_marks == 0 {
-            format!("{}{} ({}/{}){}", self.question, ANSI_RED, self.achieved_marks, self.max_marks, ANSI_RESET)
+            format!(
+                "{}{} ({}/{}){}",
+                self.question, ANSI_RED, self.achieved_marks, self.max_marks, ANSI_RESET
+            )
         } else if self.achieved_marks == self.max_marks {
-            format!("{}{} ({}/{}){}", self.question, ANSI_GREEN, self.achieved_marks, self.max_marks, ANSI_RESET)
+            format!(
+                "{}{} ({}/{}){}",
+                self.question, ANSI_GREEN, self.achieved_marks, self.max_marks, ANSI_RESET
+            )
         } else {
-            format!("{}{} ({}/{}){}", self.question, ANSI_YELLOW, self.achieved_marks, self.max_marks, ANSI_RESET)
+            format!(
+                "{}{} ({}/{}){}",
+                self.question, ANSI_YELLOW, self.achieved_marks, self.max_marks, ANSI_RESET
+            )
         }
     }
 }
@@ -101,10 +110,22 @@ impl Render for QuestionResultBody<'_> {
         for a in self.answers.clone() {
             if a.is_chosen {
                 if a.marks != 0 {
-                    output += &format!("   {}{}{}{}", ANSI_BG_WHITE, ANSI_BLACK, a.text.unwrap(), ANSI_RESET);
+                    output += &format!(
+                        "   {}{}{}{}",
+                        ANSI_BG_WHITE,
+                        ANSI_BLACK,
+                        a.text.unwrap(),
+                        ANSI_RESET
+                    );
                     output += &format!(" {}(+{}) \n", ANSI_GREEN, a.marks);
                 } else {
-                    output += &format!("   {}{}{}{}", ANSI_BG_WHITE, ANSI_BLACK, a.text.unwrap(), ANSI_RESET);
+                    output += &format!(
+                        "   {}{}{}{}",
+                        ANSI_BG_WHITE,
+                        ANSI_BLACK,
+                        a.text.unwrap(),
+                        ANSI_RESET
+                    );
                     output += &format!(" {}(X) \n", ANSI_RED);
                 }
             } else {
@@ -161,11 +182,7 @@ pub struct QuestionLine<'a> {
 }
 impl Render for QuestionLine<'_> {
     fn render(&self) -> String {
-        format!(
-            "{} ({})",
-            self.q.text.clone(),
-            self.q.max_marks
-        )
+        format!("{} ({})", self.q.text.clone(), self.q.max_marks)
     }
 }
 
@@ -211,7 +228,11 @@ impl Render for QuestionSelectLine<'_> {
             ),
             *(self).cols,
         )
-        .unwrap()
+        .unwrap_or(format!(
+            "<--({} / {})-->",
+            self.current_question + 1,
+            &self.max_questions.to_string()
+        ))
     }
 }
 
@@ -241,7 +262,7 @@ impl Render for VersionLine<'_> {
             &format!("QQML Version {}, press ? for help", version),
             *(self).cols,
         )
-        .unwrap()
+        .unwrap_or(format!("QQML Version {}, press ? for help", version))
     }
 }
 

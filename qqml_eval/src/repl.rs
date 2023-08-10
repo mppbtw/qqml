@@ -44,9 +44,11 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                     });
                     if total_chosen == d.max_marks {
                         d.is_answered = true;
+                    } else {
+                        refresh_needed = false;
                     }
                 }
-                _ => (),
+                _ => refresh_needed = false,
             },
             b' ' => match s.questions[s.current_question_index] {
                 Question::Multichoice(ref mut d) => 'block: {
@@ -61,9 +63,7 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                         }
                     });
 
-                    if total_chosen == d.max_marks
-                        || d.answers[d.selected_answer].is_chosen
-                    {
+                    if total_chosen == d.max_marks || d.answers[d.selected_answer].is_chosen {
                         d.answers[d.selected_answer].is_chosen = false;
                     } else if !(total_chosen == d.max_marks
                         || d.answers[d.selected_answer].is_chosen)
@@ -73,7 +73,7 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                         refresh_needed = false;
                     }
                 }
-                _ => (),
+                _ => refresh_needed = true,
             },
             b'n' => {
                 if s.current_question_index + 1 != s.questions.len()
@@ -101,7 +101,7 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                         s.questions[s.current_question_index] = Question::Multichoice(d.clone());
                     }
                 }
-                _ => (),
+                _ => refresh_needed = false,
             },
             b'j' => match s.questions[s.current_question_index] {
                 Question::Multichoice(ref mut d) => {
@@ -110,7 +110,7 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
                         s.questions[s.current_question_index] = Question::Multichoice(d.clone());
                     }
                 }
-                _ => (),
+                _ => refresh_needed = false,
             },
             b'r' => (), // Refresh the page
             _ => refresh_needed = false,

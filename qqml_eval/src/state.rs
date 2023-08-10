@@ -82,7 +82,6 @@ impl State {
                         question: &d.text,
                         achieved_marks: &self.current_achieved_marks,
                     });
-
                 } else {
                     s.question_line = Some(QuestionLine { q: &d });
                     s.question_body = Some(QuestionBody {
