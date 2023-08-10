@@ -4,6 +4,7 @@ use crate::Error;
 use crate::Question;
 use qqml_lexer::Lexer;
 use qqml_lexer::Token;
+use qqml_lexer::TokenData;
 
 #[derive(Clone, Default, Debug, PartialEq, Eq)]
 pub struct ParsedFile {
@@ -19,8 +20,11 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
 
     let mut report = ErrorReport::new();
 
+    let mut tok;
+
+    let mut iters = 0;
     loop {
-        let mut tok = l.next_token()?;
+        tok = l.next_token()?;
         if matches!(tok, Token::Semicolon(_)) {
             continue;
         }

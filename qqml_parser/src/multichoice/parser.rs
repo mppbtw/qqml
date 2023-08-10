@@ -22,39 +22,52 @@ pub fn parse_multichoice<T: Into<Token>>(
     if !matches!(tok, Token::LParen(_)) {
         report
             .errors
-            .push(Error::ExpectedLParenForQuestionMaxMark(tok));
+            .push(Error::ExpectedLParenForQuestionMaxMark(tok.clone()))
+    } else {
+        tok = l.next_token()?;
     }
 
-    tok = l.next_token()?;
     match tok {
-        Token::Number(_, n) => dat.max_marks = n,
+        Token::Number(_, n) => {
+            dat.max_marks = n;
+            tok = l.next_token()?;
+        },
         _ => report
             .errors
-            .push(Error::ExpectedNumberForQuestionMaxMark(tok)),
+            .push(Error::ExpectedNumberForQuestionMaxMark(tok.clone())),
     };
 
-    tok = l.next_token()?;
     if !matches!(tok, Token::RParen(_)) {
         report
             .errors
-            .push(Error::ExpectedRParenForQuestionMaxMark(tok));
+            .push(Error::ExpectedRParenForQuestionMaxMark(tok.clone()));
+    } else {
+        tok = l.next_token()?;
     }
 
-    tok = l.next_token()?;
     match tok {
-        Token::Literal(_, l) => dat.text = l,
-        _ => report.errors.push(Error::ExpectedQuestionText(tok)),
+        Token::Literal(_, s) => {
+            dat.text = s;
+            tok = l.next_token()?;
+        },
+        _ => report.errors.push(Error::ExpectedQuestionText(tok.clone())),
     };
 
-    tok = l.next_token()?;
+    let mut skip_next_tok = false;
+
     if !matches!(tok, Token::LSquirly(_)) {
-        report.errors.push(Error::ExpectedLSquirlyForQuestion(tok));
+        report.errors.push(Error::ExpectedLSquirlyForQuestion(tok.clone()));
+        skip_next_tok = true;
     }
 
     loop {
-        tok = l.next_token()?;
+        if skip_next_tok {
+            skip_next_tok = false;
+        } else {
+            tok = l.next_token()?;
+        }
 
-        if matches!(tok, Token::Semicolon(_)) {
+        if matches!(tok.clone(), Token::Semicolon(_)) {
             continue;
         }
 
@@ -68,10 +81,11 @@ pub fn parse_multichoice<T: Into<Token>>(
                 Err(r) => report.extend(r),
             }
         } else {
-            report.errors.push(Error::UnexpectedBodyToken(tok));
+            report.errors.push(Error::UnexpectedBodyToken(tok.clone()));
             break;
         }
     }
+
     tok = l.next_token()?;
     if matches!(tok, Token::Hints(_)) {
         loop {
@@ -83,9 +97,18 @@ pub fn parse_multichoice<T: Into<Token>>(
                     match tok {
                         Token::Comma(_) => continue,
                         Token::Semicolon(_) => break,
+                        Token::Eof(_) => {
+                            report.errors.push(Error::ExpectedCommaInHintsList(tok));
+                            break;
+                        },
                         _ => report.errors.push(Error::ExpectedCommaInHintsList(tok)),
                     };
                 }
+                Token::Eof(_) => {
+                    report.errors.push(Error::ExpectedCommaInHintsList(tok));
+                    break;
+                },
+                Token::Semicolon(_) => break,
                 _ => report.errors.push(Error::ExpectedHintText(tok)),
             };
         }
