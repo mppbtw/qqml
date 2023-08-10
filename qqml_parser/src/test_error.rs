@@ -78,7 +78,6 @@ fn test_missing_bracket_for_multichoice_max_marks() {
     let errors = output.unwrap_err().errors;
     dbg!(&errors);
     assert_eq!(errors.len(), 1);
-
 }
 
 #[test]
@@ -94,9 +93,9 @@ fn test_missing_comma_in_multichoice_hints() {
         } hints 'hint one' 'hint two';
         ";
 
-        let report = parse(input).unwrap_err();
-        dbg!(&report.errors);
-        assert_eq!(report.errors.len(), 1);
+    let report = parse(input).unwrap_err();
+    dbg!(&report.errors);
+    assert_eq!(report.errors.len(), 1);
 }
 
 #[test]
