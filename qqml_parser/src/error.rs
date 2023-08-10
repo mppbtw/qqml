@@ -62,23 +62,16 @@ impl Error {
             Self::ExpectedNumberForAnswerMark(t) => t.get_data(),
             Self::ExpectedNumberForQuestionMaxMark(t) => t.get_data(),
             Self::ExpectedQuestionText(t) => t.get_data(),
-            _ => &TokenData { col: 0, line: 0}
-        }.clone()
+            _ => &TokenData { col: 0, line: 0 },
+        }
+        .clone()
     }
 }
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let msg = match self {
-            Self::InvalidQuestionType(t) => format!("The question type {} is invalid, see doc#", t),
-            Self::ExpectedHintText(_) => {
-                format!("The `hints` keyword should precede the hints themselves, see doc#hints")
-            }
-            Self::ExpectedAnswerText(_) => {
-                format!("The answer should contain a string, see doc#multichoice")
-            }
-            Self::HintsDirectiveRepeated => "".to_owned(),
-            _ => format!("{}", &self).to_string(),
+            _ => "ERROR MESSAGE PLACEHOLDER".to_owned(),
         };
 
         let _ = msg.replace(

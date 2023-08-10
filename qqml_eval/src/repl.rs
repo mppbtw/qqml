@@ -1,10 +1,10 @@
+use crate::diagnostics::render_error;
 use crate::render::*;
 use crate::state::*;
 use qqml_parser::parse;
 use qqml_parser::Question;
 use rtermutils::*;
 use std::process::exit;
-use crate::diagnostics::render_error;
 
 pub fn run(input: String, path_to_source: Option<String>) -> ! {
     let parsed = match parse(&input) {
@@ -12,8 +12,11 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
         Err(r) => {
             let len = r.errors.len();
             for error in r.errors {
-                println!("{}", render_error(input.to_owned(), error, path_to_source.clone()));
-            };
+                println!(
+                    "{}",
+                    render_error(input.to_owned(), error, path_to_source.clone())
+                );
+            }
             println!("Errors detected: {}", len);
             exit(1);
         }
