@@ -28,6 +28,9 @@ pub enum Error {
 
     // Semantics for multichoice
     ImpossibleMaxMark(Token),
+    OnlyOneMultichoiceAnswer(Token),
+    NoMultichoiceAnswers(Token),
+
 
     // Multichoice answer syntax
     UnexpectedAnswerToken(Token, Vec<Token>),
@@ -37,6 +40,9 @@ pub enum Error {
     ExpectedRParenForAnswerMark(Token),
     ExpectedNumberForAnswerMark(Token),
 
+    // General semantics
+    MaxMarkIsZero(Token),
+
     /// Stores the token (hopefully Token::Identifier) of the question
     /// which was invalid.
     InvalidQuestionType(Token),
@@ -44,6 +50,9 @@ pub enum Error {
 impl Error {
     pub fn get_token_data(&self) -> TokenData {
         match self {
+            Self::OnlyOneMultichoiceAnswer(t) => t.get_data(),
+            Self::NoMultichoiceAnswers(t) => t.get_data(),
+            Self::MaxMarkIsZero(t) => t.get_data(),
             Self::ExpectedSemicolonAfterHintsDirective(t) => t.get_data(),
             Self::ExpectedQuestionOrDirective(t) => t.get_data(),
             Self::ExpectedQuestionType(t) => t.get_data(),
@@ -65,7 +74,7 @@ impl Error {
             Self::ExpectedNumberForAnswerMark(t) => t.get_data(),
             Self::ExpectedNumberForQuestionMaxMark(t) => t.get_data(),
             Self::ExpectedQuestionText(t) => t.get_data(),
-            _ => &TokenData { col: 0, line: 0 },
+            _ => &TokenData { col: 0, line: 0 }
         }
         .clone()
     }

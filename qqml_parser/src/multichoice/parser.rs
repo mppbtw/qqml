@@ -29,7 +29,11 @@ pub fn parse_multichoice<T: Into<Token>>(
 
     match tok {
         Token::Number(_, n) => {
-            dat.max_marks = n;
+            if n == 0 {
+                report.errors.push(Error::MaxMarkIsZero(tok));
+            } else {
+                dat.max_marks = n;
+            }
             tok = l.next_token()?;
         }
         _ => report
@@ -115,13 +119,21 @@ pub fn parse_multichoice<T: Into<Token>>(
         }
     }
 
-    // Some semantic analasys
+    // Some semantic analasys can be done here as the
+    // errors produced need not be bound to a token we
+    // have already consumed.
     let mut total_marks = 0;
     for a in dat.answers.to_vec() {
         total_marks += a.marks;
     }
     if total_marks < dat.max_marks {
         report.errors.push(Error::ImpossibleMaxMark(keyword.clone()));
+    }
+
+    if dat.answers.len() == 0 {
+        report.errors.push(Error::NoMultichoiceAnswers(keyword.clone()));
+    } else if dat.answers.len() == 1 {
+        report.errors.push(Error::OnlyOneMultichoiceAnswer(keyword.clone()));
     }
 
     dat.line = keyword.get_data().line;
