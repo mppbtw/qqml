@@ -84,7 +84,6 @@ pub fn parse_multichoice<T: Into<Token>>(
             }
         } else {
             report.errors.push(Error::UnexpectedBodyToken(tok.clone()));
-            break;
         }
     }
 
@@ -114,6 +113,15 @@ pub fn parse_multichoice<T: Into<Token>>(
                 _ => report.errors.push(Error::ExpectedHintText(tok)),
             };
         }
+    }
+
+    // Some semantic analasys
+    let mut total_marks = 0;
+    for a in dat.answers.to_vec() {
+        total_marks += a.marks;
+    }
+    if total_marks < dat.max_marks {
+        report.errors.push(Error::ImpossibleMaxMark(keyword.clone()));
     }
 
     dat.line = keyword.get_data().line;
