@@ -14,7 +14,8 @@ This syntax can be broken up into 3 parts,
 * The `ask` keyword
 * The question type keyword
 * The maximum marks for the question enclosed in brackets
-* The actual text of the question itself
+* The actual text of the question itself enclosed in quotes(note that both `'`
+  and `"` can be used)
 
 ## Multichoice Questions
 
@@ -72,3 +73,7 @@ points. For each quiz, the user's max hints can be defined with the
 ``` javascript
 hints 3;
 ```
+
+> **_NOTE_** The hints directive doesnt actually *have* to be at the end of the
+> file, but its kinda weird to put it anywhere else. It is impossible however
+> to redefine the number of hints later in the program.
