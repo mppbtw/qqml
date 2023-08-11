@@ -33,6 +33,8 @@ pub struct State {
     // Used only for purpose of handing references to TUI components
     current_achieved_marks: usize,
 }
+
+#[allow(clippy::field_reassign_with_default)]
 impl State {
     pub fn create_screen(&mut self) -> Screen {
         self.cols = unsafe { clear_screen_with_width() } as usize;
@@ -55,47 +57,43 @@ impl State {
         match &self.path_to_source {
             Some(p) => {
                 s.pathline = Some(PathLine {
-                    path: &p,
+                    path: p,
                     cols: &self.cols,
                 })
             }
             None => (),
         };
 
-        match &self.questions[self.current_question_index] {
-            Question::Multichoice(d) => {
-                if d.is_answered {
-                    s.question_result_body = Some(QuestionResultBody {
-                        cols: &self.cols,
-                        answers: &d.answers,
-                    });
+        if let Question::Multichoice(d) = &self.questions[self.current_question_index] {
+            if d.is_answered {
+                s.question_result_body = Some(QuestionResultBody {
+                    cols: &self.cols,
+                    answers: &d.answers,
+                });
 
-                    self.current_achieved_marks = 0;
-                    for a in d.answers.iter() {
-                        if a.is_chosen {
-                            self.current_achieved_marks += a.marks;
-                        }
+                self.current_achieved_marks = 0;
+                for a in d.answers.iter() {
+                    if a.is_chosen {
+                        self.current_achieved_marks += a.marks;
                     }
-
-                    s.question_result_line = Some(QuestionResultLine {
-                        max_marks: &d.max_marks,
-                        question: &d.text,
-                        achieved_marks: &self.current_achieved_marks,
-                    });
-                } else {
-                    s.question_line = Some(QuestionLine { q: &d });
-                    s.question_body = Some(QuestionBody {
-                        answers: (d
-                            .answers
-                            .iter()
-                            .map(|d| (d.text.clone().unwrap(), d.is_chosen))
-                            .collect()),
-                        selected: &d.selected_answer,
-                    })
                 }
+
+                s.question_result_line = Some(QuestionResultLine {
+                    max_marks: &d.max_marks,
+                    question: &d.text,
+                    achieved_marks: &self.current_achieved_marks,
+                });
+            } else {
+                s.question_line = Some(QuestionLine { q: d });
+                s.question_body = Some(QuestionBody {
+                    answers: (d
+                              .answers
+                              .iter()
+                              .map(|d| (d.text.clone().unwrap(), d.is_chosen))
+                              .collect()),
+                              selected: &d.selected_answer,
+                })
             }
-            // Other question types are not yet supported
-            _ => (),
         };
 
         s
