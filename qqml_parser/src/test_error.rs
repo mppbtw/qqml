@@ -49,3 +49,19 @@ fn test_missing_comma_in_multichoice_hints() {
     dbg!(&report.errors);
     assert_eq!(report.errors.len(), 1);
 }
+
+#[test]
+fn test_impossible_max_marks() {
+    let input = "
+
+        hints 3;
+
+        ask multichoice (10) 'how many of your bases are belong to us' {
+            * 'all of them' (1);
+            * 'som of them' (1);
+            * 'unknown quantity of them';
+        } hints 'hint one' 'hint two';
+        ";
+    let report = parse(input).unwrap_err();
+    dbg!(&report.errors);
+}

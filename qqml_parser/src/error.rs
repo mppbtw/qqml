@@ -13,6 +13,7 @@ pub enum Error {
     UnterminatedLiteral(TokenData),
     IntegerTooLarge(TokenData),
 
+    // Syntax for multichoice
     UnexpectedBodyToken(Token),
     ExpectedLSquirlyForQuestion(Token),
     ExpectedRParenForQuestionMaxMark(Token),
@@ -24,8 +25,11 @@ pub enum Error {
     ExpectedQuestionType(Token),
     ExpectedHintText(Token),
     ExpectedCommaInHintsList(Token),
+
+    // Semantics for multichoice
     ImpossibleMaxMark(Token),
 
+    // Multichoice answer syntax
     UnexpectedAnswerToken(Token, Vec<Token>),
     ExpectedAnswerText(Token),
     ExpectedAnswerSemicolon(Token),
