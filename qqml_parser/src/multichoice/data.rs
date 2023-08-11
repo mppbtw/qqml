@@ -13,7 +13,7 @@ pub struct MultichoiceData {
 impl MultichoiceData {
     pub fn get_total_marks(&self) -> usize {
         let mut total: usize = 0;
-        for i in self.answers.to_vec() {
+        for i in self.answers.iter().cloned() {
             total += i.marks;
         }
         total

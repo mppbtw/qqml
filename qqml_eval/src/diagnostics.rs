@@ -1,16 +1,21 @@
 use qqml_parser::Error;
 
-const ANSI_RESET: &'static str = "\x1b[0m";
-const ANSI_BOLD: &'static str = "\x1b[1m";
-const ANSI_YELLOW: &'static str = "\x1b[0;33m";
-const ANSI_CYAN: &'static str = "\x1b[38;5;247m";
-const ANSI_RED: &'static str = "\x1b[31m";
+const ANSI_RESET: &str = "\x1b[0m";
+const ANSI_BOLD: &str = "\x1b[1m";
+const ANSI_CYAN: &str = "\x1b[38;5;247m";
+const ANSI_RED: &str = "\x1b[31m";
 
 pub fn render_error(input: String, e: Error, path_to_source: Option<String>) -> String {
     let mut output = String::new();
     let dat = e.get_token_data();
 
-    output += &format!("{}{}ERROR:{} {}\n", ANSI_RED, ANSI_BOLD, ANSI_RESET, e.to_string());
+    output += &format!(
+        "{}{}ERROR:{} {}\n",
+        ANSI_RED,
+        ANSI_BOLD,
+        ANSI_RESET,
+        e
+    );
 
     match path_to_source {
         Some(p) => {
@@ -85,14 +90,14 @@ fn padding(len: usize) -> String {
 
 fn remove_extra_spaces(s: &mut String) {
     loop {
-        if s.starts_with(" ") {
+        if s.starts_with(' ') {
             *s = s[1..].to_owned();
         } else {
             break;
         }
     }
     loop {
-        if s.ends_with(" ") {
+        if s.ends_with(' ') {
             *s = s[..(s.len() - 1)].to_owned();
         } else {
             break;

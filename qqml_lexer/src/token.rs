@@ -193,9 +193,3 @@ impl Token {
         }
     }
 }
-
-impl Into<Vec<Token>> for Token {
-    fn into(self) -> Vec<Token> {
-        vec![self]
-    }
-}
