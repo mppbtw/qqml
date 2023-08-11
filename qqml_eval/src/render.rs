@@ -1,12 +1,12 @@
 use qqml_parser::MultichoiceAnswer;
 use qqml_parser::MultichoiceData;
 
-const ANSI_RESET: &'static str = "\x1b[0m";
-const ANSI_BG_WHITE: &'static str = "\x1b[47m";
-const ANSI_BLACK: &'static str = "\x1b[1;30m";
-const ANSI_GREEN: &'static str = "\x1b[32m";
-const ANSI_YELLOW: &'static str = "\x1b[0;33m";
-const ANSI_RED: &'static str = "\x1b[31m";
+const ANSI_RESET: &str = "\x1b[0m";
+const ANSI_BG_WHITE: &str = "\x1b[47m";
+const ANSI_BLACK: &str = "\x1b[1;30m";
+const ANSI_GREEN: &str = "\x1b[32m";
+const ANSI_YELLOW: &str = "\x1b[0;33m";
+const ANSI_RED: &str = "\x1b[31m";
 
 pub trait Render {
     fn render(&self) -> String;
@@ -128,12 +128,10 @@ impl Render for QuestionResultBody<'_> {
                     );
                     output += &format!(" {}(X) \n", ANSI_RED);
                 }
+            } else if a.marks != 0 {
+                output += &format!("   {}{} (+{}) \n", a.text.unwrap(), ANSI_GREEN, a.marks);
             } else {
-                if a.marks != 0 {
-                    output += &format!("   {}{} (+{}) \n", a.text.unwrap(), ANSI_GREEN, a.marks);
-                } else {
-                    output += &format!("   {}{} (X) \n", a.text.unwrap(), ANSI_RED);
-                }
+                output += &format!("   {}{} (X) \n", a.text.unwrap(), ANSI_RED);
             }
             output += ANSI_RESET;
             if let Some(x) = a.explanation {
@@ -163,12 +161,10 @@ impl Render for QuestionBody<'_> {
                 if &i == self.selected {
                     output += " <";
                 }
+            } else if &i == self.selected {
+                output += &format!("   {} <", a.0);
             } else {
-                if &i == self.selected {
-                    output += &format!("   {} <", a.0);
-                } else {
-                    output += &("   ".to_owned() + &a.0);
-                }
+                output += &("   ".to_owned() + &a.0);
             }
             output += "\n";
         }
@@ -208,7 +204,7 @@ pub struct PathLine<'a> {
 }
 impl Render for PathLine<'_> {
     fn render(&self) -> String {
-        pad_to_width(&self.path, *(self).cols).unwrap_or(self.path.clone())
+        pad_to_width(self.path, *(self).cols).unwrap_or(self.path.clone())
     }
 }
 
@@ -276,8 +272,8 @@ fn pad_to_width(input: &str, width: usize) -> Result<String, WidthTooSmallError>
     Ok(output)
 }
 
-fn wrap_text_to_width(input: &str, width: usize) -> Result<String, WidthTooSmallError> {
-    return Ok(input.to_owned());
+fn wrap_text_to_width(input: &str, _width: usize) -> Result<String, WidthTooSmallError> {
+    Ok(input.to_owned())
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]

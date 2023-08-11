@@ -241,83 +241,80 @@ fn test_parse_multichoice_questions_with_hints_mixed_quotes() {
         ";
 
     let result = parse(input).unwrap();
-   let expected = ParsedFile {
-       max_hints: 2,
-       questions: vec![
-           Question::Multichoice(MultichoiceData {
-               max_marks: 2,
-               used_hints: 0,
-               selected_answer: 0,
-               text: "question1".to_owned(),
-               line: 3,
-               hints: vec![],
-               is_answered: false,
-               answers: vec![
-                   MultichoiceAnswer {
-                       text: Some("correct1".to_owned()),
-                       marks: 1,
-                       is_chosen: false,
-                       explanation: Some("explan1".to_owned()),
-                   },
-                   MultichoiceAnswer {
-                       text: Some("incorrect1".to_owned()),
-                       marks: 0,
-                       is_chosen: false,
-                       explanation: Some("explan1".to_owned()),
-                   },
-                   MultichoiceAnswer {
-                       text: Some("wrong1".to_owned()),
-                       marks: 0,
-                       is_chosen: false,
-                       explanation: None,
-                   },
-                   MultichoiceAnswer {
-                       text: Some("right1".to_owned()),
-                       marks: 1,
-                       is_chosen: false,
-                       explanation: None,
-                   },
-               ],
-           }),
-           Question::Multichoice(MultichoiceData {
-               max_marks: 1,
-               text: "question2".to_owned(),
-               line: 11,
-               is_answered: false,
-               selected_answer: 0,
-               used_hints: 0,
-               hints: vec![
-                   "hint1".to_owned(),
-                   "hint2".to_owned(),
-               ],
-               answers: vec![
-                   MultichoiceAnswer {
-                       text: Some("correct2".to_owned()),
-                       marks: 1,
-                       is_chosen: false,
-                       explanation: Some("explan2".to_owned()),
-                   },
-                   MultichoiceAnswer {
-                       text: Some("incorrect2".to_owned()),
-                       marks: 0,
-                       is_chosen: false,
-                       explanation: Some("explan2".to_owned()),
-                   },
-                   MultichoiceAnswer {
-                       text: Some("wrong2".to_owned()),
-                       marks: 0,
-                       is_chosen: false,
-                       explanation: None,
-                   },
-                   MultichoiceAnswer {
-                       text: Some("right2".to_owned()),
-                       marks: 1,
-                       is_chosen: false,
-                       explanation: None,
-                   },
-               ]
-           })
-       ]
-   };
+    let expected = ParsedFile {
+        max_hints: 2,
+        questions: vec![
+            Question::Multichoice(MultichoiceData {
+                max_marks: 2,
+                used_hints: 0,
+                selected_answer: 0,
+                text: "question1".to_owned(),
+                line: 3,
+                hints: vec![],
+                is_answered: false,
+                answers: vec![
+                    MultichoiceAnswer {
+                        text: Some("correct1".to_owned()),
+                        marks: 1,
+                        is_chosen: false,
+                        explanation: Some("explan1".to_owned()),
+                    },
+                    MultichoiceAnswer {
+                        text: Some("incorrect1".to_owned()),
+                        marks: 0,
+                        is_chosen: false,
+                        explanation: Some("explan1".to_owned()),
+                    },
+                    MultichoiceAnswer {
+                        text: Some("wrong1".to_owned()),
+                        marks: 0,
+                        is_chosen: false,
+                        explanation: None,
+                    },
+                    MultichoiceAnswer {
+                        text: Some("right1".to_owned()),
+                        marks: 1,
+                        is_chosen: false,
+                        explanation: None,
+                    },
+                ],
+            }),
+            Question::Multichoice(MultichoiceData {
+                max_marks: 1,
+                text: "question2".to_owned(),
+                line: 11,
+                is_answered: false,
+                selected_answer: 0,
+                used_hints: 0,
+                hints: vec!["hint1".to_owned(), "hint2".to_owned()],
+                answers: vec![
+                    MultichoiceAnswer {
+                        text: Some("correct2".to_owned()),
+                        marks: 1,
+                        is_chosen: false,
+                        explanation: Some("explan2".to_owned()),
+                    },
+                    MultichoiceAnswer {
+                        text: Some("incorrect2".to_owned()),
+                        marks: 0,
+                        is_chosen: false,
+                        explanation: Some("explan2".to_owned()),
+                    },
+                    MultichoiceAnswer {
+                        text: Some("wrong2".to_owned()),
+                        marks: 0,
+                        is_chosen: false,
+                        explanation: None,
+                    },
+                    MultichoiceAnswer {
+                        text: Some("right2".to_owned()),
+                        marks: 1,
+                        is_chosen: false,
+                        explanation: None,
+                    },
+                ],
+            }),
+        ],
+    };
     assert_eq!(result, expected);
 }

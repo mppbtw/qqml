@@ -31,7 +31,6 @@ pub enum Error {
     OnlyOneMultichoiceAnswer(Token),
     NoMultichoiceAnswers(Token),
 
-
     // Multichoice answer syntax
     UnexpectedAnswerToken(Token, Vec<Token>),
     ExpectedAnswerText(Token),
@@ -74,7 +73,7 @@ impl Error {
             Self::ExpectedNumberForAnswerMark(t) => t.get_data(),
             Self::ExpectedNumberForQuestionMaxMark(t) => t.get_data(),
             Self::ExpectedQuestionText(t) => t.get_data(),
-            _ => &TokenData { col: 0, line: 0 }
+            _ => &TokenData { col: 0, line: 0 },
         }
         .clone()
     }
@@ -82,9 +81,7 @@ impl Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let msg = match self {
-            _ => "ERROR MESSAGE PLACEHOLDER".to_owned(),
-        };
+        let msg = "ERROR MESSAGE PLACEHOLDER".to_owned();
 
         let _ = msg.replace(
             "doc",
@@ -107,11 +104,6 @@ impl From<LexerError> for ErrorReport {
                 LexerError::UnterminatedStringError(d) => Error::UnterminatedLiteral(d),
             }],
         }
-    }
-}
-impl Into<Vec<ErrorReport>> for ErrorReport {
-    fn into(self) -> Vec<ErrorReport> {
-        vec![self]
     }
 }
 

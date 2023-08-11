@@ -236,5 +236,5 @@ fn is_quote(ch: u8) -> bool {
 }
 
 fn is_digit(ch: u8) -> bool {
-    (b'0'..=b'9').contains(&ch)
+    ch.is_ascii_digit()
 }
