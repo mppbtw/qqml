@@ -9,13 +9,7 @@ pub fn render_error(input: String, e: Error, path_to_source: Option<String>) -> 
     let mut output = String::new();
     let dat = e.get_token_data();
 
-    output += &format!(
-        "{}{}ERROR:{} {}\n",
-        ANSI_RED,
-        ANSI_BOLD,
-        ANSI_RESET,
-        e
-    );
+    output += &format!("{}{}ERROR:{} {}\n", ANSI_RED, ANSI_BOLD, ANSI_RESET, e);
 
     match path_to_source {
         Some(p) => {
