@@ -1,0 +1,63 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Check qqml_lexer Module
+      run: cargo check --verbose --manifest-path qqml_lexer/Cargo.toml
+
+    - name: Check qqml_parser Module
+      run: cargo check --verbose --manifest-path qqml_parser/Cargo.toml
+
+    - name: Check qqml_eval Module
+      run: cargo check --verbose --manifest-path qqml_eval/Cargo.toml
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Test qqml_lexer Module
+      run: cargo test --verbose --manifest-path qqml_lexer/Cargo.toml
+
+    - name: Test qqml_parser Module
+      run: cargo test --verbose --manifest-path qqml_parser/Cargo.toml
+
+    - name: Test qqml_eval Module
+      run: cargo test --verbose --manifest-path qqml_eval/Cargo.toml
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Format qqml_lexer Module
+      run: cargo fmt --verbose --manifest-path qqml_lexer/Cargo.toml -- --check
+
+    - name: Format qqml_parser Module
+      run: cargo fmt --verbose --manifest-path qqml_parser/Cargo.toml -- --check
+
+    - name: Format qqml_eval Module
+      run: cargo fmt --verbose --manifest-path qqml_eval/Cargo.toml -- --check
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Lint qqml_lexer Module
+      run: cargo clippy --verbose --manifest-path qqml_lexer/Cargo.toml -- -D warnings
+
+    - name: Lint qqml_parser Module
+      run: cargo clippy --verbose --manifest-path qqml_parser/Cargo.toml -- -D warnings
+
+    - name: Lint qqml_eval Module
+      run: cargo clippy --verbose --manifest-path qqml_eval/Cargo.toml -- -D warnings
