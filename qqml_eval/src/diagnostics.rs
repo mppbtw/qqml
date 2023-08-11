@@ -65,7 +65,7 @@ pub fn render_error(input: String, e: Error, path_to_source: Option<String>) -> 
         ANSI_BOLD,
         ANSI_CYAN,
         ANSI_RESET,
-        padding((dat.col + 1) - spaces_width),
+        padding(current_line.len()),
         ANSI_RED,
         ANSI_BOLD,
         ANSI_RESET,
