@@ -91,6 +91,7 @@ pub struct ErrorReport {
 }
 impl From<LexerError> for ErrorReport {
     fn from(value: LexerError) -> Self {
+        println!("\n\n\n\nlawkhdlakwhdl");
         Self {
             errors: vec![match value {
                 LexerError::IntegerTooLarge(d) => Error::IntegerTooLarge(d),
