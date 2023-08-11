@@ -2,7 +2,7 @@
 
 Questions in QQML are defined in 3 parts, the signature, the body and the
 configuration values. The question body's syntax depends on the question
-type being used, and so do the conficonfiguration values. A question's
+type being used, and so do the configuration values. A question's
 type can be defined in the signature as seen below:
 
 ``` javascript
@@ -14,14 +14,14 @@ This syntax can be broken up into 3 parts,
 * The `ask` keyword
 * The question type keyword
 * The maximum marks for the question enclosed in brackets
-* The actual text of the question itself enclosed in quotes(note that both `'`
+* The actual text of the question itself enclosed in quotes (note that both `'`
   and `"` can be used)
 
-## Multichoice Questions
+## Multiple Choice Questions
 
 ### Body
 
-The above question signature produces a multichoice question, the body
+The above question signature produces a multiple choice question, the body
 syntax of which can be seen below:
 
 ```javascript
