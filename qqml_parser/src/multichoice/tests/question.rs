@@ -26,7 +26,6 @@ fn test_parse_multichoice() {
         answers: vec![],
         line: 1,
         text: "title".to_owned(),
-        warnings: vec![],
     };
 
     expected.answers.push(MultichoiceAnswer {
@@ -74,7 +73,6 @@ fn test_parse_multichoice_double_quotes() {
         answers: vec![],
         line: 1,
         text: "title".to_owned(),
-        warnings: vec![],
     };
 
     expected.answers.push(MultichoiceAnswer {
