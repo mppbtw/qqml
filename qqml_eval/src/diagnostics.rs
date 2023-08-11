@@ -40,7 +40,6 @@ pub fn render_error(input: String, e: Error, path_to_source: Option<String>) -> 
     let mut current_line = input.lines().collect::<Vec<_>>()[dat.line].to_owned();
     let width = current_line.len();
     remove_extra_spaces(&mut current_line);
-    let spaces_width = width - current_line.len();
 
     output += &format!(
         "{}{} {}|{}\n",
@@ -65,7 +64,7 @@ pub fn render_error(input: String, e: Error, path_to_source: Option<String>) -> 
         ANSI_BOLD,
         ANSI_CYAN,
         ANSI_RESET,
-        padding((dat.col + 1) - spaces_width),
+        padding((dat.col + 1) - (width - current_line.len())),
         ANSI_RED,
         ANSI_BOLD,
         ANSI_RESET,

@@ -160,6 +160,10 @@ impl Lexer {
             if self.ch == 0 {
                 return Err(LexerError::UnterminatedStringError(dat));
             }
+            if self.ch == b'\n' {
+                self.line_count += 1;
+                self.last_newline = self.position;
+            }
             if is_quote(self.ch) {
                 quotes_found += 1;
             }
