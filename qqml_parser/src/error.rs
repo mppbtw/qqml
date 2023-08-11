@@ -1,6 +1,5 @@
 use std::fmt;
 
-use crate::Warning;
 use qqml_lexer::LexerError;
 use qqml_lexer::Token;
 use qqml_lexer::TokenData;
@@ -85,12 +84,10 @@ impl fmt::Display for Error {
 #[derive(Default, Clone, PartialEq, Debug)]
 pub struct ErrorReport {
     pub errors: Vec<Error>,
-    pub warnings: Vec<Warning>,
 }
 impl From<LexerError> for ErrorReport {
     fn from(value: LexerError) -> Self {
         Self {
-            warnings: vec![],
             errors: vec![match value {
                 LexerError::IntegerTooLarge(d) => Error::IntegerTooLarge(d),
                 LexerError::UnterminatedStringError(d) => Error::UnterminatedLiteral(d),
@@ -112,9 +109,6 @@ impl ErrorReport {
     pub fn extend(&mut self, other: ErrorReport) {
         for error in other.errors {
             self.errors.push(error);
-        }
-        for warning in other.warnings {
-            self.warnings.push(warning);
         }
     }
 }

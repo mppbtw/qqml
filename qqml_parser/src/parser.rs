@@ -4,7 +4,6 @@ use crate::Error;
 use crate::Question;
 use qqml_lexer::Lexer;
 use qqml_lexer::Token;
-use qqml_lexer::TokenData;
 
 #[derive(Clone, Default, Debug, PartialEq, Eq)]
 pub struct ParsedFile {
@@ -22,7 +21,6 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
 
     let mut tok;
 
-    let mut iters = 0;
     loop {
         tok = l.next_token()?;
         if matches!(tok, Token::Semicolon(_)) {
@@ -73,25 +71,6 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
 
         report.errors.push(Error::ExpectedQuestionType(tok.clone()));
         break;
-    }
-
-    // If we aren't returning the questions, the consumer
-    // may also want the warnings for each question, incase this
-    // is the case, they are included within the error report.
-    for (i, q) in output.questions.to_vec().iter_mut().enumerate() {
-        q.validate();
-        output.questions[i] = q.clone();
-    }
-
-    for q in output.questions.to_vec() {
-        match q {
-            Question::Multichoice(d) => {
-                if d.warnings.len() != 0 {
-                    report.warnings.append(&mut d.into());
-                };
-            }
-            _ => (),
-        };
     }
 
     if report.errors.is_empty() {
