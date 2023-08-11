@@ -87,11 +87,11 @@ impl State {
                 s.question_line = Some(QuestionLine { q: d });
                 s.question_body = Some(QuestionBody {
                     answers: (d
-                              .answers
-                              .iter()
-                              .map(|d| (d.text.clone().unwrap(), d.is_chosen))
-                              .collect()),
-                              selected: &d.selected_answer,
+                        .answers
+                        .iter()
+                        .map(|d| (d.text.clone().unwrap(), d.is_chosen))
+                        .collect()),
+                    selected: &d.selected_answer,
                 })
             }
         };
