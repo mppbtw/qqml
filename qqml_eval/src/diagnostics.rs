@@ -11,7 +11,6 @@ pub fn render_error(input: String, e: Error, path_to_source: Option<String>) -> 
 
     output += &format!("{}{}ERROR:{} {}\n", ANSI_RED, ANSI_BOLD, ANSI_RESET, e);
 
-
     // We should display the previous line instead of the actual EOF
     if e.is_eof() {
         'outer: loop {
