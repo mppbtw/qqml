@@ -1,5 +1,0 @@
-ask multichoice (2) 'who is the' {
-    * 'me' (1) -> 'guh';
-    * 'you' (1);
-    * 'it';
-};
