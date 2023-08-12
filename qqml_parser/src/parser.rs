@@ -43,7 +43,9 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
                     output.max_hints = n;
                     tok = l.next_token()?;
                 } else {
-                    report.errors.push(Error::HintsDirectiveRequiresNumber(tok.clone()));
+                    report
+                        .errors
+                        .push(Error::HintsDirectiveRequiresNumber(tok.clone()));
                 }
                 if !matches!(tok, Token::Semicolon(_)) {
                     report

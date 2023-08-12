@@ -74,7 +74,9 @@ pub fn parse_multichoice<T: Into<Token>>(
         }
 
         if matches!(tok, Token::Eof(_)) {
-            report.errors.push(Error::ExpectedRSquirlyForQuestion(tok.clone()));
+            report
+                .errors
+                .push(Error::ExpectedRSquirlyForQuestion(tok.clone()));
             break;
         }
 
