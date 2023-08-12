@@ -7,9 +7,27 @@ const ANSI_RED: &str = "\x1b[31m";
 
 pub fn render_error(input: String, e: Error, path_to_source: Option<String>) -> String {
     let mut output = String::new();
-    let dat = e.get_token_data();
+    let mut dat = e.get_token_data();
 
     output += &format!("{}{}ERROR:{} {}\n", ANSI_RED, ANSI_BOLD, ANSI_RESET, e);
+
+
+    // We should display the previous line instead of the actual EOF
+    if e.is_eof() {
+        'outer: loop {
+            let l = input.lines().collect::<Vec<_>>()[dat.line];
+            for ch in l.chars() {
+                if ch.is_ascii_alphanumeric() {
+                    dat.col = l.len() - 1;
+                    println!("awkdj");
+                    break 'outer;
+                }
+            }
+            dat.line -= 1;
+            println!("awd");
+        }
+    }
+    println!("line: {}, col: {}", dat.line, dat.col);
 
     match path_to_source {
         Some(p) => {
