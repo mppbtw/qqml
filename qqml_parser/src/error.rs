@@ -48,7 +48,6 @@ pub enum Error {
     InvalidQuestionType(Token),
 }
 impl Error {
-
     pub fn is_eof(&self) -> bool {
         matches!(self.get_token(), Token::Eof(_))
     }
@@ -136,9 +135,8 @@ impl fmt::Display for Error {
             Self::ExpectedCommaInHintsList(_) => {
                 "The list of hints should be comma separated. do u even english bru?".into()
             }
-            Self::InvalidQuestionType(_) => {
-                format!("No such question type keyword, see doc#questions")
-            }
+            Self::InvalidQuestionType(_) => "No such question type keyword, see doc#questions".into(),
+
             Self::ExpectedLParenForQuestionMaxMark(t) => format!(
                 "Expected a '(' to set the max mark of the question, found {}. See doc#questions",
                 t
