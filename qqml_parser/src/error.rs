@@ -14,6 +14,7 @@ pub enum Error {
     IntegerTooLarge(TokenData),
 
     // Syntax for multichoice
+    ExpectedRSquirlyForQuestion(Token),
     UnexpectedBodyToken(Token),
     ExpectedLSquirlyForQuestion(Token),
     ExpectedRParenForQuestionMaxMark(Token),
@@ -73,6 +74,7 @@ impl Error {
             Self::ExpectedNumberForAnswerMark(t) => t.get_data(),
             Self::ExpectedNumberForQuestionMaxMark(t) => t.get_data(),
             Self::ExpectedQuestionText(t) => t.get_data(),
+            Self::ExpectedRSquirlyForQuestion(t) => t.get_data(),
             _ => &TokenData { col: 0, line: 0 },
         }
         .clone()
@@ -167,6 +169,10 @@ impl fmt::Display for Error {
                 ),
             Self::ExpectedAnswerExplanationText(t) => format!(
                 "Expected the text for your answer explanation, found {}. See doc#body",
+                t
+                ),
+            Self::ExpectedRSquirlyForQuestion(t) => format!(
+                "Expected a '}}' to end the question, found {}. See doc#body",
                 t
                 ),
         }.replace(
