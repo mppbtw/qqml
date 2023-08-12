@@ -73,7 +73,12 @@ pub fn parse_multichoice<T: Into<Token>>(
             tok = l.next_token()?;
         }
 
-        if matches!(tok.clone(), Token::Semicolon(_)) {
+        if matches!(tok, Token::Eof(_)) {
+            report.errors.push(Error::ExpectedRSquirlyForQuestion(tok.clone()));
+            break;
+        }
+
+        if matches!(tok, Token::Semicolon(_)) {
             continue;
         }
 
