@@ -34,14 +34,14 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
         // Parse 'hints' directive
         if matches!(tok, Token::Hints(_)) {
             if hints_directive_seen {
-                report.errors.push(Error::HintsDirectiveRepeated);
+                report.errors.push(Error::HintsDirectiveRepeated(tok));
                 continue;
             } else {
                 hints_directive_seen = true;
                 tok = l.next_token()?;
                 match tok {
                     Token::Number(_, n) => output.max_hints = n,
-                    _ => report.errors.push(Error::HintsDirectiveRepeated),
+                    _ => report.errors.push(Error::HintsDirectiveRequiresNumber(tok)),
                 }
                 tok = l.next_token()?;
                 if !matches!(tok, Token::Semicolon(_)) {
