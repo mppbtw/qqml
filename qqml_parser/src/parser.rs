@@ -39,11 +39,12 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
             } else {
                 hints_directive_seen = true;
                 tok = l.next_token()?;
-                match tok {
-                    Token::Number(_, n) => output.max_hints = n,
-                    _ => report.errors.push(Error::HintsDirectiveRequiresNumber(tok)),
+                if let Token::Number(_, n) = tok {
+                    output.max_hints = n;
+                    tok = l.next_token()?;
+                } else {
+                    report.errors.push(Error::HintsDirectiveRequiresNumber(tok.clone()));
                 }
-                tok = l.next_token()?;
                 if !matches!(tok, Token::Semicolon(_)) {
                     report
                         .errors
