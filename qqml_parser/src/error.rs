@@ -48,36 +48,46 @@ pub enum Error {
     InvalidQuestionType(Token),
 }
 impl Error {
-    pub fn get_token_data(&self) -> TokenData {
+
+    pub fn is_eof(&self) -> bool {
+        matches!(self.get_token(), Token::Eof(_))
+    }
+
+    pub fn get_token(&self) -> Token {
         match self {
-            Self::OnlyOneMultichoiceAnswer(t) => t.get_data(),
-            Self::NoMultichoiceAnswers(t) => t.get_data(),
-            Self::MaxMarkIsZero(t) => t.get_data(),
-            Self::ExpectedSemicolonAfterHintsDirective(t) => t.get_data(),
-            Self::ExpectedQuestionOrDirective(t) => t.get_data(),
-            Self::ExpectedQuestionType(t) => t.get_data(),
-            Self::ExpectedCommaInHintsList(t) => t.get_data(),
-            Self::InvalidQuestionType(t) => t.get_data(),
-            Self::IntegerTooLarge(t) => t,
-            Self::ExpectedHintText(t) => t.get_data(),
-            Self::ImpossibleMaxMark(t) => t.get_data(),
-            Self::ExpectedAnswerText(t) => t.get_data(),
-            Self::UnexpectedBodyToken(t) => t.get_data(),
-            Self::UnexpectedAnswerToken(t, _) => t.get_data(),
-            Self::ExpectedAnswerSemicolon(t) => t.get_data(),
-            Self::UnterminatedLiteral(t) => t,
-            Self::ExpectedLSquirlyForQuestion(t) => t.get_data(),
-            Self::ExpectedAnswerExplanationText(t) => t.get_data(),
-            Self::ExpectedRParenForAnswerMark(t) => t.get_data(),
-            Self::ExpectedRParenForQuestionMaxMark(t) => t.get_data(),
-            Self::ExpectedLParenForQuestionMaxMark(t) => t.get_data(),
-            Self::ExpectedNumberForAnswerMark(t) => t.get_data(),
-            Self::ExpectedNumberForQuestionMaxMark(t) => t.get_data(),
-            Self::ExpectedQuestionText(t) => t.get_data(),
-            Self::ExpectedRSquirlyForQuestion(t) => t.get_data(),
-            _ => &TokenData { col: 0, line: 0 },
+            Self::OnlyOneMultichoiceAnswer(t) => t.clone(),
+            Self::NoMultichoiceAnswers(t) => t.clone(),
+            Self::MaxMarkIsZero(t) => t.clone(),
+            Self::ExpectedSemicolonAfterHintsDirective(t) => t.clone(),
+            Self::ExpectedQuestionOrDirective(t) => t.clone(),
+            Self::ExpectedQuestionType(t) => t.clone(),
+            Self::ExpectedCommaInHintsList(t) => t.clone(),
+            Self::InvalidQuestionType(t) => t.clone(),
+            Self::ExpectedHintText(t) => t.clone(),
+            Self::ImpossibleMaxMark(t) => t.clone(),
+            Self::ExpectedAnswerText(t) => t.clone(),
+            Self::UnexpectedBodyToken(t) => t.clone(),
+            Self::UnexpectedAnswerToken(t, _) => t.clone(),
+            Self::ExpectedAnswerSemicolon(t) => t.clone(),
+            Self::ExpectedLSquirlyForQuestion(t) => t.clone(),
+            Self::ExpectedAnswerExplanationText(t) => t.clone(),
+            Self::ExpectedRParenForAnswerMark(t) => t.clone(),
+            Self::ExpectedRParenForQuestionMaxMark(t) => t.clone(),
+            Self::ExpectedLParenForQuestionMaxMark(t) => t.clone(),
+            Self::ExpectedNumberForAnswerMark(t) => t.clone(),
+            Self::ExpectedNumberForQuestionMaxMark(t) => t.clone(),
+            Self::ExpectedQuestionText(t) => t.clone(),
+            Self::ExpectedRSquirlyForQuestion(t) => t.clone(),
+            Self::HintsDirectiveRequiresNumber(t) => t.clone(),
+            Self::HintsDirectiveRepeated(t) => t.clone(),
+
+            Self::IntegerTooLarge(t) => Token::Illegal(t.clone()),
+            Self::UnterminatedLiteral(t) => Token::Illegal(t.clone()),
         }
-        .clone()
+    }
+
+    pub fn get_token_data(&self) -> TokenData {
+        self.get_token().get_data().clone()
     }
 }
 
