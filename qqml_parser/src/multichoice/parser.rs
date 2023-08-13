@@ -1,5 +1,5 @@
-use crate::error::ErrorReport;
 use super::parse_answer::parse_multichoice_answer;
+use crate::error::ErrorReport;
 use crate::Error;
 use crate::MultichoiceData;
 use qqml_lexer::Lexer;

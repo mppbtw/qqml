@@ -1,6 +1,6 @@
-use qqml_lexer::*;
-use crate::*;
 use crate::error::ErrorReport;
+use crate::*;
+use qqml_lexer::*;
 
 pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, ErrorReport> {
     // This parser is replacement tolerant and assumes
@@ -8,6 +8,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     // and therefore assumes that the next token should
     // be the question text.
 
+    let mut starting_lexer = l.to_owned();
     let mut report = ErrorReport::default();
     let mut dat = MultichoiceAnswer::default();
     let mut tok = l.next_token()?;
@@ -56,8 +57,79 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     }
 
     if !report.errors.is_empty() {
-        Err(report)
+        if report.errors.len() == 1 {
+            Err(report)
+        } else {
+            let pos = positive_tolerance(&mut starting_lexer).unwrap_err();
+            if pos.errors.len() == 1 || pos.errors.len() < report.errors.len() {
+                Err(pos)
+            } else {
+                Err(report)
+            }
+        }
     } else {
         Ok(dat)
     }
+}
+
+fn positive_tolerance(l: &mut Lexer) -> Result<(), ErrorReport> {
+    let mut report = ErrorReport::default();
+    let mut tok = l.next_token()?;
+
+    match tok {
+        Token::Literal(..) => (), // We dont need to construct any data,
+                                    // for we already know we will return an error
+        _ => {
+            report.errors.push(Error::ExpectedAnswerText(tok));
+            l.next_token()?; // Assumes that the error is positive
+        }
+    };
+
+    tok = l.next_token()?;
+    if matches!(tok, Token::LParen(_)) {
+        tok = l.next_token()?;
+        match tok {
+            Token::Number(..) => (),
+            _ => {
+                report.errors.push(Error::UnexpectedAnswerToken(
+                    tok,
+                    vec![
+                        Token::RArrow(TokenData::default()),
+                        Token::Semicolon(TokenData::default()),
+                        Token::Number(TokenData::default(), 0),
+                    ],
+                ));
+                l.next_token()?;
+            }
+        };
+
+        tok = l.next_token()?;
+        if !matches!(tok, Token::RParen(_)) {
+            report.errors.push(Error::ExpectedRParenForAnswerMark(tok));
+            l.next_token()?;
+        }
+
+        tok = l.next_token()?;
+    }
+
+    if matches!(tok, Token::RArrow(_)) {
+        tok = l.next_token()?;
+        match tok {
+            Token::Literal(..) => (),
+            _ => {
+                report
+                .errors
+                .push(Error::ExpectedAnswerExplanationText(tok));
+                l.next_token()?;
+            }
+        };
+        tok = l.next_token()?;
+    }
+
+    if !matches!(tok, Token::Semicolon(_)) {
+        report.errors.push(Error::ExpectedAnswerSemicolon(tok));
+        l.next_token()?;
+    }
+
+    Err(report)
 }
