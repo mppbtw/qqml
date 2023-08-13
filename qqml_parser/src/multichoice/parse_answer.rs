@@ -53,9 +53,12 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
             tok = l.next_token()?;
         }
 
-        if !matches!(tok, Token::Semicolon(_)) {
-            report.errors.push(Error::ExpectedAnswerSemicolon(tok));
+        if !matches!(tok, Token::Semicolon(_)){
+            report.errors.push(Error::ExpectedAnswerSemicolon(tok.clone()));
         } else {
+            break;
+        }
+        if matches!(tok, Token::Eof(_)) {
             break;
         }
     }
