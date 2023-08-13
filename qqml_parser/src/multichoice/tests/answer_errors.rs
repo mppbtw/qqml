@@ -91,15 +91,6 @@ fn test_negative_tolerance() {
     let input1 = "
         (1) -> 'some explanation';
         ";
-
-    let input2 = "
-        'question text' ()  'some explanation';
-        ";
-
-    let input3 = "
-        'question text' (1) -> 'some explanation'
-        ";
-
     assert_eq!(
         parse_multichoice_answer(&mut Lexer::new(input1))
             .unwrap_err()
@@ -107,6 +98,10 @@ fn test_negative_tolerance() {
             .len(),
         1
     );
+
+    let input2 = "
+        'question text' ()  'some explanation';
+        ";
     assert_eq!(
         parse_multichoice_answer(&mut Lexer::new(input2))
             .unwrap_err()
@@ -114,11 +109,26 @@ fn test_negative_tolerance() {
             .len(),
         2
     );
+
+    let input3 = "
+        'question text' (1) -> 'some explanation'
+        ";
     assert_eq!(
         parse_multichoice_answer(&mut Lexer::new(input3))
             .unwrap_err()
             .errors
             .len(),
         1
+    );
+
+    let input4 = "
+        1) -> 'some explanation'
+        ";
+    assert_eq!(
+        parse_multichoice_answer(&mut Lexer::new(input4))
+            .unwrap_err()
+            .errors
+            .len(),
+        3
     );
 }
