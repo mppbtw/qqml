@@ -136,7 +136,6 @@ impl fmt::Display for Error {
                 "The list of hints should be comma separated. do u even english bru?".into()
             }
             Self::InvalidQuestionType(_) => "No such question type keyword, see doc#questions".into(),
-
             Self::ExpectedLParenForQuestionMaxMark(t) => format!(
                 "Expected a '(' to set the max mark of the question, found {}. See doc#questions",
                 t
