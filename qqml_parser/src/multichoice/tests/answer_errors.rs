@@ -41,7 +41,7 @@ fn test_replacement_tolerance() {
 #[test]
 fn test_positive_tolerance() {
     let input1 = "
-        x'question text' (1) -> 'some explanation';
+        x'question text'/ (1) -> 'some explanation';
         ";
 
     let input2 = "
@@ -52,12 +52,16 @@ fn test_positive_tolerance() {
         x'question text' (1) -> 'some explanation'x;
         ";
 
+    let input4 = "
+        x/2'question text' (1) -> 'some explanation';
+        ";
+
     assert_eq!(
         parse_multichoice_answer(&mut Lexer::new(input1))
             .unwrap_err()
             .errors
             .len(),
-        1
+        2
     );
     assert_eq!(
         parse_multichoice_answer(&mut Lexer::new(input2))
@@ -72,6 +76,13 @@ fn test_positive_tolerance() {
             .errors
             .len(),
         2
+    );
+    assert_eq!(
+        parse_multichoice_answer(&mut Lexer::new(input4))
+            .unwrap_err()
+            .errors
+            .len(),
+        3
     );
 }
 
