@@ -1,5 +1,5 @@
-use qqml_lexer::Lexer;
 use crate::multichoice::*;
+use qqml_lexer::Lexer;
 
 #[test]
 fn test_replacement_tolerance() {
@@ -15,9 +15,27 @@ fn test_replacement_tolerance() {
         'question text' x1) -> 'explanation text';
         ";
 
-    assert_eq!(parse_multichoice_answer(&mut Lexer::new(input1)).unwrap_err().errors.len(), 2);
-    assert_eq!(parse_multichoice_answer(&mut Lexer::new(input2)).unwrap_err().errors.len(), 2);
-    assert_eq!(parse_multichoice_answer(&mut Lexer::new(input3)).unwrap_err().errors.len(), 1);
+    assert_eq!(
+        parse_multichoice_answer(&mut Lexer::new(input1))
+            .unwrap_err()
+            .errors
+            .len(),
+        2
+    );
+    assert_eq!(
+        parse_multichoice_answer(&mut Lexer::new(input2))
+            .unwrap_err()
+            .errors
+            .len(),
+        2
+    );
+    assert_eq!(
+        parse_multichoice_answer(&mut Lexer::new(input3))
+            .unwrap_err()
+            .errors
+            .len(),
+        1
+    );
 }
 
 #[test]
@@ -34,9 +52,27 @@ fn test_positive_tolerance() {
         x'question text' (1) -> 'some explanation'x;
         ";
 
-    assert_eq!(parse_multichoice_answer(&mut Lexer::new(input1)).unwrap_err().errors.len(), 1);
-    assert_eq!(parse_multichoice_answer(&mut Lexer::new(input2)).unwrap_err().errors.len(), 1);
-    assert_eq!(parse_multichoice_answer(&mut Lexer::new(input3)).unwrap_err().errors.len(), 2);
+    assert_eq!(
+        parse_multichoice_answer(&mut Lexer::new(input1))
+            .unwrap_err()
+            .errors
+            .len(),
+        1
+    );
+    assert_eq!(
+        parse_multichoice_answer(&mut Lexer::new(input2))
+            .unwrap_err()
+            .errors
+            .len(),
+        1
+    );
+    assert_eq!(
+        parse_multichoice_answer(&mut Lexer::new(input3))
+            .unwrap_err()
+            .errors
+            .len(),
+        2
+    );
 }
 
 #[test]
@@ -53,7 +89,25 @@ fn test_negative_tolerance() {
         'question text' (1) -> 'some explanation'
         ";
 
-    assert_eq!(parse_multichoice_answer(&mut Lexer::new(input1)).unwrap_err().errors.len(), 1);
-    assert_eq!(parse_multichoice_answer(&mut Lexer::new(input2)).unwrap_err().errors.len(), 2);
-    assert_eq!(parse_multichoice_answer(&mut Lexer::new(input3)).unwrap_err().errors.len(), 1);
+    assert_eq!(
+        parse_multichoice_answer(&mut Lexer::new(input1))
+            .unwrap_err()
+            .errors
+            .len(),
+        1
+    );
+    assert_eq!(
+        parse_multichoice_answer(&mut Lexer::new(input2))
+            .unwrap_err()
+            .errors
+            .len(),
+        2
+    );
+    assert_eq!(
+        parse_multichoice_answer(&mut Lexer::new(input3))
+            .unwrap_err()
+            .errors
+            .len(),
+        1
+    );
 }
