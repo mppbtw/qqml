@@ -3,6 +3,7 @@ mod render;
 mod repl;
 mod state;
 
+pub use diagnostics::render_error;
 pub use repl::run;
 
 // Example TUI:

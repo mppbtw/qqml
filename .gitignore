@@ -1,5 +1,6 @@
 /target
 **/target
+qqml_cli/test.qqml
 testbin/
 qqml_lexer/Cargo.lock
 qqml_parser/Cargo.lock
