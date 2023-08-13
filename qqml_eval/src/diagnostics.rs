@@ -14,7 +14,12 @@ pub fn render_error(input: String, e: Error, path_to_source: Option<String>) -> 
     // We should display the previous line instead of the actual EOF
     if e.is_eof() {
         'outer: loop {
-            let l = input.lines().collect::<Vec<_>>()[dat.line];
+            let l: String;
+            if dat.line == input.lines().collect::<Vec<_>>().len() {
+                l = input.lines().collect::<Vec<_>>().last().unwrap().to_string();
+            } else {
+                l = input.lines().collect::<Vec<_>>()[dat.line].to_owned();
+            }
             for ch in l.chars() {
                 if ch.is_ascii_alphanumeric() {
                     dat.col = l.len() - 1;
