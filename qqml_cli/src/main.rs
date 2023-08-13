@@ -1,5 +1,13 @@
-use std::{process::exit, env::args, fs};
 use qqml_eval::run;
+use qqml_parser::parse;
+use std::time::Instant;
+
+use std::{env::args, fs, process::exit};
+
+const ANSI_RESET: &str = "\x1b[0m";
+const ANSI_GREEN: &str = "\x1b[32m";
+const ANSI_RED: &str = "\x1b[31m";
+const ANSI_BOLD: &str = "\x1b[1m";
 
 mod argparse;
 use argparse::*;
@@ -9,18 +17,49 @@ fn main() {
         help_msg();
     }
     match get_file_arg() {
-        Some(i) => {
-            match fs::read_to_string(i.clone()) {
-                Ok(f) => run(f, Some(i)),
-                Err(e) => eprintln!("Couldn't read file: {}", e),
+        Some(i) => match fs::read_to_string(i.clone()) {
+            Ok(f) => {
+                if has_check() {
+                    check_file(f, i);
+                } else {
+                    run(f, Some(i));
+                }
             }
+            Err(e) => eprintln!("Couldn't read file: {}", e),
         },
         None => help_msg(),
     }
 }
 
+fn check_file(inp: String, _path: String) -> ! {
+    let start_t = Instant::now();
+    match parse(inp) {
+        Ok(_) => {
+            println!(
+                "{}{}    Finished{} target in {}ms.",
+                ANSI_GREEN,
+                ANSI_BOLD,
+                ANSI_RESET,
+                start_t.elapsed().as_millis(),
+            );
+            exit(0);
+        }
+        Err(_) => {
+            println!(
+                "{}{}Check finished in {}ms.{}",
+                ANSI_RED,
+                ANSI_BOLD,
+                start_t.elapsed().as_millis(),
+                ANSI_RESET
+            );
+            exit(1);
+        },
+    }
+}
+
 fn help_msg() -> ! {
-    println!("
+    println!(
+        "
 QQML v1.0 (c) 2023 'MrPiggyPegasus'
 
 usage: qqml [OPTIONS] <FILE>
@@ -36,6 +75,7 @@ OPTIONS:
 
 More information about the QQML language
 and its related tooling is available at
-https://github.com/MrPiggyPegasus/qqml ");
+https://github.com/MrPiggyPegasus/qqml "
+    );
     exit(1);
 }

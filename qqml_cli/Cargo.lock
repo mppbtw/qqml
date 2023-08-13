@@ -37,6 +37,7 @@ name = "qqml"
 version = "0.1.0"
 dependencies = [
  "qqml_eval",
+ "qqml_parser",
 ]
 
 [[package]]
