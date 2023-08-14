@@ -9,7 +9,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     // and therefore assumes that the next token should
     // be the question text.
 
-    let starting_lexer: LexerData = l.get_lexer_data();
+    let starting_l_data: LexerData = l.get_lexer_data();
     let mut report = ErrorReport::default();
     let mut dat = MultichoiceAnswer::default();
     let mut tok = l.next_token()?;
@@ -72,14 +72,14 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
         } else {
             let pos = positive_tolerance(&mut Lexer::from_lexer_data(
                 l.get_input(),
-                starting_lexer.clone(),
+                starting_l_data.clone(),
             ))
             .unwrap_err();
             if pos.errors.len() == 1 {
                 return Err(pos);
             }
             let neg =
-                negative_tolerance(&mut Lexer::from_lexer_data(l.get_input(), starting_lexer))
+                negative_tolerance(&mut Lexer::from_lexer_data(l.get_input(), starting_l_data))
                     .unwrap_err();
             if pos.errors.len() < neg.errors.len() {
                 if pos.errors.len() < report.errors.len() {
