@@ -280,48 +280,79 @@ fn positive_tolerance( l: &mut Lexer,) -> Result<(), ErrorReport> {
     let mut report = ErrorReport::new();
     let mut tok = l.next_token()?;
 
-    if !matches!(tok, Token::LParen(_)) {
-        report
-            .errors
-            .push(Error::ExpectedLParenForQuestionMaxMark(tok.clone()))
-    } else {
-        tok = l.next_token()?;
-    }
-
-    match tok {
-        Token::Number(..) => tok = l.next_token()?,
-        _ => report
-            .errors
-            .push(Error::ExpectedNumberForQuestionMaxMark(tok.clone())),
-    };
-
-    if !matches!(tok, Token::RParen(_)) {
-        report
-            .errors
-            .push(Error::ExpectedRParenForQuestionMaxMark(tok.clone()));
-    } else {
-        tok = l.next_token()?;
-    }
-
-    match tok {
-        Token::Literal(..) => tok = l.next_token()?,
-        _ => report.errors.push(Error::ExpectedQuestionText(tok.clone())),
-    };
-
-    let mut skip_token = false;
-    if !matches!(tok, Token::LSquirly(_)) {
-        report
-            .errors
-            .push(Error::ExpectedLSquirlyForQuestion(tok.clone()));
-        skip_token = true;
+    loop {
+        if !matches!(tok, Token::LParen(_)) {
+            report
+                .errors
+                .push(Error::ExpectedLParenForQuestionMaxMark(tok.clone()));
+                tok = l.next_token()?;
+        } else {
+            tok = l.next_token()?;
+            break;
+        }
     }
 
     loop {
-        if skip_token {
-            skip_token = false;
+        match tok {
+            Token::Number(..) => {
+                tok = l.next_token()?;
+                break;
+            }
+            _ => {
+                report
+                .errors
+                .push(Error::ExpectedNumberForQuestionMaxMark(tok.clone()));
+                tok = l.next_token()?;
+            }
+        };
+    }
+
+    loop {
+        if !matches!(tok, Token::RParen(_)) {
+            report
+                .errors
+                .push(Error::ExpectedRParenForQuestionMaxMark(tok.clone()));
+            tok = l.next_token()?;
         } else {
             tok = l.next_token()?;
+            break;
         }
+    }
+
+    loop {
+        match tok {
+            Token::Literal(..) => {
+                tok = l.next_token()?;
+                break;
+            }
+            _ => {
+                report.errors.push(Error::ExpectedQuestionText(tok.clone()));
+                tok = l.next_token()?;
+            }
+        };
+    }
+
+    loop {
+        if matches!(tok, Token::Eof(_)) {
+            report
+                .errors
+                .push(Error::ExpectedLSquirlyForQuestion(tok.clone()));
+            break;
+        }
+
+        if !matches!(tok, Token::LSquirly(_)) {
+            report
+                .errors
+                .push(Error::ExpectedLSquirlyForQuestion(tok.clone()));
+            tok = l.next_token()?;
+        } else {
+            break;
+        }
+    }
+
+
+    loop {
+        tok = l.next_token()?;
 
         if matches!(tok, Token::Eof(_)) {
             report
