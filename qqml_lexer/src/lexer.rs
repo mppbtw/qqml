@@ -47,6 +47,7 @@ impl Lexer {
             last_newline: self.last_newline.clone(),
             line_count: self.line_count.clone(),
             read_position: self.read_position.clone(),
+            ch: self.ch.clone(),
         }
     }
 
@@ -59,11 +60,10 @@ impl Lexer {
             last_newline: dat.last_newline,
             line_count: dat.line_count,
             position: dat.position,
-            ch: 0, // It calls read_char anyway
+            ch: dat.ch, // It calls read_char anyway
             read_position: dat.read_position,
         };
 
-        l.read_char();
         l
     }
 
@@ -268,6 +268,8 @@ pub struct LexerData {
     /// read a token (needed for getting the first
     /// char of a token).
     starting_position: usize,
+
+    ch: u8,
 }
 
 fn is_letter(ch: u8) -> bool {
