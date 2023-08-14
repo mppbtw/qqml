@@ -152,21 +152,19 @@ pub fn parse_multichoice<T: Into<Token>>(
             let neg = negative_tolerance(&mut starting_l.clone()).unwrap_err();
             if neg.errors.len() == 1 {
                 Err(neg)
-            } else {
-                if neg.errors.len() < report.errors.len() {
-                    let pos = positive_tolerance(&mut starting_l).unwrap_err();
-                    if pos.errors.len() < neg.errors.len() {
-                        Err(pos)
-                    } else {
-                        Err(neg)
-                    }
+            } else if neg.errors.len() < report.errors.len() {
+                let pos = positive_tolerance(&mut starting_l).unwrap_err();
+                if pos.errors.len() < neg.errors.len() {
+                    Err(pos)
                 } else {
-                    let pos = positive_tolerance(&mut starting_l).unwrap_err();
-                    if pos.errors.len() < report.errors.len() {
-                        Err(pos)
-                    } else {
-                        Err(report)
-                    }
+                    Err(neg)
+                }
+            } else {
+                let pos = positive_tolerance(&mut starting_l).unwrap_err();
+                if pos.errors.len() < report.errors.len() {
+                    Err(pos)
+                } else {
+                    Err(report)
                 }
             }
         }
@@ -175,7 +173,7 @@ pub fn parse_multichoice<T: Into<Token>>(
     }
 }
 
-fn negative_tolerance( l: &mut Lexer,) -> Result<(), ErrorReport> {
+fn negative_tolerance(l: &mut Lexer) -> Result<(), ErrorReport> {
     let mut report = ErrorReport::new();
     let mut tok = l.next_token()?;
     if !matches!(tok, Token::LParen(_)) {
@@ -276,7 +274,7 @@ fn negative_tolerance( l: &mut Lexer,) -> Result<(), ErrorReport> {
     Err(report)
 }
 
-fn positive_tolerance( l: &mut Lexer,) -> Result<(), ErrorReport> {
+fn positive_tolerance(l: &mut Lexer) -> Result<(), ErrorReport> {
     let mut report = ErrorReport::new();
     let mut tok = l.next_token()?;
 
@@ -285,7 +283,7 @@ fn positive_tolerance( l: &mut Lexer,) -> Result<(), ErrorReport> {
             report
                 .errors
                 .push(Error::ExpectedLParenForQuestionMaxMark(tok.clone()));
-                tok = l.next_token()?;
+            tok = l.next_token()?;
         } else {
             tok = l.next_token()?;
             break;
@@ -300,8 +298,8 @@ fn positive_tolerance( l: &mut Lexer,) -> Result<(), ErrorReport> {
             }
             _ => {
                 report
-                .errors
-                .push(Error::ExpectedNumberForQuestionMaxMark(tok.clone()));
+                    .errors
+                    .push(Error::ExpectedNumberForQuestionMaxMark(tok.clone()));
                 tok = l.next_token()?;
             }
         };
@@ -349,7 +347,6 @@ fn positive_tolerance( l: &mut Lexer,) -> Result<(), ErrorReport> {
             break;
         }
     }
-
 
     loop {
         tok = l.next_token()?;

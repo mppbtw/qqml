@@ -80,12 +80,10 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
                 } else {
                     Err(report)
                 }
+            } else if neg.errors.len() < report.errors.len() {
+                Err(neg)
             } else {
-                if neg.errors.len() < report.errors.len() {
-                    Err(neg)
-                } else {
-                    Err(report)
-                }
+                Err(report)
             }
         }
     } else {
