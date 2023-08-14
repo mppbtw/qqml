@@ -17,7 +17,8 @@ pub fn parse_multichoice<T: Into<Token>>(
 
     let keyword = keyword.into();
 
-    let starting_l_dat = l.get_lexer_data();
+    let starting_l = l.clone();
+    let starting_l_data = l.get_lexer_data();
     let mut report = ErrorReport::new();
     let mut tok = l.next_token()?;
     let mut dat = MultichoiceData::default();
@@ -146,38 +147,27 @@ pub fn parse_multichoice<T: Into<Token>>(
     dat.line = keyword.get_data().line;
 
     if !report.errors.is_empty() {
-        if report.errors.len() == 1 {
-            Err(report)
-        } else {
-            let neg = negative_tolerance(&mut Lexer::from_lexer_data(
-                l.get_input(),
-                starting_l_dat.clone(),
-            ))
-            .unwrap_err();
-            if neg.errors.len() == 1 {
+        let pos = positive_tolerance(&mut Lexer::from_lexer_data(
+            l.get_input(),
+            starting_l_data.clone(),
+        ))
+        .unwrap_err();
+        let neg = negative_tolerance(&mut Lexer::from_lexer_data(
+            l.get_input(),
+            starting_l_data.clone(),
+        ))
+        .unwrap_err();
+        if neg.errors.len() < pos.errors.len() {
+            if neg.errors.len() < report.errors.len() {
                 Err(neg)
-            } else if neg.errors.len() < report.errors.len() {
-                let pos = positive_tolerance(&mut Lexer::from_lexer_data(
-                    l.get_input(),
-                    starting_l_dat.clone(),
-                ))
-                .unwrap_err();
-                if pos.errors.len() < neg.errors.len() {
-                    Err(pos)
-                } else {
-                    Err(neg)
-                }
             } else {
-                let pos = positive_tolerance(&mut Lexer::from_lexer_data(
-                    l.get_input(),
-                    starting_l_dat.clone(),
-                ))
-                .unwrap_err();
-                if pos.errors.len() < report.errors.len() {
-                    Err(pos)
-                } else {
-                    Err(report)
-                }
+                Err(report)
+            }
+        } else {
+            if pos.errors.len() < report.errors.len() {
+                Err(pos)
+            } else {
+                Err(report)
             }
         }
     } else {
