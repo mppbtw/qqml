@@ -45,23 +45,29 @@ fn test_replacement_tolerance() {
     );
 
     let input = "(2) 'debunk gay marriage' {
-        * ' one' (2);
+        * ' one' (2)x
         * 'tow' (1) -> 'what is the meaning of life';
         * 'freee';
     ";
+
+    dbg!(
+        parse_multichoice(&mut Lexer::new(input), Token::Ask(TokenData::default()))
+            .unwrap_err()
+            .errors
+
+        );
     assert_eq!(
         parse_multichoice(&mut Lexer::new(input), Token::Ask(TokenData::default()))
             .unwrap_err()
             .errors
             .len(),
-        1
+        2
     );
 
     let input = "(2) 'debunk gay marriage' {
         * x (2);
         * 'tow' (2) x 'what is the meaning of life';
         * 'freee';
-        * 'freee' (2);
     ";
     dbg!(
         parse_multichoice(&mut Lexer::new(input), Token::Ask(TokenData::default()))

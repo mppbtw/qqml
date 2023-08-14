@@ -120,24 +120,26 @@ pub fn parse_multichoice<T: Into<Token>>(
     // Some semantic analasys can be done here as the
     // errors produced need not be bound to a token we
     // have already consumed.
-    let mut total_marks = 0;
-    for a in dat.answers.iter().cloned() {
-        total_marks += a.marks;
-    }
-    if total_marks < dat.max_marks {
-        report
-            .errors
-            .push(Error::ImpossibleMaxMark(keyword.clone()));
-    }
+    if report.errors.is_empty() {
+        let mut total_marks = 0;
+        for a in dat.answers.iter().cloned() {
+            total_marks += a.marks;
+        }
+        if total_marks < dat.max_marks {
+            report
+                .errors
+                .push(Error::ImpossibleMaxMark(keyword.clone()));
+        }
 
-    if dat.answers.is_empty() {
-        report
-            .errors
-            .push(Error::NoMultichoiceAnswers(keyword.clone()));
-    } else if dat.answers.len() == 1 {
-        report
-            .errors
-            .push(Error::OnlyOneMultichoiceAnswer(keyword.clone()));
+        if dat.answers.is_empty() {
+            report
+                .errors
+                .push(Error::NoMultichoiceAnswers(keyword.clone()));
+        } else if dat.answers.len() == 1 {
+            report
+                .errors
+                .push(Error::OnlyOneMultichoiceAnswer(keyword.clone()));
+        }
     }
 
     dat.line = keyword.get_data().line;
