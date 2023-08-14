@@ -16,7 +16,12 @@ pub fn render_error(input: String, e: Error, path_to_source: Option<String>) -> 
         'outer: loop {
             let l: String;
             if dat.line == input.lines().collect::<Vec<_>>().len() {
-                l = input.lines().collect::<Vec<_>>().last().unwrap().to_string();
+                l = input
+                    .lines()
+                    .collect::<Vec<_>>()
+                    .last()
+                    .unwrap()
+                    .to_string();
             } else {
                 l = input.lines().collect::<Vec<_>>()[dat.line].to_owned();
             }
