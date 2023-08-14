@@ -10,6 +10,7 @@ pub enum LexerError {
     IntegerTooLarge(TokenData),
 }
 
+#[derive(Debug, Clone)]
 pub struct Lexer {
     input: String,
     position: usize,
