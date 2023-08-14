@@ -8,7 +8,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     // and therefore assumes that the next token should
     // be the question text.
 
-    let mut starting_lexer = l.to_owned();
+    let starting_l_data = l.get_lexer_data();
     let mut report = ErrorReport::default();
     let mut dat = MultichoiceAnswer::default();
     let mut tok = l.next_token()?;
@@ -69,21 +69,35 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
         if report.errors.len() == 1 {
             Err(report)
         } else {
-            let pos = positive_tolerance(&mut starting_lexer.clone()).unwrap_err();
+            let pos = positive_tolerance(&mut Lexer::from_lexer_data(
+                l.get_input(),
+                starting_l_data.clone(),
+            ))
+            .unwrap_err();
             if pos.errors.len() == 1 {
-                return Err(pos);
-            }
-            let neg = negative_tolerance(&mut starting_lexer).unwrap_err();
-            if pos.errors.len() < neg.errors.len() {
-                if pos.errors.len() < report.errors.len() {
+                Err(pos)
+            } else if pos.errors.len() < report.errors.len() {
+                let neg = negative_tolerance(&mut Lexer::from_lexer_data(
+                    l.get_input(),
+                    starting_l_data.clone(),
+                ))
+                .unwrap_err();
+                if neg.errors.len() < pos.errors.len() {
+                    Err(neg)
+                } else {
                     Err(pos)
+                }
+            } else {
+                let neg = negative_tolerance(&mut Lexer::from_lexer_data(
+                    l.get_input(),
+                    starting_l_data.clone(),
+                ))
+                .unwrap_err();
+                if neg.errors.len() < report.errors.len() {
+                    Err(neg)
                 } else {
                     Err(report)
                 }
-            } else if neg.errors.len() < report.errors.len() {
-                Err(neg)
-            } else {
-                Err(report)
             }
         }
     } else {

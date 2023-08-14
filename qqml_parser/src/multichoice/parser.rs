@@ -17,7 +17,7 @@ pub fn parse_multichoice<T: Into<Token>>(
 
     let keyword = keyword.into();
 
-    let mut starting_l = l.clone();
+    let starting_l_data = l.get_lexer_data();
     let mut report = ErrorReport::new();
     let mut tok = l.next_token()?;
     let mut dat = MultichoiceData::default();
@@ -149,20 +149,32 @@ pub fn parse_multichoice<T: Into<Token>>(
         if report.errors.len() == 1 {
             Err(report)
         } else {
-            let neg = negative_tolerance(&mut starting_l.clone()).unwrap_err();
-            if neg.errors.len() == 1 {
-                Err(neg)
-            } else if neg.errors.len() < report.errors.len() {
-                let pos = positive_tolerance(&mut starting_l).unwrap_err();
-                if pos.errors.len() < neg.errors.len() {
-                    Err(pos)
-                } else {
+            let pos = positive_tolerance(&mut Lexer::from_lexer_data(
+                l.get_input(),
+                starting_l_data.clone(),
+            ))
+            .unwrap_err();
+            if pos.errors.len() == 1 {
+                Err(pos)
+            } else if pos.errors.len() < report.errors.len() {
+                let neg = negative_tolerance(&mut Lexer::from_lexer_data(
+                    l.get_input(),
+                    starting_l_data.clone(),
+                ))
+                .unwrap_err();
+                if neg.errors.len() < pos.errors.len() {
                     Err(neg)
+                } else {
+                    Err(pos)
                 }
             } else {
-                let pos = positive_tolerance(&mut starting_l).unwrap_err();
-                if pos.errors.len() < report.errors.len() {
-                    Err(pos)
+                let neg = negative_tolerance(&mut Lexer::from_lexer_data(
+                    l.get_input(),
+                    starting_l_data.clone(),
+                ))
+                .unwrap_err();
+                if neg.errors.len() < report.errors.len() {
+                    Err(neg)
                 } else {
                     Err(report)
                 }
