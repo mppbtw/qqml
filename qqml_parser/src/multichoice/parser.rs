@@ -154,9 +154,19 @@ pub fn parse_multichoice<T: Into<Token>>(
                 Err(neg)
             } else {
                 if neg.errors.len() < report.errors.len() {
-                    Err(neg)
+                    let pos = positive_tolerance(&mut starting_l).unwrap_err();
+                    if pos.errors.len() < neg.errors.len() {
+                        Err(pos)
+                    } else {
+                        Err(neg)
+                    }
                 } else {
-                    Err(report)
+                    let pos = positive_tolerance(&mut starting_l).unwrap_err();
+                    if pos.errors.len() < report.errors.len() {
+                        Err(pos)
+                    } else {
+                        Err(report)
+                    }
                 }
             }
         }
@@ -166,6 +176,107 @@ pub fn parse_multichoice<T: Into<Token>>(
 }
 
 fn negative_tolerance( l: &mut Lexer,) -> Result<(), ErrorReport> {
+    let mut report = ErrorReport::new();
+    let mut tok = l.next_token()?;
+    if !matches!(tok, Token::LParen(_)) {
+        report
+            .errors
+            .push(Error::ExpectedLParenForQuestionMaxMark(tok.clone()))
+    } else {
+        tok = l.next_token()?;
+    }
+
+    match tok {
+        Token::Number(..) => tok = l.next_token()?,
+        _ => report
+            .errors
+            .push(Error::ExpectedNumberForQuestionMaxMark(tok.clone())),
+    };
+
+    if !matches!(tok, Token::RParen(_)) {
+        report
+            .errors
+            .push(Error::ExpectedRParenForQuestionMaxMark(tok.clone()));
+    } else {
+        tok = l.next_token()?;
+    }
+
+    match tok {
+        Token::Literal(..) => tok = l.next_token()?,
+        _ => report.errors.push(Error::ExpectedQuestionText(tok.clone())),
+    };
+
+    let mut skip_token = false;
+    if !matches!(tok, Token::LSquirly(_)) {
+        report
+            .errors
+            .push(Error::ExpectedLSquirlyForQuestion(tok.clone()));
+        skip_token = true;
+    }
+
+    loop {
+        if skip_token {
+            skip_token = false;
+        } else {
+            tok = l.next_token()?;
+        }
+
+        if matches!(tok, Token::Eof(_)) {
+            report
+                .errors
+                .push(Error::ExpectedRSquirlyForQuestion(tok.clone()));
+            break;
+        }
+
+        if matches!(tok, Token::Semicolon(_)) {
+            continue;
+        }
+
+        if matches!(tok, Token::RSquirly(_)) {
+            break;
+        }
+
+        if matches!(tok, Token::Asterisk(_)) {
+            match parse_multichoice_answer(l) {
+                Ok(_) => (),
+                Err(r) => report.extend(r),
+            }
+        } else {
+            report.errors.push(Error::UnexpectedBodyToken(tok.clone()));
+        }
+    }
+
+    tok = l.next_token()?;
+    if matches!(tok, Token::Hints(_)) {
+        loop {
+            tok = l.next_token()?;
+            match tok {
+                Token::Literal(..) => {
+                    tok = l.next_token()?;
+                    match tok {
+                        Token::Comma(_) => continue,
+                        Token::Semicolon(_) => break,
+                        Token::Eof(_) => {
+                            report.errors.push(Error::ExpectedCommaInHintsList(tok));
+                            break;
+                        }
+                        _ => report.errors.push(Error::ExpectedCommaInHintsList(tok)),
+                    };
+                }
+                Token::Eof(_) => {
+                    report.errors.push(Error::ExpectedCommaInHintsList(tok));
+                    break;
+                }
+                Token::Semicolon(_) => break,
+                _ => report.errors.push(Error::ExpectedHintText(tok)),
+            };
+        }
+    }
+
+    Err(report)
+}
+
+fn positive_tolerance( l: &mut Lexer,) -> Result<(), ErrorReport> {
     let mut report = ErrorReport::new();
     let mut tok = l.next_token()?;
 
