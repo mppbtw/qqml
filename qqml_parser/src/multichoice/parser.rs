@@ -17,6 +17,7 @@ pub fn parse_multichoice<T: Into<Token>>(
 
     let keyword = keyword.into();
 
+    let mut starting_l = l.clone();
     let mut report = ErrorReport::new();
     let mut tok = l.next_token()?;
     let mut dat = MultichoiceData::default();
@@ -145,8 +146,123 @@ pub fn parse_multichoice<T: Into<Token>>(
     dat.line = keyword.get_data().line;
 
     if !report.errors.is_empty() {
-        Err(report)
+        if report.errors.len() == 1 {
+            Err(report)
+        } else {
+            let neg = negative_tolerance(&mut starting_l.clone()).unwrap_err();
+            if neg.errors.len() == 1 {
+                Err(neg)
+            } else {
+                if neg.errors.len() < report.errors.len() {
+                    Err(neg)
+                } else {
+                    Err(report)
+                }
+            }
+        }
     } else {
         Ok(dat)
     }
+}
+
+fn negative_tolerance( l: &mut Lexer,) -> Result<(), ErrorReport> {
+    let mut report = ErrorReport::new();
+    let mut tok = l.next_token()?;
+
+    if !matches!(tok, Token::LParen(_)) {
+        report
+            .errors
+            .push(Error::ExpectedLParenForQuestionMaxMark(tok.clone()))
+    } else {
+        tok = l.next_token()?;
+    }
+
+    match tok {
+        Token::Number(..) => tok = l.next_token()?,
+        _ => report
+            .errors
+            .push(Error::ExpectedNumberForQuestionMaxMark(tok.clone())),
+    };
+
+    if !matches!(tok, Token::RParen(_)) {
+        report
+            .errors
+            .push(Error::ExpectedRParenForQuestionMaxMark(tok.clone()));
+    } else {
+        tok = l.next_token()?;
+    }
+
+    match tok {
+        Token::Literal(..) => tok = l.next_token()?,
+        _ => report.errors.push(Error::ExpectedQuestionText(tok.clone())),
+    };
+
+    let mut skip_token = false;
+    if !matches!(tok, Token::LSquirly(_)) {
+        report
+            .errors
+            .push(Error::ExpectedLSquirlyForQuestion(tok.clone()));
+        skip_token = true;
+    }
+
+    loop {
+        if skip_token {
+            skip_token = false;
+        } else {
+            tok = l.next_token()?;
+        }
+
+        if matches!(tok, Token::Eof(_)) {
+            report
+                .errors
+                .push(Error::ExpectedRSquirlyForQuestion(tok.clone()));
+            break;
+        }
+
+        if matches!(tok, Token::Semicolon(_)) {
+            continue;
+        }
+
+        if matches!(tok, Token::RSquirly(_)) {
+            break;
+        }
+
+        if matches!(tok, Token::Asterisk(_)) {
+            match parse_multichoice_answer(l) {
+                Ok(_) => (),
+                Err(r) => report.extend(r),
+            }
+        } else {
+            report.errors.push(Error::UnexpectedBodyToken(tok.clone()));
+        }
+    }
+
+    tok = l.next_token()?;
+    if matches!(tok, Token::Hints(_)) {
+        loop {
+            tok = l.next_token()?;
+            match tok {
+                Token::Literal(..) => {
+                    tok = l.next_token()?;
+                    match tok {
+                        Token::Comma(_) => continue,
+                        Token::Semicolon(_) => break,
+                        Token::Eof(_) => {
+                            report.errors.push(Error::ExpectedCommaInHintsList(tok));
+                            break;
+                        }
+                        _ => report.errors.push(Error::ExpectedCommaInHintsList(tok)),
+                    };
+                }
+                Token::Eof(_) => {
+                    report.errors.push(Error::ExpectedCommaInHintsList(tok));
+                    break;
+                }
+                Token::Semicolon(_) => break,
+                _ => report.errors.push(Error::ExpectedHintText(tok)),
+            };
+        }
+    }
+
+    Err(report)
 }
