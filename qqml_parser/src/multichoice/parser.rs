@@ -25,9 +25,8 @@ pub fn parse_multichoice<T: Into<Token>>(
         report
             .errors
             .push(Error::ExpectedLParenForQuestionMaxMark(tok.clone()))
-    } else {
-        tok = l.next_token()?;
     }
+    tok = l.next_token()?;
 
     match tok {
         Token::Number(_, n) => {
@@ -36,44 +35,34 @@ pub fn parse_multichoice<T: Into<Token>>(
             } else {
                 dat.max_marks = n;
             }
-            tok = l.next_token()?;
         }
         _ => report
             .errors
             .push(Error::ExpectedNumberForQuestionMaxMark(tok.clone())),
     };
+    tok = l.next_token()?;
 
     if !matches!(tok, Token::RParen(_)) {
         report
             .errors
             .push(Error::ExpectedRParenForQuestionMaxMark(tok.clone()));
-    } else {
-        tok = l.next_token()?;
     }
 
+    tok = l.next_token()?;
     match tok {
-        Token::Literal(_, s) => {
-            dat.text = s;
-            tok = l.next_token()?;
-        }
+        Token::Literal(_, s) => dat.text = s,
         _ => report.errors.push(Error::ExpectedQuestionText(tok.clone())),
     };
 
-    let mut skip_next_tok = false;
-
+    tok = l.next_token()?;
     if !matches!(tok, Token::LSquirly(_)) {
         report
             .errors
             .push(Error::ExpectedLSquirlyForQuestion(tok.clone()));
-        skip_next_tok = true;
     }
 
     loop {
-        if skip_next_tok {
-            skip_next_tok = false;
-        } else {
-            tok = l.next_token()?;
-        }
+        tok = l.next_token()?;
 
         if matches!(tok, Token::Eof(_)) {
             report
