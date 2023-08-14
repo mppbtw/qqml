@@ -70,18 +70,18 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
             Err(report)
         } else {
             let pos = positive_tolerance(&mut Lexer::from_lexer_data(
-                l.get_input(),
-                starting_l_data.clone(),
-            ))
-            .unwrap_err();
+                    l.get_input(),
+                    starting_l_data.clone(),
+                    ))
+                .unwrap_err();
             if pos.errors.len() == 1 {
                 Err(pos)
             } else if pos.errors.len() < report.errors.len() {
                 let neg = negative_tolerance(&mut Lexer::from_lexer_data(
-                    l.get_input(),
-                    starting_l_data.clone(),
-                ))
-                .unwrap_err();
+                        l.get_input(),
+                        starting_l_data.clone(),
+                        ))
+                    .unwrap_err();
                 if neg.errors.len() < pos.errors.len() {
                     Err(neg)
                 } else {
@@ -89,15 +89,15 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
                 }
             } else {
                 let neg = negative_tolerance(&mut Lexer::from_lexer_data(
-                    l.get_input(),
-                    starting_l_data.clone(),
-                ))
-                .unwrap_err();
+                        l.get_input(),
+                        starting_l_data.clone(),
+                        )).unwrap_err();
                 if neg.errors.len() < report.errors.len() {
-                    Err(neg)
+                    Err(pos)
                 } else {
                     Err(report)
                 }
+
             }
         }
     } else {
