@@ -42,29 +42,25 @@ impl Lexer {
 
     pub fn get_lexer_data(&self) -> LexerData {
         LexerData {
-            position: self.position.clone(),
-            starting_position: self.starting_position.clone(),
-            last_newline: self.last_newline.clone(),
-            line_count: self.line_count.clone(),
-            read_position: self.read_position.clone(),
-            ch: self.ch.clone(),
+            position: self.position,
+            starting_position: self.starting_position,
+            last_newline: self.last_newline,
+            line_count: self.line_count,
+            read_position: self.read_position,
+            ch: self.ch,
         }
     }
 
     pub fn from_lexer_data<S: Into<String>>(input: S, dat: LexerData) -> Self {
-        let input: String = input.into();
-
-        let mut l = Self {
-            input,
+        Self {
+            input: input.into(),
             starting_position: dat.starting_position,
             last_newline: dat.last_newline,
             line_count: dat.line_count,
             position: dat.position,
             ch: dat.ch, // It calls read_char anyway
             read_position: dat.read_position,
-        };
-
-        l
+        }
     }
 
     pub fn get_input(&self) -> &String {
