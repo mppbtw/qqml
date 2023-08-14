@@ -40,6 +40,33 @@ impl Lexer {
         lexer
     }
 
+    pub fn get_lexer_data(&self) -> LexerData {
+        LexerData {
+            position: self.position.clone(),
+            starting_position: self.starting_position.clone(),
+            last_newline: self.last_newline.clone(),
+            line_count: self.line_count.clone(),
+            read_position: self.read_position.clone(),
+        }
+    }
+
+    pub fn from_lexer_data<S: Into<String>>(input: S, dat: LexerData) -> Self {
+        let input: String = input.into();
+
+        let mut l = Self {
+            input,
+            starting_position: dat.starting_position,
+            last_newline: dat.last_newline,
+            line_count: dat.line_count,
+            position: dat.position,
+            ch: 0, // It calls read_char anyway
+            read_position: dat.read_position,
+        };
+
+        l.read_char();
+        l
+    }
+
     pub fn get_input(&self) -> &String {
         &self.input
     }
@@ -226,6 +253,21 @@ fn lookup_ident(ident: String) -> Token {
         Some(i) => i.clone(),
         None => Token::Ident(TokenData::default(), ident),
     }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct LexerData {
+    position: usize,
+    read_position: usize,
+
+    // For attaching token metadata
+    line_count: usize,
+    last_newline: usize,
+
+    /// The position of the lexer when it began to
+    /// read a token (needed for getting the first
+    /// char of a token).
+    starting_position: usize,
 }
 
 fn is_letter(ch: u8) -> bool {
