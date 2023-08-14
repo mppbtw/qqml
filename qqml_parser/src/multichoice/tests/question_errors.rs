@@ -137,4 +137,40 @@ fn test_possitive_tolerance() {
             .len(),
         1
     );
+
+    let input = "x(1) 'where is the sun' {
+        x* 'over there' (1);
+        * 'no';
+    };";
+    assert_eq!(
+        parse_multichoice(&mut Lexer::new(input), Token::Ask(TokenData::default()))
+            .unwrap_err()
+            .errors
+            .len(),
+        2
+    );
+
+    let input = "(1) 'where is the sun' x{
+        * 'over there' (1);
+        * 'no';
+    };";
+    assert_eq!(
+        parse_multichoice(&mut Lexer::new(input), Token::Ask(TokenData::default()))
+            .unwrap_err()
+            .errors
+            .len(),
+        1
+    );
+
+    let input = "(1) i'where is the sun' {
+        * 'over there' (1);
+        * 'no'x;
+    };";
+    assert_eq!(
+        parse_multichoice(&mut Lexer::new(input), Token::Ask(TokenData::default()))
+            .unwrap_err()
+            .errors
+            .len(),
+        2
+    );
 }
