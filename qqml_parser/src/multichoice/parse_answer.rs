@@ -1,6 +1,5 @@
 use crate::error::ErrorReport;
 use crate::*;
-use qqml_lexer::LexerData;
 use qqml_lexer::*;
 
 pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, ErrorReport> {
@@ -9,7 +8,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     // and therefore assumes that the next token should
     // be the question text.
 
-    let starting_l_data: LexerData = l.get_lexer_data();
+    let starting_l_data = l.get_lexer_data();
     let mut report = ErrorReport::default();
     let mut dat = MultichoiceAnswer::default();
     let mut tok = l.next_token()?;
@@ -67,28 +66,25 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
     }
 
     if !report.errors.is_empty() {
-        if report.errors.len() == 1 {
-            Err(report)
-        } else {
-            let pos = positive_tolerance(&mut Lexer::from_lexer_data(
-                l.get_input(),
-                starting_l_data.clone(),
-            ))
-            .unwrap_err();
-            if pos.errors.len() == 1 {
-                return Err(pos);
-            }
-            let neg =
-                negative_tolerance(&mut Lexer::from_lexer_data(l.get_input(), starting_l_data))
-                    .unwrap_err();
-            if pos.errors.len() < neg.errors.len() {
-                if pos.errors.len() < report.errors.len() {
-                    Err(pos)
-                } else {
-                    Err(report)
-                }
-            } else if neg.errors.len() < report.errors.len() {
+        let pos = positive_tolerance(&mut Lexer::from_lexer_data(
+            l.get_input(),
+            starting_l_data.clone(),
+        ))
+        .unwrap_err();
+        let neg = negative_tolerance(&mut Lexer::from_lexer_data(
+            l.get_input(),
+            starting_l_data.clone(),
+        ))
+        .unwrap_err();
+        if neg.errors.len() < pos.errors.len() {
+            if neg.errors.len() < report.errors.len() {
                 Err(neg)
+            } else {
+                Err(report)
+            }
+        } else {
+            if pos.errors.len() < report.errors.len() {
+                Err(pos)
             } else {
                 Err(report)
             }
