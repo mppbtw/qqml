@@ -115,17 +115,26 @@ fn test_negative_tolerance() {
         * 'i live for the fonk'
         * 'six feet deep';
     };";
-    dbg!(
-
-        parse_multichoice(&mut Lexer::new(input), Token::Ask(TokenData::default()))
-            .unwrap_err()
-            .errors
-        );
     assert_eq!(
         parse_multichoice(&mut Lexer::new(input), Token::Ask(TokenData::default()))
             .unwrap_err()
             .errors
             .len(),
         2
+    );
+}
+
+#[test]
+fn test_possitive_tolerance() {
+    let input = "x(1) 'where is the sun' {
+        * 'over there' (1);
+        * 'no';
+    };";
+    assert_eq!(
+        parse_multichoice(&mut Lexer::new(input), Token::Ask(TokenData::default()))
+            .unwrap_err()
+            .errors
+            .len(),
+        1
     );
 }
