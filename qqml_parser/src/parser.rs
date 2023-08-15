@@ -15,16 +15,14 @@ impl ParsedFile {
         let mut output = String::new();
         output += "{";
         output += &format!("\"max_hints\": {},", self.max_hints);
-        output += &format!("\"questions\": [");
+        output += "\"questions\": [";
         output += &self
             .questions
             .iter()
             .map(|q| q.to_json())
             .collect::<Vec<String>>()
             .join(",");
-        output += &format!("]");
-
-        output += "}";
+        output += "]}";
         output
     }
 }
