@@ -33,7 +33,10 @@ impl MultichoiceAnswer {
         output += "{";
         output += &format!("\"text\": \"{}\",", self.text.clone().unwrap());
         output += &format!("\"marks\": {},", self.marks);
-        output += &format!("\"explanation\": \"{}\",", self.explanation.clone().unwrap_or("".to_owned()));
+        output += &format!(
+            "\"explanation\": \"{}\",",
+            self.explanation.clone().unwrap_or("".to_owned())
+        );
         output += &format!("\"is_chosen\": {}", self.is_chosen);
         output += "}";
         output
