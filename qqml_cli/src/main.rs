@@ -2,6 +2,7 @@ use qqml_eval::render_error;
 use qqml_eval::run;
 use qqml_parser::parse;
 use qqml_parser::ErrorReport;
+use qqml_parser::ParsedFile;
 use std::time::Instant;
 
 use std::{env::args, fs, process::exit};
@@ -28,7 +29,10 @@ fn main() {
                         println!("{{}}");
                     } else {
                         match parse(&f) {
-                            Ok(p) => p,
+                            Ok(p) => {
+                                println!("{}", render_parsed_file(p));
+                                exit(0);
+                            }
                             Err(r) => {
                                 println!("{}", render_error_report(r, f, i));
                                 exit(1);
@@ -49,6 +53,70 @@ fn main() {
             exit(1);
         }
     }
+}
+
+fn render_parsed_file(p: ParsedFile) -> String {
+    let mut output = String::new();
+
+    // Put all of the newlines in the right place
+    for ch in format!("{p:?}").chars().map(|ch| String::from(ch)) {
+        output += &ch;
+        match ch.as_str() {
+            "," => output += "\n",
+            "{" | "[" => output += "\n",
+            "]" | "}" => output.insert_str(output.len() - 2, "\n"),
+            _ => (),
+        };
+    }
+
+    let mut current_indent = 0;
+    let mut indented = String::new();
+    for mut l in output.lines() {
+        loop {
+            if l.starts_with(" ") {
+                l = l.strip_prefix(" ").unwrap();
+            } else {
+                break;
+            }
+        }
+
+        loop {
+            if l.ends_with(" ") {
+                l = l.strip_suffix(" ").unwrap();
+            } else {
+                break;
+            }
+        }
+
+        if l.contains("{") {
+            current_indent += 4;
+        }
+        if l.contains("[") {
+            current_indent += 4;
+        }
+
+        if l.contains("}") {
+            current_indent -= 4;
+        }
+        if l.contains("]") {
+            current_indent -= 4;
+        }
+
+        indented += &l
+            .replace("{", "")
+            .replace("[", "")
+            .replace("}", "")
+            .replace("]", "")
+            .replace(",", "")
+            .replace(":", "");
+
+        if l.len() > 2 {
+            indented += "\n";
+            (0..current_indent).for_each(|_| indented += " ");
+        }
+    }
+
+    indented
 }
 
 fn render_error_report(r: ErrorReport, path: String, inp: String) -> String {
