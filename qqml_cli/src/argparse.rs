@@ -1,6 +1,17 @@
 use std::env::args;
 
-const OPTIONS: [&str; 6] = ["-h", "--help", "-v", "--version", "-c", "--check"];
+const OPTIONS: [&str; 10] = [
+    "-h",
+    "--help",
+    "-v",
+    "--version",
+    "-c",
+    "--check",
+    "-p",
+    "--parse",
+    "-j",
+    "--json",
+];
 
 pub fn has_help() -> bool {
     let args = args().collect::<Vec<String>>();
