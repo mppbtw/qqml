@@ -1,23 +1,21 @@
-use lazy_static::lazy_static;
-use std::{collections::HashMap, fmt};
+use std::collections::HashMap;
+use std::fmt;
 
-lazy_static! {
-    pub static ref KEYWORDS: HashMap<String, Token> = {
-        let mut m = HashMap::new();
-        m.insert("ask".into(), Token::Ask(TokenData::default()));
-        m.insert(
-            "multichoice".into(),
-            Token::Multichoice(TokenData::default()),
-        );
-        m.insert("string".into(), Token::String(TokenData::default()));
-        m.insert(
-            "calculation".into(),
-            Token::Calculation(TokenData::default()),
-        );
-        m.insert("inputs".into(), Token::Inputs(TokenData::default()));
-        m.insert("hints".into(), Token::Hints(TokenData::default()));
-        m
-    };
+pub fn get_keywords_map() -> HashMap<String, Token> {
+    let mut m = HashMap::new();
+    m.insert("ask".into(), Token::Ask(TokenData::default()));
+    m.insert(
+        "multichoice".into(),
+        Token::Multichoice(TokenData::default()),
+    );
+    m.insert("string".into(), Token::String(TokenData::default()));
+    m.insert(
+        "calculation".into(),
+        Token::Calculation(TokenData::default()),
+    );
+    m.insert("inputs".into(), Token::Inputs(TokenData::default()));
+    m.insert("hints".into(), Token::Hints(TokenData::default()));
+    m
 }
 
 #[derive(Clone, Debug, Default)]
