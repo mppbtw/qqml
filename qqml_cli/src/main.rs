@@ -1,4 +1,5 @@
 use qqml_eval::run;
+use qqml_eval::render_error;
 use qqml_parser::parse;
 use std::time::Instant;
 
@@ -22,7 +23,7 @@ fn main() {
                 if has_check() {
                     check_file(f, i);
                 } else {
-                    run(f, Some(i));
+                    run(&f, Some(&i));
                 }
             }
             Err(e) => eprintln!("Couldn't read file: {}", e),
@@ -31,9 +32,9 @@ fn main() {
     }
 }
 
-fn check_file(inp: String, _path: String) -> ! {
+fn check_file(inp: String, path: String) -> ! {
     let start_t = Instant::now();
-    match parse(inp) {
+    match parse(&inp) {
         Ok(_) => {
             println!(
                 "{}{}    Finished{} target in {}ms.",
@@ -44,13 +45,16 @@ fn check_file(inp: String, _path: String) -> ! {
             );
             exit(0);
         }
-        Err(_) => {
+        Err(r) => {
+            for e in r.errors.iter().rev() {
+                render_error(&inp, e, Some(&path));
+            }
             println!(
-                "{}{}Check finished in {}ms.{}",
+                "{}{}    Finished{} target in {}ms.",
                 ANSI_RED,
                 ANSI_BOLD,
+                ANSI_RESET,
                 start_t.elapsed().as_millis(),
-                ANSI_RESET
             );
             exit(1);
         },
@@ -59,8 +63,7 @@ fn check_file(inp: String, _path: String) -> ! {
 
 fn help_msg() -> ! {
     println!(
-        "
-QQML v1.0 (c) 2023 'MrPiggyPegasus'
+        " QQML v1.0 (c) 2023 'MrPiggyPegasus'
 
 usage: qqml [OPTIONS] <FILE>
 

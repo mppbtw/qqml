@@ -6,15 +6,15 @@ use qqml_parser::Question;
 use rtermutils::*;
 use std::process::exit;
 
-pub fn run(input: String, path_to_source: Option<String>) -> ! {
-    let parsed = match parse(&input) {
+pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
+    let parsed = match parse(input) {
         Ok(p) => p,
         Err(r) => {
             let len = r.errors.len();
             for error in r.errors {
                 println!(
                     "{}",
-                    render_error(input.to_owned(), error, path_to_source.clone())
+                    render_error(&input, &error, path_to_source)
                 );
             }
             println!("Errors detected: {}", len);
@@ -23,7 +23,7 @@ pub fn run(input: String, path_to_source: Option<String>) -> ! {
     };
     let mut s = {
         StateConstructor {
-            path_to_source,
+            path_to_source: path_to_source.cloned(),
             questions: parsed.questions,
             max_hints: parsed.max_hints,
         }

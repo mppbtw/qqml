@@ -5,7 +5,7 @@ const ANSI_BOLD: &str = "\x1b[1m";
 const ANSI_CYAN: &str = "\x1b[38;5;247m";
 const ANSI_RED: &str = "\x1b[31m";
 
-pub fn render_error(input: String, e: Error, path_to_source: Option<String>) -> String {
+pub fn render_error(input: &String, e: &Error, path_to_source: Option<&String>) -> String {
     let mut output = String::new();
     let mut dat = e.get_token_data();
 
