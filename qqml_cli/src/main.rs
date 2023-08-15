@@ -25,20 +25,20 @@ fn main() {
                 if has_check() {
                     check_file(f, i);
                 } else if has_parse() {
-                    if has_json() {
-                        println!("{{}}");
-                    } else {
-                        match parse(&f) {
-                            Ok(p) => {
+                    match parse(&f) {
+                        Ok(p) => {
+                            if has_json() {
+                                println!("{}", p.to_json());
+                            } else {
                                 println!("{}", render_parsed_file(p));
-                                exit(0);
                             }
-                            Err(r) => {
-                                println!("{}", render_error_report(r, f, i));
-                                exit(1);
-                            }
-                        };
-                    }
+                            exit(0);
+                        }
+                        Err(r) => {
+                            println!("{}", render_error_report(r, f, i));
+                            exit(1);
+                        }
+                    };
                 } else {
                     run(&f, Some(&i));
                 }
