@@ -10,6 +10,22 @@ pub struct ParsedFile {
     pub questions: Vec<Question>,
     pub max_hints: usize,
 }
+impl ParsedFile {
+    pub fn to_json(&self) -> String {
+        let mut output = String::new();
+        output += "{";
+        output += &format!("\"max_hints\": {},", self.max_hints);
+        output += "\"questions\": [";
+        output += &self
+            .questions
+            .iter()
+            .map(|q| q.to_json())
+            .collect::<Vec<String>>()
+            .join(",");
+        output += "]}";
+        output
+    }
+}
 
 pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
     // This parser is replacement tolerant, meaning that an incorrect token
