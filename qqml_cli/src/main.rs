@@ -59,12 +59,12 @@ fn render_parsed_file(p: ParsedFile) -> String {
     let mut output = String::new();
 
     // Put all of the newlines in the right place
-    for ch in format!("{p:?}").chars().map(|ch| String::from(ch)) {
+    for ch in format!("{p:?}").chars().map(String::from) {
         output += &ch;
         match ch.as_str() {
             "," => output += "\n",
             "{" | "[" => output += "\n",
-            "]" | "}" => output.insert_str(output.len() - 2, "\n"),
+            "]" | "}" => output.insert(output.len() - 2, '\n'),
             _ => (),
         };
     }
@@ -73,42 +73,36 @@ fn render_parsed_file(p: ParsedFile) -> String {
     let mut indented = String::new();
     for mut l in output.lines() {
         loop {
-            if l.starts_with(" ") {
-                l = l.strip_prefix(" ").unwrap();
+            if l.starts_with(' ') {
+                l = l.strip_prefix(' ').unwrap();
             } else {
                 break;
             }
         }
 
         loop {
-            if l.ends_with(" ") {
-                l = l.strip_suffix(" ").unwrap();
+            if l.ends_with(' ') {
+                l = l.strip_suffix(' ').unwrap();
             } else {
                 break;
             }
         }
 
-        if l.contains("{") {
+        if l.contains('{') {
             current_indent += 4;
         }
-        if l.contains("[") {
+        if l.contains('[') {
             current_indent += 4;
         }
 
-        if l.contains("}") {
+        if l.contains('}') {
             current_indent -= 4;
         }
-        if l.contains("]") {
+        if l.contains(']') {
             current_indent -= 4;
         }
 
-        indented += &l
-            .replace("{", "")
-            .replace("[", "")
-            .replace("}", "")
-            .replace("]", "")
-            .replace(",", "")
-            .replace(":", "");
+        indented += &l.replace(['{', '[', '}', ']', ',', ':'], "");
 
         if l.len() > 2 {
             indented += "\n";
