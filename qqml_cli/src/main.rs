@@ -1,5 +1,5 @@
-use qqml_eval::run;
 use qqml_eval::render_error;
+use qqml_eval::run;
 use qqml_parser::parse;
 use std::time::Instant;
 
@@ -47,17 +47,27 @@ fn check_file(inp: String, path: String) -> ! {
         }
         Err(r) => {
             for e in r.errors.iter().rev() {
-                render_error(&inp, e, Some(&path));
+                println!("{}", render_error(&inp, e, Some(&path)));
             }
             println!(
-                "{}{}    Finished{} target in {}ms.",
+                "{}{}    Finished{} check in {}ms",
                 ANSI_RED,
                 ANSI_BOLD,
                 ANSI_RESET,
-                start_t.elapsed().as_millis(),
+                start_t.elapsed().as_millis()
+            );
+
+            println!(
+                "{}{}    Error:{} Failed to parse {} due to {} error{}",
+                ANSI_RED,
+                ANSI_BOLD,
+                ANSI_RESET,
+                path,
+                r.errors.len(),
+                if r.errors.len() == 1 { "" } else { "s" }
             );
             exit(1);
-        },
+        }
     }
 }
 

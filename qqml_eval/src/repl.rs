@@ -12,10 +12,7 @@ pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
         Err(r) => {
             let len = r.errors.len();
             for error in r.errors {
-                println!(
-                    "{}",
-                    render_error(&input, &error, path_to_source)
-                );
+                println!("{}", render_error(&input, &error, path_to_source));
             }
             println!("Errors detected: {}", len);
             exit(1);
