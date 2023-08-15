@@ -1,6 +1,7 @@
 use qqml_eval::render_error;
 use qqml_eval::run;
 use qqml_parser::parse;
+use qqml_parser::ErrorReport;
 use std::time::Instant;
 
 use std::{env::args, fs, process::exit};
@@ -22,14 +23,50 @@ fn main() {
             Ok(f) => {
                 if has_check() {
                     check_file(f, i);
+                } else if has_parse() {
+                    if has_json() {
+                        println!("{{}}");
+                    } else {
+                        match parse(&f) {
+                            Ok(p) => p,
+                            Err(r) => {
+                                println!("{}", render_error_report(r, f, i));
+                                exit(1);
+                            }
+                        };
+                    }
                 } else {
                     run(&f, Some(&i));
                 }
             }
-            Err(e) => eprintln!("Couldn't read file: {}", e),
+            Err(e) => {
+                eprintln!("Couldn't read file: {}", e);
+                exit(1);
+            }
         },
-        None => help_msg(),
+        None => {
+            eprintln!("Requires file argument.");
+            exit(1);
+        }
     }
+}
+
+fn render_error_report(r: ErrorReport, path: String, inp: String) -> String {
+    let mut output = String::new();
+    for e in r.errors.iter().rev() {
+        output += &render_error(&inp, e, Some(&path));
+    }
+
+    output += &format!(
+        "{}{}    Error:{} Failed to parse {} due to {} error{}",
+        ANSI_RED,
+        ANSI_BOLD,
+        ANSI_RESET,
+        path,
+        r.errors.len(),
+        if r.errors.len() == 1 { "" } else { "s" }
+    );
+    output
 }
 
 fn check_file(inp: String, path: String) -> ! {
@@ -85,6 +122,13 @@ OPTIONS:
 
     -V --version    Print version information and
                     exit.
+
+    -p --parse      Attempt to parse the file, if
+                    succesful will then print the
+                    parsed data.
+
+    -j --json       Output any parsing data in a
+                    JSON format
 
 More information about the QQML language
 and its related tooling is available at
