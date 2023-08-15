@@ -1,4 +1,3 @@
-use crate::diagnostics::render_error;
 use crate::render::*;
 use crate::state::*;
 use qqml_parser::parse;
@@ -9,12 +8,8 @@ use std::process::exit;
 pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
     let parsed = match parse(input) {
         Ok(p) => p,
-        Err(r) => {
-            let len = r.errors.len();
-            for error in r.errors {
-                println!("{}", render_error(input, &error, path_to_source));
-            }
-            println!("Errors detected: {}", len);
+        Err(_) => {
+            // Proper error reporting should be done by the caller
             exit(1);
         }
     };

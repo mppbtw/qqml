@@ -6,6 +6,7 @@ mod parser;
 mod test_correct;
 
 pub use self::error::Error;
+pub use self::error::ErrorReport;
 pub use self::multichoice::MultichoiceAnswer;
 pub use self::multichoice::MultichoiceData;
 pub use self::parser::parse;
