@@ -1,6 +1,6 @@
+use crate::token::get_keywords_map;
 use crate::token::Token;
 use crate::token::TokenData;
-use crate::token::KEYWORDS;
 
 const WHITESPACE_CHARS: [u8; 4] = [b' ', b'\n', b'\r', b'\t'];
 
@@ -221,7 +221,7 @@ impl Default for Lexer {
 }
 
 fn lookup_ident(ident: String) -> Token {
-    match KEYWORDS.get(&ident) {
+    match get_keywords_map().get(&ident) {
         Some(i) => i.clone(),
         None => Token::Ident(TokenData::default(), ident),
     }
