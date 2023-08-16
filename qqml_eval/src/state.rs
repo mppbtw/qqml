@@ -132,4 +132,12 @@ impl State {
         }
         true
     }
+
+    pub fn get_max_marks(&self) -> usize {
+        0
+    }
+
+    pub fn achieved_marks(&self) -> usize {
+        0
+    }
 }
