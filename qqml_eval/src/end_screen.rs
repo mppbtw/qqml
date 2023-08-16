@@ -1,26 +1,32 @@
+use crate::exit::cleanup_and_exit;
 use crate::render::pad_to_width;
 use crate::state::State;
-use crate::exit::cleanup_and_exit;
 use rtermutils::*;
 use std::io::stdout;
 use std::io::Write;
 use std::thread::sleep;
 use std::time::Duration;
-use std::process::exit;
 
 pub fn end_screen(s: &mut State) {
-    let bart = "
-  |\\/\\/\\/|
-  |      |
-  | (o)(o)
-  C      _)   unnaceptable
-  |  ___|
-  |   /
- /____\\
-/      \\"
-        .to_owned();
+    let percent = if s.achieved_marks() == 0 {
+        0.0
+    } else {
+        ((s.achieved_marks() as f64 / s.get_max_marks() as f64) * 100.0).floor()
+    };
+
+    let art: String;
+    if percent <= 25.0 {
+        art = include_str!("../../ascii/bart.ascii").to_string();
+    } else if percent <= 50.0 {
+        art = include_str!("../../ascii/squidward.ascii").to_string();
+    } else if percent <= 75.0 {
+        art = include_str!("../../ascii/popeye.ascii").to_string();
+    } else {
+        art = include_str!("../../ascii/homer.ascii").to_string();
+    }
+
     if !s.has_watched_final_cutsene() {
-        ascii_scroll(bart, 200);
+        ascii_scroll(art, 200);
         s.watch_final_cutsene();
     } else {
         unsafe { clear_screen() }
