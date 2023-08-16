@@ -146,7 +146,7 @@ pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
 fn help_menu() {
     unsafe {
         clear_screen();
-        println!("Help menu goes here");
+        println!("{}", include_str!("./help_menu.txt"));
         read_single_char();
     }
 }

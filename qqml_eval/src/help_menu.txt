@@ -1,0 +1,13 @@
+N, <Right> - Next question
+
+P, <Left>  - Previous question
+
+J, <Down>  - Select next
+
+K, <Up>    - Select previous next
+
+<Space>    - Select the answer beneath the cursor
+
+<Enter>    - Confirm answer
+
+Q          - Quit
