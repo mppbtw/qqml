@@ -40,7 +40,7 @@ impl State {
         self.cols = unsafe { clear_screen_with_width() } as usize;
         self.questions_len = self.questions.len();
         self.current_hints_available = match &self.questions[self.current_question_index] {
-            Question::Multichoice(d) => d.hints.len(),
+            Question::Multichoice(d) => d.hints.len() - d.used_hints,
             _ => 0,
         };
         let mut s = Screen::default();
@@ -65,7 +65,20 @@ impl State {
         };
 
         if let Question::Multichoice(d) = &self.questions[self.current_question_index] {
+            if d.used_hints != 0 {
+                s.hints_body = Some(HintsBody {
+                    hints: &d.hints[0..d.used_hints],
+                })
+            }
+
             if d.is_answered {
+                s.hints_line = Some(HintsLine {
+                    max_hints: &self.max_hints,
+                    hints_available: &self.current_hints_available,
+                    hints_used_total: &self.hints_used,
+                    is_answered: &true,
+                });
+
                 s.question_result_body = Some(QuestionResultBody {
                     cols: &self.cols,
                     answers: &d.answers,
@@ -84,6 +97,13 @@ impl State {
                     achieved_marks: &self.current_achieved_marks,
                 });
             } else {
+                s.hints_line = Some(HintsLine {
+                    max_hints: &self.max_hints,
+                    hints_available: &self.current_hints_available,
+                    hints_used_total: &self.hints_used,
+                    is_answered: &false,
+                });
+
                 s.question_line = Some(QuestionLine { q: d });
                 s.question_body = Some(QuestionBody {
                     answers: (d

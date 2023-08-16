@@ -192,8 +192,9 @@ pub struct HintsBody<'a> {
 impl Render for HintsBody<'_> {
     fn render(&self) -> String {
         let mut output = String::new();
-        for i in self.hints {
-            output += &("  ".to_owned() + i);
+        output += "\n";
+        for hint in self.hints {
+            output += &format!("   *  {}", hint);
             output += "\n\n";
         }
         output
@@ -240,13 +241,18 @@ pub struct HintsLine<'a> {
     pub max_hints: &'a usize,
     pub hints_used_total: &'a usize,
     pub hints_available: &'a usize,
+    pub is_answered: &'a bool,
 }
 impl Render for HintsLine<'_> {
     fn render(&self) -> String {
-        format!(
-            "Hints (used {}/{}, {} available for this question):",
-            &self.hints_used_total, &self.max_hints, &self.hints_available
-        )
+        if *self.is_answered {
+            format!("   Used {} hints:", &self.hints_used_total)
+        } else {
+            format!(
+                "   Hints (used {}/{}, {} available for this question)",
+                &self.hints_used_total, &self.max_hints, &self.hints_available
+            )
+        }
     }
 }
 
