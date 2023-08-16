@@ -1,4 +1,5 @@
 use crate::end_screen::end_screen;
+use crate::exit::cleanup_and_exit;
 use crate::render::*;
 use crate::state::*;
 use qqml_parser::parse;
@@ -53,7 +54,7 @@ pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
                 Question::Multichoice(ref mut d) => 'block: {
                     if d.is_answered {
                         if s.every_question_answered() {
-                            end_screen(&s);
+                            end_screen(&mut s);
                         } else {
                             refresh_needed = false;
                         }
@@ -139,11 +140,7 @@ pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
             _ => refresh_needed = false,
         }
     }
-    unsafe {
-        show_cursor();
-        exit_alt_screen();
-    }
-    exit(0)
+    cleanup_and_exit(None);
 }
 
 fn help_menu() {
