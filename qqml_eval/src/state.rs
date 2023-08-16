@@ -29,6 +29,7 @@ pub struct State {
     questions_len: usize,
     current_hints_available: usize,
     cols: usize,
+    has_watched_final_cutsene: bool,
 
     // Used only for purpose of handing references to TUI components
     current_achieved_marks: usize,
@@ -134,10 +135,24 @@ impl State {
     }
 
     pub fn get_max_marks(&self) -> usize {
-        0
+        self.questions
+            .iter()
+            .map(|q| match q {
+                Question::Multichoice(d) => d.max_marks,
+                _ => 0,
+            })
+            .sum()
     }
 
     pub fn achieved_marks(&self) -> usize {
-        0
+        self.current_achieved_marks
+    }
+
+    pub fn watch_final_cutsene(&mut self) {
+        self.has_watched_final_cutsene = true;
+    }
+
+    pub fn has_watched_final_cutsene(&self) -> bool {
+        self.has_watched_final_cutsene
     }
 }
