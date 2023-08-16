@@ -40,7 +40,7 @@ impl State {
         self.cols = unsafe { clear_screen_with_width() } as usize;
         self.questions_len = self.questions.len();
         self.current_hints_available = match &self.questions[self.current_question_index] {
-            Question::Multichoice(d) => d.hints.len(),
+            Question::Multichoice(d) => d.hints.len() - d.used_hints,
             _ => 0,
         };
         let mut s = Screen::default();
