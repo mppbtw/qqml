@@ -1,3 +1,4 @@
+use crate::end_screen::end_screen;
 use crate::render::*;
 use crate::state::*;
 use qqml_parser::parse;
@@ -51,7 +52,11 @@ pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
             b'\n' => match s.questions[s.current_question_index] {
                 Question::Multichoice(ref mut d) => 'block: {
                     if d.is_answered {
-                        refresh_needed = false;
+                        if s.every_question_answered() {
+                            end_screen(&s);
+                        } else {
+                            refresh_needed = false;
+                        }
                         break 'block;
                     }
                     let mut total_chosen = 0;

@@ -139,3 +139,7 @@ void clear_screen() {
     cursorjmp(1, 1);
     fflush(stdout);
 }
+
+void close_stdin() {
+    fclose(stdin);
+}
