@@ -1,15 +1,15 @@
 use crate::render::pad_to_width;
 use crate::state::State;
+use crate::exit::cleanup_and_exit;
 use rtermutils::*;
 use std::io::stdout;
 use std::io::Write;
 use std::thread::sleep;
 use std::time::Duration;
+use std::process::exit;
 
-pub fn end_screen(s: &State) {
-    let width = unsafe { clear_screen_with_width() };
-    let bart = make_lines_same_len(
-        "
+pub fn end_screen(s: &mut State) {
+    let bart = "
   |\\/\\/\\/|
   |      |
   | (o)(o)
@@ -18,18 +18,29 @@ pub fn end_screen(s: &State) {
   |   /
  /____\\
 /      \\"
-            .to_owned(),
-    )
-    .lines()
-    .map(|l| pad_to_width(l, width.try_into().unwrap()).unwrap())
-    .collect::<Vec<String>>()
-    .join("\n");
-    ascii_scroll(bart, 200);
-    println!("you got {}/{}", s.achieved_marks(), s.get_max_marks());
-    unsafe { read_single_char() };
+        .to_owned();
+    if !s.has_watched_final_cutsene() {
+        ascii_scroll(bart, 200);
+        s.watch_final_cutsene();
+    } else {
+        unsafe { clear_screen() }
+    }
+    println!("You got {}/{}", s.achieved_marks(), s.get_max_marks());
+    println!("Press any to continue, return to view your answers again.");
+    match unsafe { read_single_char() } {
+        b'\n' => return,
+        _ => cleanup_and_exit(None),
+    }
 }
 
 fn ascii_scroll(art: String, time_per_line: u64) {
+    let width = unsafe { clear_screen_with_width() };
+    let art = make_lines_same_len(art)
+        .lines()
+        .map(|l| pad_to_width(l, width.try_into().unwrap()).unwrap_or(l.to_string()))
+        .collect::<Vec<String>>()
+        .join("\n");
+
     let mut art_top_line_position = -(art.lines().count() as i32);
     loop {
         let height = unsafe { clear_screen_with_height() };
@@ -72,7 +83,9 @@ fn ascii_scroll(art: String, time_per_line: u64) {
 fn make_lines_same_len(s: String) -> String {
     let mut lines: Vec<String> = s.lines().map(|s| s.to_string()).collect();
     let mut longest_line_length_lol = 0;
-    lines.iter().for_each(|l| longest_line_length_lol = l.len().max(longest_line_length_lol));
+    lines
+        .iter()
+        .for_each(|l| longest_line_length_lol = l.len().max(longest_line_length_lol));
     lines
         .iter_mut()
         .for_each(|l| (0..longest_line_length_lol - l.len()).for_each(|_| *l += " "));
