@@ -1,4 +1,6 @@
 mod diagnostics;
+mod end_screen;
+mod exit;
 mod render;
 mod repl;
 mod state;
