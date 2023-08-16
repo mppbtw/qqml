@@ -36,6 +36,18 @@ pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
         match unsafe { read_single_char() } {
             b'q' => break,
             b'?' => help_menu(),
+            b'h' => match s.questions[s.current_question_index] {
+                Question::Multichoice(ref mut d) => 'block: {
+                    if d.is_answered || s.hints_used == s.max_hints || d.hints.len() == d.used_hints
+                    {
+                        refresh_needed = false;
+                        break 'block;
+                    }
+                    s.hints_used += 1;
+                    d.used_hints += 1;
+                }
+                _ => refresh_needed = false,
+            },
             b'\n' => match s.questions[s.current_question_index] {
                 Question::Multichoice(ref mut d) => 'block: {
                     if d.is_answered {
