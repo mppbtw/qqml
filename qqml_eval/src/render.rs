@@ -251,7 +251,7 @@ impl Render for HintsLine<'_> {
             format!(
                 "   Hints (used {}/{}, {} available for this question)",
                 &self.hints_used_total, &self.max_hints, &self.hints_available
-                )
+            )
         }
     }
 }

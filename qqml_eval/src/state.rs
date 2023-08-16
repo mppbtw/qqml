@@ -67,7 +67,7 @@ impl State {
         if let Question::Multichoice(d) = &self.questions[self.current_question_index] {
             if d.used_hints != 0 {
                 s.hints_body = Some(HintsBody {
-                    hints: &d.hints[0..d.used_hints]
+                    hints: &d.hints[0..d.used_hints],
                 })
             }
 
