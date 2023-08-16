@@ -10,4 +10,5 @@ extern "C" {
     pub fn hide_cursor();
     pub fn show_cursor();
     pub fn clear_screen();
+    pub fn close_stdin();
 }
