@@ -30,5 +30,5 @@ and use the installation script. The QQML interpreter requires Rust/Cargo and CM
 $ git clone https://github.com/MrPiggyPegasus/qqml
 $ cd qqml
 $ chmod +x ./install.sh
-$ sudo ./install.sh qqml
+$ ./install.sh qqml
 ```
