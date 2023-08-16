@@ -1,9 +1,9 @@
 mod diagnostics;
 mod end_screen;
+mod exit;
 mod render;
 mod repl;
 mod state;
-mod exit;
 
 pub use diagnostics::render_error;
 pub use repl::run;
