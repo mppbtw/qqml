@@ -145,7 +145,22 @@ impl State {
     }
 
     pub fn achieved_marks(&self) -> usize {
-        self.current_achieved_marks
+        self.questions
+            .iter()
+            .map(|q| match q {
+                Question::Multichoice(d) => {
+                    if d.is_answered {
+                        d.answers
+                            .iter()
+                            .map(|a| if a.is_chosen { a.marks } else { 0 })
+                            .sum()
+                    } else {
+                        0
+                    }
+                }
+                _ => 0,
+            })
+            .sum()
     }
 
     pub fn watch_final_cutsene(&mut self) {
