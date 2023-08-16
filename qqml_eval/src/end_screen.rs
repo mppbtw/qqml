@@ -33,9 +33,8 @@ pub fn end_screen(s: &mut State) {
     }
     println!("You got {}/{}", s.achieved_marks(), s.get_max_marks());
     println!("Press any to continue, return to view your answers again.");
-    match unsafe { read_single_char() } {
-        b'\n' => return,
-        _ => cleanup_and_exit(None),
+    if unsafe { read_single_char() } != b'\n' {
+        cleanup_and_exit(None);
     }
 }
 
@@ -62,7 +61,7 @@ fn ascii_scroll(art: String, time_per_line: u64) {
                 let visible_height = height - art_top_line_position;
 
                 let visible_art = &art
-                    .split("\n")
+                    .split('\n')
                     .map(|s| s.to_string())
                     .collect::<Vec<String>>()[0..visible_height as usize]
                     .join("\n");

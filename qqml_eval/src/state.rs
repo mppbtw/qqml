@@ -122,13 +122,10 @@ impl State {
 
     pub fn every_question_answered(&self) -> bool {
         for q in self.questions.iter() {
-            match q {
-                Question::Multichoice(d) => {
-                    if !d.is_answered {
-                        return false;
-                    }
+            if let Question::Multichoice(d) = q {
+                if !d.is_answered {
+                    return false;
                 }
-                _ => (),
             }
         }
         true
