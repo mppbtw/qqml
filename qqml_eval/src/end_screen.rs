@@ -1,3 +1,4 @@
+use crate::render::pad_to_width;
 use crate::state::State;
 use rtermutils::*;
 use std::io::stdout;
@@ -6,23 +7,29 @@ use std::thread::sleep;
 use std::time::Duration;
 
 pub fn end_screen(s: &State) {
-    unsafe { clear_screen() }
-    let bart = "
-                                     |\\/\\/\\/|
-                                     |      |
-                                     | (o)(o)
-                                     C      _)   good job
-                                      |  ___|
-                                      |   /
-                                     /____\\
-                                    /      \\"
-                                    .to_owned();
-    ascii_scroll(bart, 100);
+    let width = unsafe { clear_screen_with_width() };
+    let bart = make_lines_same_len(
+        "
+  |\\/\\/\\/|
+  |      |
+  | (o)(o)
+  C      _)   unnaceptable
+  |  ___|
+  |   /
+ /____\\
+/      \\"
+            .to_owned(),
+    )
+    .lines()
+    .map(|l| pad_to_width(l, width.try_into().unwrap()).unwrap())
+    .collect::<Vec<String>>()
+    .join("\n");
+    ascii_scroll(bart, 200);
+    println!("you got {}/{}", s.achieved_marks(), s.get_max_marks());
     unsafe { read_single_char() };
 }
 
 fn ascii_scroll(art: String, time_per_line: u64) {
-
     let mut art_top_line_position = -(art.lines().count() as i32);
     loop {
         let height = unsafe { clear_screen_with_height() };
@@ -60,4 +67,14 @@ fn ascii_scroll(art: String, time_per_line: u64) {
         sleep(Duration::from_millis(time_per_line));
     }
     unsafe { clear_screen() }
+}
+
+fn make_lines_same_len(s: String) -> String {
+    let mut lines: Vec<String> = s.lines().map(|s| s.to_string()).collect();
+    let mut longest_line_length_lol = 0;
+    lines.iter().for_each(|l| longest_line_length_lol = l.len().max(longest_line_length_lol));
+    lines
+        .iter_mut()
+        .for_each(|l| (0..longest_line_length_lol - l.len()).for_each(|_| *l += " "));
+    lines.join("\n")
 }
