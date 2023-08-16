@@ -16,46 +16,36 @@ pub fn end_screen(s: &State) {
                                       |   /
                                      /____\\
                                     /      \\"
-        .to_owned();
+                                    .to_owned();
     ascii_scroll(bart, 100);
     unsafe { read_single_char() };
 }
 
 fn ascii_scroll(art: String, time_per_line: u64) {
 
-    let mut art_top_line_position = -(art.lines().count() as i64);
+    let mut art_top_line_position = -(art.lines().count() as i32);
     loop {
-        unsafe { clear_screen() }
-        let height = unsafe { clear_screen_with_height() } as i64;
-        let art_height = art.lines().count() as i64;
+        let height = unsafe { clear_screen_with_height() };
+        if height == 0 {
+            continue;
+        }
+        let art_height = art.lines().count() as i32;
         if art_top_line_position == height {
-            return;
+            break;
         }
         if art_top_line_position >= 0 {
             if (art_top_line_position + art_height) >= height {
                 let visible_height = height - art_top_line_position;
 
-                // If the user starts spamming keys here, visible_height might be a really big
-                // number for some reason, need to do some bounds checking
-                if art
+                let visible_art = &art
                     .split("\n")
-                        .map(|s| s.to_string())
-                        .collect::<Vec<String>>()
-                        .len() as i64
-                        <= visible_height
-                        {
-                            let visible_art = &art
-                                .split("\n")
-                                .map(|s| s.to_string())
-                                .collect::<Vec<String>>()[0..visible_height as usize]
-                                .join("\n");
+                    .map(|s| s.to_string())
+                    .collect::<Vec<String>>()[0..visible_height as usize]
+                    .join("\n");
 
-                            (0..(height - visible_height)).for_each(|_| println!());
-                            print!("{}", visible_art);
-                            stdout().flush().unwrap();
-                        } else {
-                            return;
-                        }
+                (0..(height - visible_height)).for_each(|_| println!());
+                print!("{}", visible_art);
+                stdout().flush().unwrap();
             } else {
                 (0..art_top_line_position).for_each(|_| println!());
                 print!("{}", art);
@@ -69,4 +59,5 @@ fn ascii_scroll(art: String, time_per_line: u64) {
         art_top_line_position += 1;
         sleep(Duration::from_millis(time_per_line));
     }
+    unsafe { clear_screen() }
 }
