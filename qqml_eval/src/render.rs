@@ -271,7 +271,7 @@ impl Render for VersionLine<'_> {
     }
 }
 
-fn pad_to_width(input: &str, width: usize) -> Result<String, WidthTooSmallError> {
+pub fn pad_to_width(input: &str, width: usize) -> Result<String, WidthTooSmallError> {
     let mut output = String::new();
     if input.len() > width {
         return Err(WidthTooSmallError);
@@ -286,4 +286,4 @@ fn wrap_text_to_width(input: &str, _width: usize) -> Result<String, WidthTooSmal
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-struct WidthTooSmallError;
+pub struct WidthTooSmallError;
