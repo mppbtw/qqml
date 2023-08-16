@@ -117,7 +117,7 @@ impl Render for QuestionResultBody<'_> {
                         a.text.unwrap(),
                         ANSI_RESET
                     );
-                    output += &format!(" {}(+{}) \n", ANSI_GREEN, a.marks);
+                    output += &format!(" {}(+{})", ANSI_GREEN, a.marks);
                 } else {
                     output += &format!(
                         "   {}{}{}{}",
@@ -126,17 +126,20 @@ impl Render for QuestionResultBody<'_> {
                         a.text.unwrap(),
                         ANSI_RESET
                     );
-                    output += &format!(" {}(X) \n", ANSI_RED);
+                    output += &format!(" {}(X)", ANSI_RED);
                 }
             } else if a.marks != 0 {
-                output += &format!("   {}{} (+{}) \n", a.text.unwrap(), ANSI_GREEN, a.marks);
+                output += &format!("   {}{} (+{})", a.text.unwrap(), ANSI_GREEN, a.marks);
             } else {
-                output += &format!("   {}{} (X) \n", a.text.unwrap(), ANSI_RED);
+                output += &format!("   {}{} (X)", a.text.unwrap(), ANSI_RED);
             }
-            output += ANSI_RESET;
             if let Some(x) = a.explanation {
+                output += " -> ";
+                output += ANSI_RESET;
                 output += &wrap_text_to_width(&x, self.cols / 2).unwrap();
             }
+            output += ANSI_RESET;
+            output += "\n";
         }
 
         output
