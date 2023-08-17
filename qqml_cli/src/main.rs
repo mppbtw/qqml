@@ -40,7 +40,7 @@ fn main() {
                         }
                     };
                 } else {
-                    run(&f, Some(&i));
+                    run(&f, Some(&i), (&get_logfile()).into());
                 }
             }
             Err(e) => {
@@ -191,6 +191,10 @@ OPTIONS:
 
     -j --json       Output any parsing data in a
                     JSON format
+
+    -l --log <File> Output information about the
+                    state of the game to a specific
+                    file
 
 More information about the QQML language
 and its related tooling is available at

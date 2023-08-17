@@ -131,6 +131,20 @@ impl State {
         true
     }
 
+    pub fn to_json(&self) -> String {
+        let mut output = String::new();
+        output += &format!(
+            "{{\"questions\": [{}]",
+            self.questions
+                .iter()
+                .map(|q| q.to_json())
+                .collect::<Vec<String>>()
+                .join(",")
+        );
+        output += "}";
+        output
+    }
+
     pub fn get_max_marks(&self) -> usize {
         self.questions
             .iter()
