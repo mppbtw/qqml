@@ -40,7 +40,7 @@ fn main() {
                         }
                     };
                 } else {
-                    run(&f, Some(&i));
+                    run(&f, Some(&i), (&get_logfile()).into());
                 }
             }
             Err(e) => {
@@ -115,9 +115,7 @@ fn render_parsed_file(p: ParsedFile) -> String {
 
 fn render_error_report(r: ErrorReport, path: String, inp: String) -> String {
     let mut output = String::new();
-    for e in r.errors.iter().rev() {
-        output += &render_error(&inp, e, Some(&path));
-    }
+    for e in r.errors.iter().rev() { output += &render_error(&inp, e, Some(&path)); }
 
     output += &format!(
         "{}{}    Error:{} Failed to parse {} due to {} error{}",
@@ -191,6 +189,10 @@ OPTIONS:
 
     -j --json       Output any parsing data in a
                     JSON format
+
+    -l --log <File> Output information about the
+                    state of the game to a specific
+                    file
 
 More information about the QQML language
 and its related tooling is available at
