@@ -34,7 +34,7 @@ pub fn end_screen(s: &mut State) {
     println!("You got {}/{}", s.achieved_marks(), s.get_max_marks());
     println!("Press any to continue, return to view your answers again.");
     if unsafe { read_single_char() } != b'\n' {
-        cleanup_and_exit(None);
+        cleanup_and_exit(Some(format!("{{\"finished\": true, \"file_data\":{} }}", s.to_json())));
     }
 }
 

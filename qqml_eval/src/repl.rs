@@ -140,7 +140,7 @@ pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
             _ => refresh_needed = false,
         }
     }
-    cleanup_and_exit(None);
+    cleanup_and_exit(Some(format!("{{\"finished\": false, \"file_data\": {}}}", s.to_json())));
 }
 
 fn help_menu() {
