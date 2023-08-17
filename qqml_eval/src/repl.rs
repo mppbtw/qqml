@@ -140,7 +140,13 @@ pub fn run(input: &String, path_to_source: Option<&String>, log_path: Option<&St
             _ => refresh_needed = false,
         }
     }
-    cleanup_and_exit(Some(format!("{{\"finished\": false, \"file_data\": {}}}", s.to_json())), log_path.cloned());
+    cleanup_and_exit(
+        Some(format!(
+            "{{\"finished\": false, \"file_data\": {}}}",
+            s.to_json()
+        )),
+        log_path.cloned(),
+    );
 }
 
 fn help_menu() {
