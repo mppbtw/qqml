@@ -7,7 +7,7 @@ use qqml_parser::Question;
 use rtermutils::*;
 use std::process::exit;
 
-pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
+pub fn run(input: &String, path_to_source: Option<&String>, log_path: Option<&String>) -> ! {
     let parsed = match parse(input) {
         Ok(p) => p,
         Err(_) => {
@@ -54,7 +54,7 @@ pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
                 Question::Multichoice(ref mut d) => 'block: {
                     if d.is_answered {
                         if s.every_question_answered() {
-                            end_screen(&mut s);
+                            end_screen(&mut s, log_path.cloned());
                         } else {
                             refresh_needed = false;
                         }
@@ -140,7 +140,7 @@ pub fn run(input: &String, path_to_source: Option<&String>) -> ! {
             _ => refresh_needed = false,
         }
     }
-    cleanup_and_exit(Some(format!("{{\"finished\": false, \"file_data\": {}}}", s.to_json())));
+    cleanup_and_exit(Some(format!("{{\"finished\": false, \"file_data\": {}}}", s.to_json())), log_path.cloned());
 }
 
 fn help_menu() {
