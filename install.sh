@@ -8,8 +8,8 @@ fi
 case "$*" in
     (*qqml*)
         echo "Compiling QQML"
-        cargo build --release --manifest-path ./qqml_cli/Cargo.toml
+        cargo build --release --manifest-path ./Cargo.toml
         echo "Installing QQML"
-        sudo mv ./qqml_cli/target/release/qqml /usr/local/bin/
+        sudo mv ./target/release/qqml /usr/local/bin/
         echo "Installation finished, no error reported";; # grub reference????????
 esac
