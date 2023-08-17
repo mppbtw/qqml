@@ -115,7 +115,9 @@ fn render_parsed_file(p: ParsedFile) -> String {
 
 fn render_error_report(r: ErrorReport, path: String, inp: String) -> String {
     let mut output = String::new();
-    for e in r.errors.iter().rev() { output += &render_error(&inp, e, Some(&path)); }
+    for e in r.errors.iter().rev() {
+        output += &render_error(&inp, e, Some(&path));
+    }
 
     output += &format!(
         "{}{}    Error:{} Failed to parse {} due to {} error{}",
