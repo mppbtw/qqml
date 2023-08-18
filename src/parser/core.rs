@@ -1,9 +1,9 @@
-use super::error::ErrorReport;
 use super::error::Error;
-use super::Question;
+use super::error::ErrorReport;
 use super::multichoice::parser::parse_multichoice;
+use super::Question;
+use crate::lexer::core::Lexer;
 use crate::lexer::token::Token;
-use crate::lexer::lexer::Lexer;
 
 #[derive(Clone, Default, Debug, PartialEq, Eq)]
 pub struct ParsedFile {
