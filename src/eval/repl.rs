@@ -1,9 +1,9 @@
-use crate::end_screen::end_screen;
-use crate::exit::cleanup_and_exit;
-use crate::render::*;
-use crate::state::*;
-use qqml_parser::parse;
-use qqml_parser::Question;
+use super::end_screen::end_screen;
+use super::exit::cleanup_and_exit;
+use super::render::Render;
+use super::state::*;
+use crate::parser::parse;
+use crate::parser::Question;
 use rtermutils::*;
 use std::process::exit;
 

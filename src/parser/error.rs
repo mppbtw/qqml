@@ -1,8 +1,8 @@
 use std::fmt;
 
-use qqml_lexer::LexerError;
-use qqml_lexer::Token;
-use qqml_lexer::TokenData;
+use crate::lexer::LexerError;
+use crate::lexer::Token;
+use crate::lexer::TokenData;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Error {

@@ -1,9 +1,7 @@
-use crate::error::ErrorReport;
-use crate::multichoice::parse_multichoice;
-use crate::Error;
-use crate::Question;
-use qqml_lexer::Lexer;
-use qqml_lexer::Token;
+use crate::lexer::*;
+use crate::parser::error::ErrorReport;
+use crate::parser::multichoice::parse_multichoice;
+use crate::parser::*;
 
 #[derive(Clone, Default, Debug, PartialEq, Eq)]
 pub struct ParsedFile {

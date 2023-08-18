@@ -1,6 +1,6 @@
-use crate::exit::cleanup_and_exit;
-use crate::render::pad_to_width;
-use crate::state::State;
+use super::exit::cleanup_and_exit;
+use super::render::pad_to_width;
+use super::state::State;
 use rtermutils::*;
 use std::io::stdout;
 use std::io::Write;

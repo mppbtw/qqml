@@ -1,4 +1,4 @@
-use qqml_parser::Error;
+use crate::parser::Error;
 
 const ANSI_RESET: &str = "\x1b[0m";
 const ANSI_BOLD: &str = "\x1b[1m";

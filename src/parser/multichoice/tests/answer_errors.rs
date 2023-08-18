@@ -1,5 +1,5 @@
 use crate::multichoice::*;
-use qqml_lexer::Lexer;
+use crate::Lexer;
 
 #[test]
 fn test_replacement_tolerance() {

@@ -1,6 +1,6 @@
 use crate::lexer::Lexer;
-use crate::token::Token;
-use crate::token::TokenData;
+use crate::Token;
+use crate::TokenData;
 
 /// Much quicker way to get the TokenData
 /// which saves me writing that out manually

@@ -6,5 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-qqml_eval = { path = "./qqml_eval" }
-qqml_parser = { path = "./qqml_parser" }
+rtermutils = { path = "./rtermutils/" }
+# no dependencies for me
