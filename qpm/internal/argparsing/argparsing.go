@@ -1,4 +1,4 @@
-package internal
+package argparsing
 
 import (
     "os"
@@ -14,7 +14,9 @@ func NextArg() string {
     if current_arg == len(getArgs()) {
         return ""
     }
-    return getArgs()[current_arg]
+    arg := getArgs()[current_arg]
+    current_arg++
+    return arg
 }
 
 func HasVerbose() bool {
