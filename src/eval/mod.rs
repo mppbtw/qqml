@@ -1,12 +1,9 @@
-mod diagnostics;
-mod end_screen;
-mod exit;
-mod render;
-mod repl;
-mod state;
-
-pub use diagnostics::render_error;
-pub use repl::run;
+pub mod diagnostics;
+pub mod end_screen;
+pub mod exit;
+pub mod render;
+pub mod repl;
+pub mod state;
 
 // Example TUI:
 

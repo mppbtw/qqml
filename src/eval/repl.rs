@@ -2,7 +2,7 @@ use super::end_screen::end_screen;
 use super::exit::cleanup_and_exit;
 use super::render::Render;
 use super::state::*;
-use crate::parser::parse;
+use crate::parser::parser::parse;
 use crate::parser::Question;
 use rtermutils::*;
 use std::process::exit;

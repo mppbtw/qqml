@@ -1,5 +1,6 @@
 use super::parse_answer::parse_multichoice_answer;
-use crate::lexer::*;
+use crate::lexer::lexer::Lexer;
+use crate::lexer::token::Token;
 use crate::parser::error::Error;
 use crate::parser::MultichoiceData;
 use crate::*;
