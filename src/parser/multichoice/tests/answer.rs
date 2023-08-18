@@ -1,7 +1,5 @@
-use crate::Lexer;
-
-use crate::multichoice;
-use crate::*;
+use crate::parser::*;
+use crate::lexer::Lexer;
 
 #[test]
 fn test_parse_multichoice_answer_explanation_marks() {

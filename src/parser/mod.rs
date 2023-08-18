@@ -13,6 +13,7 @@ pub use self::parser::parse;
 pub use self::parser::ParsedFile;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
+#[allow(unused)]
 pub enum Question {
     Multichoice(MultichoiceData),
     Calculation(),
