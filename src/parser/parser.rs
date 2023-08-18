@@ -1,7 +1,9 @@
-use crate::lexer::*;
-use crate::parser::error::ErrorReport;
-use crate::parser::multichoice::parse_multichoice;
-use crate::parser::*;
+use super::error::ErrorReport;
+use super::error::Error;
+use super::Question;
+use super::multichoice::parser::parse_multichoice;
+use crate::lexer::token::Token;
+use crate::lexer::lexer::Lexer;
 
 #[derive(Clone, Default, Debug, PartialEq, Eq)]
 pub struct ParsedFile {

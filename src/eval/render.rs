@@ -1,4 +1,5 @@
-use crate::parser::*;
+use crate::parser::multichoice::data::MultichoiceAnswer;
+use crate::parser::multichoice::data::MultichoiceData;
 
 const ANSI_RESET: &str = "\x1b[0m";
 const ANSI_BG_WHITE: &str = "\x1b[47m";
