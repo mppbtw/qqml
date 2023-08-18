@@ -43,6 +43,7 @@ impl Lexer {
 
     pub fn next_token(&mut self) -> Token {
         self.munch_and_crunch_whitespace();
+        self.tok_count += 1;
         let tok = match self.ch {
             b'{' => Token::LSquirly(self.get_token_data()),
             b'}' => Token::RSquirly(self.get_token_data()),
