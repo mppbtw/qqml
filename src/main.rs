@@ -1,8 +1,8 @@
 use eval::diagnostics::render_error;
 use eval::repl::run;
-use parser::error::ErrorReport;
 use parser::core::parse;
 use parser::core::ParsedFile;
+use parser::error::ErrorReport;
 use std::time::Instant;
 
 use std::{env::args, fs, process::exit};
