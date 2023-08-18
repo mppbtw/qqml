@@ -1,4 +1,4 @@
-use crate::lexer::lexer::Lexer;
+use crate::lexer::core::Lexer;
 use crate::parser::multichoice::parse_answer::parse_multichoice_answer;
 
 #[test]
