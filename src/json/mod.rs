@@ -1,5 +1,8 @@
 pub mod lexer;
 
+#[cfg(test)]
+mod test;
+
 use crate::eval::state::State;
 use lexer::*;
 
