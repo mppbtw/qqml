@@ -1,6 +1,6 @@
-use crate::lexer::token::TokenData;
+use crate::lexer::core::Lexer;
 use crate::lexer::token::Token;
-use crate::lexer::lexer::Lexer;
+use crate::lexer::token::TokenData;
 use crate::parser::multichoice::parser::parse_multichoice;
 
 #[test]

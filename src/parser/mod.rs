@@ -1,6 +1,6 @@
 pub mod error;
 pub mod multichoice;
-pub mod parser;
+pub mod core;
 
 #[cfg(test)]
 mod test_correct;
