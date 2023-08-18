@@ -1,6 +1,6 @@
-use crate::token::get_keywords_map;
-use crate::token::Token;
-use crate::token::TokenData;
+use super::token::get_keywords_map;
+use super::Token;
+use super::TokenData;
 
 const WHITESPACE_CHARS: [u8; 4] = [b' ', b'\n', b'\r', b'\t'];
 

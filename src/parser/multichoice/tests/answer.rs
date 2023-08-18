@@ -1,4 +1,4 @@
-use qqml_lexer::Lexer;
+use crate::Lexer;
 
 use crate::multichoice;
 use crate::*;
