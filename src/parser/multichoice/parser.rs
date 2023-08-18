@@ -1,9 +1,9 @@
 use super::parse_answer::parse_multichoice_answer;
+use crate::parser::error::ErrorReport;
 use crate::lexer::lexer::Lexer;
 use crate::lexer::token::Token;
 use crate::parser::error::Error;
 use crate::parser::MultichoiceData;
-use crate::*;
 
 /// 't' is the token for the ask keyword used to attach some more metadata to the data
 pub fn parse_multichoice<T: Into<Token>>(
