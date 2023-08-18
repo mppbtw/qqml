@@ -1,6 +1,6 @@
+pub mod core;
 pub mod error;
 pub mod multichoice;
-pub mod core;
 
 #[cfg(test)]
 mod test_correct;
