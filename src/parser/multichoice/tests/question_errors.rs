@@ -1,7 +1,7 @@
 use crate::multichoice::parse_multichoice;
-use qqml_lexer::Lexer;
-use qqml_lexer::Token;
-use qqml_lexer::TokenData;
+use crate::Lexer;
+use crate::Token;
+use crate::TokenData;
 
 #[test]
 fn test_replacement_tolerance() {
