@@ -11,7 +11,7 @@ pub enum Token {
     LSquare(TokenData),
     RSquare(TokenData),
     String(TokenData, String),
-    Number(TokenData),
+    Number(TokenData, i128),
     True(TokenData),
     False(TokenData),
     Colon(TokenData),
@@ -20,17 +20,13 @@ pub enum Token {
     Comma(TokenData),
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub enum JsonError {
-    UnexpectedEof(Token),
-}
-
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Lexer {
     ch: u8,
     read_position: usize,
     position: usize,
     input: String,
+    pub tok_count: usize,
 }
 impl Lexer {
     pub fn new<S: Into<String>>(input: S) -> Lexer {
@@ -38,6 +34,7 @@ impl Lexer {
             ch: 0,
             read_position: 0,
             position: 0,
+            tok_count: 0,
             input: input.into(),
         };
         l.read_char();
@@ -54,10 +51,12 @@ impl Lexer {
             b']' => Token::RSquare(self.get_token_data()),
             b',' => Token::Comma(self.get_token_data()),
             0 => Token::Eof(self.get_token_data()),
-            b'"'=> self.read_string(),
+            b'"' => self.read_string(),
             _ => {
                 if self.ch.is_ascii_alphabetic() {
                     self.read_keyword()
+                } else if self.ch.is_ascii_digit() {
+                    self.read_number()
                 } else {
                     Token::Illegal(self.get_token_data())
                 }
@@ -65,6 +64,15 @@ impl Lexer {
         };
         self.read_char();
         tok
+    }
+
+    fn read_number(&mut self) -> Token {
+        let pos = self.position;
+        let dat = self.get_token_data();
+        while self.ch.is_ascii_digit() {
+            self.read_char()
+        }
+        Token::Number(dat, self.input[pos..self.position].parse::<i128>().unwrap())
     }
 
     fn read_keyword(&mut self) -> Token {
@@ -89,7 +97,10 @@ impl Lexer {
         while self.ch != b'"' {
             self.read_char();
         }
-        Token::String(self.get_token_data(), self.input[pos..self.position].to_string())
+        Token::String(
+            self.get_token_data(),
+            self.input[pos..self.position].to_string(),
+        )
     }
 
     fn read_char(&mut self) {
