@@ -1,11 +1,6 @@
-mod eval;
-mod json;
 mod lexer;
 mod parser;
 
-pub use eval::diagnostics::render_error;
-pub use eval::repl::run;
-pub use json::json_to_state;
 pub use lexer::core::Lexer;
 pub use lexer::core::LexerError;
 pub use lexer::token::Token;

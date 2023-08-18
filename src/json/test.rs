@@ -1,3 +1,5 @@
+use crate::json::parser::JsonArray;
+
 use super::lexer::Lexer;
 use super::lexer::Token;
 use super::lexer::TokenData;
@@ -64,6 +66,25 @@ fn test_parse() {
                             }],
                         }),
                     },
+                ],
+            }),
+        }],
+    };
+    let result = parse(&mut Lexer::new(input)).unwrap();
+    assert_eq!(result, expected);
+}
+
+#[test]
+fn test_parse_arrays() {
+    let input = "{\"ident\": [\"val1\", \"val2\", 3]}";
+    let expected = JsonTreeNode {
+        values: vec![JsonValue {
+            ident: "ident".to_owned(),
+            value: JsonType::Array(JsonArray {
+                values: vec![
+                    JsonType::String("val1".to_owned()),
+                    JsonType::String("val2".to_owned()),
+                    JsonType::Number(3),
                 ],
             }),
         }],
