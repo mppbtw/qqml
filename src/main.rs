@@ -1,8 +1,8 @@
-use qqml_eval::render_error;
-use qqml_eval::run;
-use qqml_parser::parse;
-use qqml_parser::ErrorReport;
-use qqml_parser::ParsedFile;
+use eval::diagnostics::render_error;
+use eval::repl::run;
+use parser::core::parse;
+use parser::core::ParsedFile;
+use parser::error::ErrorReport;
 use std::time::Instant;
 
 use std::{env::args, fs, process::exit};
@@ -13,6 +13,10 @@ const ANSI_RED: &str = "\x1b[31m";
 const ANSI_BOLD: &str = "\x1b[1m";
 
 mod argparse;
+mod eval;
+mod lexer;
+mod parser;
+
 use argparse::*;
 
 fn main() {

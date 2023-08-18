@@ -1,5 +1,5 @@
-use crate::render::*;
-use qqml_parser::Question;
+use super::render::*;
+use crate::parser::Question;
 use rtermutils::*;
 
 #[derive(Debug, Clone)]

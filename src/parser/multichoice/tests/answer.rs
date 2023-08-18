@@ -1,7 +1,6 @@
-use qqml_lexer::Lexer;
-
-use crate::multichoice;
-use crate::*;
+use crate::lexer::core::Lexer;
+use crate::parser::multichoice::data::MultichoiceAnswer;
+use crate::parser::multichoice::parse_answer::parse_multichoice_answer;
 
 #[test]
 fn test_parse_multichoice_answer_explanation_marks() {
@@ -13,7 +12,7 @@ fn test_parse_multichoice_answer_explanation_marks() {
         ..Default::default()
     };
     let mut l = Lexer::new(input);
-    let gotten = multichoice::parse_multichoice_answer(&mut l).unwrap();
+    let gotten = parse_multichoice_answer(&mut l).unwrap();
     assert_eq!(gotten, expected);
 }
 
@@ -27,7 +26,7 @@ fn test_parse_multichoice_answer_explanation_marks_double_quotes() {
         ..Default::default()
     };
     let mut l = Lexer::new(input);
-    let gotten = multichoice::parse_multichoice_answer(&mut l).unwrap();
+    let gotten = parse_multichoice_answer(&mut l).unwrap();
     assert_eq!(gotten, expected);
 }
 
@@ -40,7 +39,7 @@ fn test_parse_multichoice_answer_marks() {
         ..Default::default()
     };
     let mut l = Lexer::new(input);
-    let gotten = multichoice::parse_multichoice_answer(&mut l).unwrap();
+    let gotten = parse_multichoice_answer(&mut l).unwrap();
     assert_eq!(gotten, expected);
 }
 
@@ -53,7 +52,7 @@ fn test_parse_multichoice_answer_marks_double_quotes() {
         ..Default::default()
     };
     let mut l = Lexer::new(input);
-    let gotten = multichoice::parse_multichoice_answer(&mut l).unwrap();
+    let gotten = parse_multichoice_answer(&mut l).unwrap();
     assert_eq!(gotten, expected);
 }
 
@@ -66,7 +65,7 @@ fn test_parse_multichoice_answer_explanation() {
         ..Default::default()
     };
     let mut l = Lexer::new(input);
-    let gotten = multichoice::parse_multichoice_answer(&mut l).unwrap();
+    let gotten = parse_multichoice_answer(&mut l).unwrap();
     assert_eq!(gotten, expected);
 }
 
@@ -79,7 +78,7 @@ fn test_parse_multichoice_answer_explanation_double_quotes() {
         ..Default::default()
     };
     let mut l = Lexer::new(input);
-    let gotten = multichoice::parse_multichoice_answer(&mut l).unwrap();
+    let gotten = parse_multichoice_answer(&mut l).unwrap();
     assert_eq!(gotten, expected);
 }
 
@@ -91,7 +90,7 @@ fn test_parse_multichoice_answer() {
         ..Default::default()
     };
     let mut l = Lexer::new(input);
-    let gotten = multichoice::parse_multichoice_answer(&mut l).unwrap();
+    let gotten = parse_multichoice_answer(&mut l).unwrap();
     assert_eq!(gotten, expected);
 }
 
@@ -103,6 +102,6 @@ fn test_parse_multichoice_answer_double_quotes() {
         ..Default::default()
     };
     let mut l = Lexer::new(input);
-    let gotten = multichoice::parse_multichoice_answer(&mut l).unwrap();
+    let gotten = parse_multichoice_answer(&mut l).unwrap();
     assert_eq!(gotten, expected);
 }

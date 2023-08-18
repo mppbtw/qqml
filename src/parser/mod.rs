@@ -1,18 +1,14 @@
-mod error;
-mod multichoice;
-mod parser;
+pub mod core;
+pub mod error;
+pub mod multichoice;
 
 #[cfg(test)]
 mod test_correct;
 
-pub use self::error::Error;
-pub use self::error::ErrorReport;
-pub use self::multichoice::MultichoiceAnswer;
-pub use self::multichoice::MultichoiceData;
-pub use self::parser::parse;
-pub use self::parser::ParsedFile;
+use multichoice::data::MultichoiceData;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
+#[allow(unused)]
 pub enum Question {
     Multichoice(MultichoiceData),
     Calculation(),

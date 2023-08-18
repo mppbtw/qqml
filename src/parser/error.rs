@@ -1,8 +1,8 @@
 use std::fmt;
 
-use qqml_lexer::LexerError;
-use qqml_lexer::Token;
-use qqml_lexer::TokenData;
+use crate::lexer::core::LexerError;
+use crate::lexer::token::Token;
+use crate::lexer::token::TokenData;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Error {
@@ -22,7 +22,6 @@ pub enum Error {
     ExpectedNumberForQuestionMaxMark(Token),
     ExpectedQuestionText(Token),
     ExpectedSemicolonAfterHintsDirective(Token),
-    ExpectedQuestionOrDirective(Token),
     ExpectedQuestionType(Token),
     ExpectedHintText(Token),
     ExpectedCommaInHintsList(Token),
@@ -38,7 +37,6 @@ pub enum Error {
     ExpectedAnswerSemicolon(Token),
     ExpectedAnswerExplanationText(Token),
     ExpectedRParenForAnswerMark(Token),
-    ExpectedNumberForAnswerMark(Token),
 
     // General semantics
     MaxMarkIsZero(Token),
@@ -58,7 +56,6 @@ impl Error {
             Self::NoMultichoiceAnswers(t) => t.clone(),
             Self::MaxMarkIsZero(t) => t.clone(),
             Self::ExpectedSemicolonAfterHintsDirective(t) => t.clone(),
-            Self::ExpectedQuestionOrDirective(t) => t.clone(),
             Self::ExpectedQuestionType(t) => t.clone(),
             Self::ExpectedCommaInHintsList(t) => t.clone(),
             Self::InvalidQuestionType(t) => t.clone(),
@@ -73,7 +70,6 @@ impl Error {
             Self::ExpectedRParenForAnswerMark(t) => t.clone(),
             Self::ExpectedRParenForQuestionMaxMark(t) => t.clone(),
             Self::ExpectedLParenForQuestionMaxMark(t) => t.clone(),
-            Self::ExpectedNumberForAnswerMark(t) => t.clone(),
             Self::ExpectedNumberForQuestionMaxMark(t) => t.clone(),
             Self::ExpectedQuestionText(t) => t.clone(),
             Self::ExpectedRSquirlyForQuestion(t) => t.clone(),
@@ -144,10 +140,6 @@ impl fmt::Display for Error {
                 "Expected a ')' to finish setting the max mark of the question, found {}. See doc#questions",
                 t
                 ),
-            Self::ExpectedNumberForAnswerMark(t) => format!(
-                "Expected a number for the answer's mark, found {}. See doc#body",
-                t
-                ),
             Self::ExpectedNumberForQuestionMaxMark(t) => format!(
                 "Expected a number for the question's max mark, found {}. See doc#questions",
                 t
@@ -162,10 +154,6 @@ impl fmt::Display for Error {
                 ),
             Self::ExpectedSemicolonAfterHintsDirective(t) =>
                 format!("Expected a semicolon after the hints directive, found {}. See doc#hints", t),
-            Self::ExpectedQuestionOrDirective(t) => format!(
-                "Expected either a question (ask) or a directive e.g hints, found {}. See doc#questions and doc#hints",
-                t
-                ),
             Self::ExpectedQuestionType(t) => format!(
                 "Expected a question type keyword e.g. 'multichoice', found {}. See doc#questions",
                 t

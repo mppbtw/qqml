@@ -1,6 +1,9 @@
-use crate::error::ErrorReport;
-use crate::*;
-use qqml_lexer::*;
+use crate::lexer::core::Lexer;
+use crate::lexer::token::Token;
+use crate::lexer::token::TokenData;
+use crate::parser::error::Error;
+use crate::parser::error::ErrorReport;
+use crate::parser::multichoice::data::MultichoiceAnswer;
 
 pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, ErrorReport> {
     // This parser is replacement tolerant and assumes

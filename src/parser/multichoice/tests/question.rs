@@ -1,9 +1,9 @@
-use crate::multichoice::parse_multichoice;
-use crate::MultichoiceAnswer;
-use crate::MultichoiceData;
-use qqml_lexer::Lexer;
-use qqml_lexer::Token;
-use qqml_lexer::TokenData;
+use crate::lexer::core::Lexer;
+use crate::lexer::token::Token;
+use crate::lexer::token::TokenData;
+use crate::parser::multichoice::data::MultichoiceAnswer;
+use crate::parser::multichoice::data::MultichoiceData;
+use crate::parser::multichoice::parser::parse_multichoice;
 
 #[test]
 fn test_parse_multichoice() {

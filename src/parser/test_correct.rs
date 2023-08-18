@@ -1,4 +1,8 @@
-use crate::*;
+use super::core::parse;
+use super::core::ParsedFile;
+use super::multichoice::data::MultichoiceAnswer;
+use super::multichoice::data::MultichoiceData;
+use super::Question;
 
 #[test]
 fn test_parse_hints_directive() {
