@@ -8,6 +8,7 @@ pub enum JsonType {
     Number(i128),
     String(String),
     Bool(bool),
+    Array(JsonArray),
     Table(JsonTreeNode),
 }
 
@@ -15,11 +16,27 @@ pub enum JsonType {
 pub struct JsonTreeNode {
     pub values: Vec<JsonValue>,
 }
+impl JsonTreeNode {
+    pub fn get_ident<S: Into<String>>(&self, ident: S) -> Option<&JsonValue> {
+        let ident: String = ident.into();
+        for val in self.values.iter() {
+            if val.ident == ident {
+                return Some(&val);
+            }
+        }
+        None
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct JsonValue {
     pub ident: String,
     pub value: JsonType,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct JsonArray {
+    pub values: Vec<JsonType>,
 }
 
 pub fn parse(l: &mut Lexer) -> Result<JsonTreeNode, JsonSyntaxError> {
@@ -48,9 +65,28 @@ pub fn parse(l: &mut Lexer) -> Result<JsonTreeNode, JsonSyntaxError> {
                         ident,
                         value: JsonType::String(value),
                     }),
+                    Token::LSquare(_) => {
+                        let arr = parse_array(l)?;
+                        node.values.push(JsonValue {
+                            ident,
+                            value: JsonType::Array(arr),
+                        });
+                    }
                     Token::LSquirly(_) => node.values.push(JsonValue {
                         ident,
                         value: JsonType::Table(parse(l)?),
+                    }),
+                    Token::Number(_, value) => node.values.push(JsonValue {
+                        ident,
+                        value: JsonType::Number(value),
+                    }),
+                    Token::True(_) => node.values.push(JsonValue {
+                        ident,
+                        value: JsonType::Bool(true),
+                    }),
+                    Token::False(_) => node.values.push(JsonValue {
+                        ident,
+                        value: JsonType::Bool(false),
                     }),
                     _ => (),
                 }
@@ -67,4 +103,32 @@ pub fn parse(l: &mut Lexer) -> Result<JsonTreeNode, JsonSyntaxError> {
     }
 
     Ok(node)
+}
+
+pub fn parse_array(l: &mut Lexer) -> Result<JsonArray, JsonSyntaxError> {
+    let mut tok;
+    let mut values: Vec<JsonType> = vec![];
+    loop {
+        tok = l.next_token();
+        match tok {
+            Token::String(_, ref s) => values.push(JsonType::String(s.clone())),
+            Token::True(_) => values.push(JsonType::Bool(true)),
+            Token::False(_) => values.push(JsonType::Bool(false)),
+            Token::Number(_, n) => values.push(JsonType::Number(n)),
+            Token::RSquare(_) => break,
+
+            Token::Eof(_) => return Err(JsonSyntaxError(tok)),
+            _ => (),
+        };
+        dbg!("oooooo",&tok);
+        tok = l.next_token();
+        dbg!("er",&tok);
+        match tok {
+            Token::Comma(_) => (),
+            Token::RSquare(_) => break,
+            _ => return Err(JsonSyntaxError(tok)),
+        }
+    }
+
+    Ok(JsonArray { values })
 }

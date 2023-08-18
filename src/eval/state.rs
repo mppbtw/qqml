@@ -1,5 +1,6 @@
 use super::render::*;
-use crate::parser::Question;
+use crate::json::parser::*;
+use crate::{json::lexer::Lexer, parser::Question};
 use rtermutils::*;
 
 #[derive(Debug, Clone)]
@@ -180,5 +181,28 @@ impl State {
 
     pub fn has_watched_final_cutsene(&self) -> bool {
         self.has_watched_final_cutsene
+    }
+
+    #[allow(unused)]
+    pub fn from_json(input: String) -> Result<Self, JsonConstructionError> {
+        let mut lexer = Lexer::new(input);
+        let json = parse(&mut lexer)?;
+        if let Some(q) = json.get_ident("questions") {
+            match &q.value {
+                _ => (),
+            }
+        }
+
+        Ok(Self::default())
+    }
+}
+
+pub enum JsonConstructionError {
+    JsonSyntaxError(JsonSyntaxError),
+    SemanticError,
+}
+impl From<JsonSyntaxError> for JsonConstructionError {
+    fn from(value: JsonSyntaxError) -> Self {
+        Self::JsonSyntaxError(value)
     }
 }

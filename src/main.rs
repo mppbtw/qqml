@@ -14,6 +14,7 @@ const ANSI_BOLD: &str = "\x1b[1m";
 
 mod argparse;
 mod eval;
+mod json;
 mod lexer;
 mod parser;
 
