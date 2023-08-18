@@ -71,9 +71,12 @@ impl Lexer {
         let pos = self.position;
         let dat = self.get_token_data();
         while self.ch.is_ascii_digit() {
-            self.read_char()
+            self.read_char();
         }
-        Token::Number(dat, self.input[pos..self.position].parse::<i128>().unwrap())
+        let num = self.input[pos..self.position].to_owned().parse::<i128>().unwrap();
+        self.read_position -= 1;
+        self.position -= 1;
+        Token::Number(dat, num)
     }
 
     fn read_keyword(&mut self) -> Token {
