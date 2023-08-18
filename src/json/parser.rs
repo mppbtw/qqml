@@ -14,7 +14,6 @@ pub enum JsonType {
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct JsonTreeNode {
     pub values: Vec<JsonValue>,
-    pub ident: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -26,13 +25,15 @@ pub struct JsonValue {
 pub fn parse(l: &mut Lexer) -> Result<JsonTreeNode, JsonSyntaxError> {
     let mut node = JsonTreeNode::default();
     let mut tok = l.next_token();
-    if l.tok_count == 1 {
 
+    if l.tok_count == 1 {
         // Skip over the initial squirly bracket
         tok = l.next_token();
     }
 
     loop {
+        dbg!(&tok);
+        std::fs::write("./log.txt", format!("{:?}", tok)).unwrap();
         // Should only loop once per value
         match tok {
             Token::Eof(_) => return Err(JsonSyntaxError(tok)),
@@ -55,7 +56,10 @@ pub fn parse(l: &mut Lexer) -> Result<JsonTreeNode, JsonSyntaxError> {
                 }
             }
             // Yes, this will allow extra commas it's not a bug it's a feature
-            Token::Comma(_) => continue,
+            Token::Comma(_) => {
+                tok = l.next_token();
+                continue;
+            }
             Token::RSquirly(_) => break,
             _ => return Err(JsonSyntaxError(tok)),
         }

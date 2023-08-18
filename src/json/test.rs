@@ -4,6 +4,8 @@ use super::lexer::TokenData;
 use super::parser::parse;
 use super::parser::JsonTreeNode;
 use super::parser::JsonType;
+use super::parser::JsonValue;
+use std::{sync::mpsc, thread, time::Duration};
 
 #[test]
 fn test_tokenise() {
@@ -43,9 +45,29 @@ fn test_tokenise() {
 
 #[test]
 fn test_parse() {
-    let input = "
-        {\"table\": {\"nested_ident\": \"nested_value\"}}
-        ";
-
+    let input = "{\"table\": {\"ident\": \"value\", \"table\": {\"ident\":\"value\"}}}";
+    let expected = JsonTreeNode {
+        values: vec![JsonValue {
+            ident: "table".to_owned(),
+            value: JsonType::Table(JsonTreeNode {
+                values: vec![
+                    JsonValue {
+                        ident: "ident".to_owned(),
+                        value: JsonType::String("value".to_owned()),
+                    },
+                    JsonValue {
+                        ident: "table".to_owned(),
+                        value: JsonType::Table(JsonTreeNode {
+                            values: vec![JsonValue {
+                                ident: "ident".to_owned(),
+                                value: JsonType::String("value".to_owned()),
+                            }],
+                        }),
+                    },
+                ],
+            }),
+        }],
+    };
     let result = parse(&mut Lexer::new(input)).unwrap();
+    assert_eq!(result, expected);
 }
