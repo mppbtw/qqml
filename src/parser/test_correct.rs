@@ -1,4 +1,5 @@
-use crate::*;
+use crate::parser::MultichoiceData;
+use crate::parser::*;
 
 #[test]
 fn test_parse_hints_directive() {

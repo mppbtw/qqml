@@ -10,16 +10,6 @@ pub struct MultichoiceData {
     pub is_answered: bool,
 }
 
-impl MultichoiceData {
-    pub fn get_total_marks(&self) -> usize {
-        let mut total: usize = 0;
-        for i in self.answers.iter().cloned() {
-            total += i.marks;
-        }
-        total
-    }
-}
-
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct MultichoiceAnswer {
     pub text: Option<String>,

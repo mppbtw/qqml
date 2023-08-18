@@ -1,7 +1,5 @@
-use crate::multichoice::parse_multichoice;
-use crate::Lexer;
-use crate::Token;
-use crate::TokenData;
+use crate::lexer::*;
+use crate::parser::multichoice::parse_multichoice;
 
 #[test]
 fn test_replacement_tolerance() {
