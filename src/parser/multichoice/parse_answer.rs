@@ -1,6 +1,9 @@
-use crate::lexer::TokenData;
-use crate::lexer::*;
-use crate::parser::*;
+use crate::lexer::token::TokenData;
+use crate::lexer::token::Token;
+use crate::parser::error::Error;
+use crate::parser::error::ErrorReport;
+use crate::parser::multichoice::data::MultichoiceAnswer;
+use crate::lexer::lexer::Lexer;
 
 pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, ErrorReport> {
     // This parser is replacement tolerant and assumes

@@ -1,8 +1,8 @@
 use std::fmt;
 
-use crate::lexer::LexerError;
-use crate::lexer::Token;
-use crate::lexer::TokenData;
+use crate::lexer::token::Token;
+use crate::lexer::token::TokenData;
+use crate::lexer::lexer::LexerError;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Error {

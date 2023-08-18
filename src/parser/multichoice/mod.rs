@@ -1,10 +1,6 @@
-mod data;
-mod parse_answer;
-mod parser;
+pub mod data;
+pub mod parse_answer;
+pub mod parser;
 
 #[cfg(test)]
 mod tests;
-
-pub use self::data::*;
-pub use self::parse_answer::parse_multichoice_answer;
-pub use self::parser::parse_multichoice;

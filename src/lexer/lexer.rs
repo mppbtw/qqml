@@ -1,6 +1,6 @@
 use super::token::get_keywords_map;
-use super::Token;
-use super::TokenData;
+use super::token::Token;
+use super::token::TokenData;
 
 const WHITESPACE_CHARS: [u8; 4] = [b' ', b'\n', b'\r', b'\t'];
 

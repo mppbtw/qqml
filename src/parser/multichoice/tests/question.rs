@@ -1,7 +1,9 @@
-use crate::parser::multichoice::*;
-use crate::lexer::Lexer;
-use crate::lexer::Token;
-use crate::lexer::TokenData;
+use crate::parser::multichoice::parser::parse_multichoice;
+use crate::parser::multichoice::data::MultichoiceAnswer;
+use crate::parser::multichoice::data::MultichoiceData;
+use crate::lexer::lexer::Lexer;
+use crate::lexer::token::Token;
+use crate::lexer::token::TokenData;
 
 #[test]
 fn test_parse_multichoice() {
