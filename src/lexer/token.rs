@@ -113,11 +113,6 @@ impl fmt::Display for Token {
 }
 
 impl Token {
-    pub fn set_data(&mut self, new_data: TokenData) {
-        let new = self.with_different_data(new_data);
-        *self = new;
-    }
-
     pub fn with_different_data(&self, new_data: TokenData) -> Token {
         match self {
             Self::Literal(_, v) => Self::Literal(new_data, v.to_owned()),
