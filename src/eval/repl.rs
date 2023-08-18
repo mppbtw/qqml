@@ -141,13 +141,7 @@ pub fn run(input: &String, path_to_source: Option<&String>, log_path: Option<&St
         }
     }
     if log_path.is_some() {
-        cleanup_and_exit(
-            Some(format!(
-                "{{\"finished\": false, \"file_data\": {}}}",
-                s.to_json()
-            )),
-            log_path.cloned(),
-        );
+        cleanup_and_exit(Some(s.to_json()), log_path.cloned());
     } else {
         cleanup_and_exit(None, log_path.cloned());
     }
