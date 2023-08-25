@@ -1,7 +1,7 @@
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct TokenData {
-    col: usize,
-    line: usize, // dunno why you would need this but its an option i guess
+    pub col: usize,
+    pub line: usize, // dunno why you would need this but its an option i guess
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -88,6 +88,8 @@ impl Lexer {
             self.read_char();
         }
         let str = self.input[pos..self.position].to_string();
+        self.position -= 1;
+        self.read_position -= 1;
         if str == "false" {
             Token::False(self.get_token_data())
         } else if str == "true" {
@@ -125,15 +127,8 @@ impl Lexer {
 
     fn get_token_data(&self) -> TokenData {
         TokenData {
-            col: self.position,
-            line: {
-                self.input
-                    .as_bytes()
-                    .iter()
-                    .map(|b| if *b == b'\n' { 1 } else { 0 })
-                    .sum()
-            },
-        };
-        TokenData::default()
+            line: 0,
+            col: 0,
+        }
     }
 }

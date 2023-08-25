@@ -91,3 +91,23 @@ fn test_parse_arrays() {
     let result = parse(&mut Lexer::new(input)).unwrap();
     assert_eq!(result, expected);
 }
+
+#[test]
+fn test_parse_array_of_objects() {
+    let input = "{\"ident\": [{\"ident\": \"value\"}]}";
+    let expected = JsonTreeNode {
+        values: vec![JsonValue {
+            ident: "ident".to_owned(),
+            value: JsonType::Array(JsonArray {
+                values: vec![JsonType::Table(JsonTreeNode {
+                    values: vec![JsonValue {
+                        ident: "ident".to_owned(),
+                        value: JsonType::String("value".to_owned()),
+                    }],
+                })],
+            }),
+        }],
+    };
+    let result = parse(&mut Lexer::new(input)).unwrap();
+    assert_eq!(result, expected);
+}
