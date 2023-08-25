@@ -3,9 +3,20 @@ use super::lexer::*;
 #[derive(Debug, Clone, PartialEq)]
 pub struct JsonSyntaxError(pub Token);
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum JsonConstructionError {
+    JsonSyntaxError(JsonSyntaxError),
+    SemanticError,
+}
+impl From<JsonSyntaxError> for JsonConstructionError {
+    fn from(value: JsonSyntaxError) -> Self {
+        Self::JsonSyntaxError(value)
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum JsonType {
-    Number(i128),
+    Number(usize),
     String(String),
     Bool(bool),
     Array(JsonArray),
@@ -120,9 +131,9 @@ pub fn parse_array(l: &mut Lexer) -> Result<JsonArray, JsonSyntaxError> {
             Token::Eof(_) => return Err(JsonSyntaxError(tok)),
             _ => (),
         };
-        dbg!("oooooo",&tok);
+        dbg!("oooooo", &tok);
         tok = l.next_token();
-        dbg!("er",&tok);
+        dbg!("er", &tok);
         match tok {
             Token::Comma(_) => (),
             Token::RSquare(_) => break,
