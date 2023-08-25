@@ -76,6 +76,55 @@ impl MultichoiceData {
             return Err(JsonConstructionError::SemanticError);
         };
 
+        let answers: Vec<MultichoiceAnswer> = if let Some(JsonValue {
+            ident: _,
+            value: JsonType::Array(a),
+        }) = json.get_ident("answers")
+        {
+            let mut answers: Vec<MultichoiceAnswer> = vec![];
+            for r in a.values.iter().map(|v| {
+                if let JsonType::Table(t) = v {
+                    return Ok(t);
+                } else {
+                    return Err(JsonConstructionError::SemanticError);
+                }
+            }) {
+                answers.push(match r {
+                    Ok(t) => MultichoiceAnswer::from_json(t),
+                    Err(_) => return Err(JsonConstructionError::SemanticError),
+                }?)
+            }
+            answers
+        } else {
+            return Err(JsonConstructionError::SemanticError);
+        };
+
+        let hints: Vec<String> = if let Some(JsonValue {
+            ident: _,
+            value: JsonType::Array(a),
+        }) = json.get_ident("hints")
+        {
+            let mut hints: Vec<String> = vec![];
+            for r in a
+                .values
+                .iter()
+                .map(|v| {
+                    if let JsonType::String(s) = v {
+                        Ok(s)
+                    } else {
+                        Err(JsonConstructionError::SemanticError)
+                    }
+                })
+                .collect::<Vec<Result<&String, _>>>()
+                .iter()
+            {
+                hints.push(r.to_owned()?.to_owned())
+            }
+            hints
+        } else {
+            return Err(JsonConstructionError::SemanticError);
+        };
+
         Ok(MultichoiceData {
             text,
             used_hints,
@@ -83,22 +132,71 @@ impl MultichoiceData {
             line,
             max_marks,
             selected_answer,
-            hints: vec![],
-            answers: vec![],
+            hints,
+            answers,
         })
     }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct MultichoiceAnswer {
+    /// This should never be None after parsing, dont ask why its an Option<_> in the first place I'm
+    /// not sure to be honest.
     pub text: Option<String>,
     pub marks: usize,
     pub explanation: Option<String>,
     pub is_chosen: bool,
 }
 impl MultichoiceAnswer {
-    pub fn from_json(json: &JsonTreeNode) -> Result<MultichoiceData, JsonConstructionError> {
-        Err(JsonConstructionError::SemanticError)
+    pub fn from_json(json: &JsonTreeNode) -> Result<MultichoiceAnswer, JsonConstructionError> {
+        let text = Some(
+            if let Some(JsonValue {
+                ident: _,
+                value: JsonType::String(s),
+            }) = json.get_ident("text")
+            {
+                s.to_owned()
+            } else {
+                return Err(JsonConstructionError::SemanticError);
+            },
+        );
+
+        let marks = *if let Some(JsonValue {
+            ident: _,
+            value: JsonType::Number(s),
+        }) = json.get_ident("marks")
+        {
+            s
+        } else {
+            return Err(JsonConstructionError::SemanticError);
+        };
+
+        let explanation = if let Some(JsonValue {
+            ident: _,
+            value: JsonType::String(s),
+        }) = json.get_ident("explanation")
+        {
+            Some(s.to_owned())
+        } else {
+            None
+        };
+
+        let is_chosen = *if let Some(JsonValue {
+            ident: _,
+            value: JsonType::Bool(b),
+        }) = json.get_ident("is_chosen")
+        {
+            b
+        } else {
+            return Err(JsonConstructionError::SemanticError);
+        };
+
+        Ok(MultichoiceAnswer {
+            text,
+            marks,
+            explanation,
+            is_chosen,
+        })
     }
 
     pub fn to_json(&self) -> String {
