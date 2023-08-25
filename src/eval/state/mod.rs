@@ -139,8 +139,23 @@ impl State {
 
     pub fn to_json(&self) -> String {
         let mut output = String::new();
+        output += "{";
+        output += &format!("\"max_hints\": {},", self.max_hints);
+        output += &format!("\"hints_used\": {},", self.hints_used);
         output += &format!(
-            "{{\"questions\": [{}]",
+            "\"path_to_source\": \"{}\",",
+            self.path_to_source.clone().unwrap_or("".to_owned())
+        );
+        output += &format!(
+            "\"has_watched_final_cutsene\": {},",
+            self.has_watched_final_cutsene
+        );
+        output += &format!(
+            "\"current_question_index\": {},",
+            self.current_question_index
+        );
+        output += &format!(
+            "\"questions\": [{}]",
             self.questions
                 .iter()
                 .map(|q| q.to_json())
@@ -207,8 +222,47 @@ impl State {
             return Err(JsonConstructionError::SemanticError);
         };
 
+        let max_hints = *if let Some(JsonValue {
+            ident: _,
+            value: JsonType::Number(n)
+        }) = json.get_ident("max_hints") {
+            n
+        } else {
+            return Err(JsonConstructionError::SemanticError);
+        };
+
+        let current_question_index = *if let Some(JsonValue {
+            ident: _,
+            value: JsonType::Number(n)
+        }) = json.get_ident("current_question_index") {
+            n
+        } else {
+            return Err(JsonConstructionError::SemanticError);
+        };
+
+        let has_watched_final_cutsene = *if let Some(JsonValue {
+            ident: _,
+            value: JsonType::Bool(b)
+        }) = json.get_ident("has_watched_final_cutsene") {
+            b
+        } else {
+            return Err(JsonConstructionError::SemanticError);
+        };
+
+        let path_to_source = Some(if let Some(JsonValue {
+            ident: _,
+            value: JsonType::String(s)
+        }) = json.get_ident("path_to_source") {
+            s.to_owned()
+        } else {
+            return Err(JsonConstructionError::SemanticError);
+        });
+
         Ok(State {
             questions,
+            max_hints,
+            has_watched_final_cutsene,
+            path_to_source,
             ..Default::default()
         })
     }

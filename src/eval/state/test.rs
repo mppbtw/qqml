@@ -1,4 +1,7 @@
-use crate::{Question, parser::multichoice::data::{MultichoiceData, MultichoiceAnswer}};
+use crate::{
+    parser::multichoice::data::{MultichoiceAnswer, MultichoiceData},
+    Question,
+};
 
 use super::State;
 
@@ -8,6 +11,15 @@ fn test_state_from_json() {
 
     let result = State::from_json(input).unwrap();
     let expected = State {
+        cols: 0,
+        current_question_index: 0,
+        questions_len: 0,
+        current_achieved_marks: 0,
+        current_hints_available: 0,
+        has_watched_final_cutsene: false,
+        hints_used: 0,
+        max_hints: 2,
+        path_to_source: Some("example.qqml".to_owned()),
         questions: vec![
             Question::Multichoice(MultichoiceData {
                 answers: vec![
@@ -102,7 +114,6 @@ fn test_state_from_json() {
                 ],
             })
         ],
-        ..Default::default()
     };
     assert_eq!(result, expected)
 }
