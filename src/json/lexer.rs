@@ -126,9 +126,6 @@ impl Lexer {
     }
 
     fn get_token_data(&self) -> TokenData {
-        TokenData {
-            line: 0,
-            col: 0,
-        }
+        TokenData { line: 0, col: 0 }
     }
 }
