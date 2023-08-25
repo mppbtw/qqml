@@ -60,11 +60,10 @@ pub fn parse(l: &mut Lexer) -> Result<JsonTreeNode, JsonSyntaxError> {
     }
 
     loop {
-        dbg!(&tok);
-        std::fs::write("./log.txt", format!("{:?}", tok)).unwrap();
         // Should only loop once per value
         match tok {
             Token::Eof(_) => return Err(JsonSyntaxError(tok)),
+            Token::LSquirly(_) => (),
             Token::String(_, ident) => {
                 tok = l.next_token();
                 if !matches!(tok, Token::Colon(_)) {
@@ -108,6 +107,7 @@ pub fn parse(l: &mut Lexer) -> Result<JsonTreeNode, JsonSyntaxError> {
                 continue;
             }
             Token::RSquirly(_) => break,
+
             _ => return Err(JsonSyntaxError(tok)),
         }
         tok = l.next_token();
@@ -127,13 +127,11 @@ pub fn parse_array(l: &mut Lexer) -> Result<JsonArray, JsonSyntaxError> {
             Token::False(_) => values.push(JsonType::Bool(false)),
             Token::Number(_, n) => values.push(JsonType::Number(n)),
             Token::RSquare(_) => break,
-
+            Token::LSquirly(_) => values.push(JsonType::Table(parse(l)?)),
             Token::Eof(_) => return Err(JsonSyntaxError(tok)),
             _ => (),
         };
-        dbg!("oooooo", &tok);
         tok = l.next_token();
-        dbg!("er", &tok);
         match tok {
             Token::Comma(_) => (),
             Token::RSquare(_) => break,
