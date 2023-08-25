@@ -11,7 +11,7 @@ pub enum Token {
     LSquare(TokenData),
     RSquare(TokenData),
     String(TokenData, String),
-    Number(TokenData, i128),
+    Number(TokenData, usize),
     True(TokenData),
     False(TokenData),
     Colon(TokenData),
@@ -73,7 +73,10 @@ impl Lexer {
         while self.ch.is_ascii_digit() {
             self.read_char();
         }
-        let num = self.input[pos..self.position].to_owned().parse::<i128>().unwrap();
+        let num = self.input[pos..self.position]
+            .to_owned()
+            .parse::<usize>()
+            .unwrap();
         self.read_position -= 1;
         self.position -= 1;
         Token::Number(dat, num)
@@ -101,10 +104,7 @@ impl Lexer {
         while self.ch != b'"' {
             self.read_char();
         }
-        Token::String(
-            self.get_token_data(),
-            self.input[pos..self.position].to_string(),
-        )
+        Token::String(dat, self.input[pos..self.position].to_string())
     }
 
     fn read_char(&mut self) {

@@ -7,7 +7,6 @@ use super::parser::parse;
 use super::parser::JsonTreeNode;
 use super::parser::JsonType;
 use super::parser::JsonValue;
-use std::{sync::mpsc, thread, time::Duration};
 
 #[test]
 fn test_tokenise() {

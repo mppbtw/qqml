@@ -1,6 +1,8 @@
 use super::render::*;
+use crate::json::lexer::*;
+use crate::json::parser::JsonConstructionError;
 use crate::json::parser::*;
-use crate::{json::lexer::Lexer, parser::Question};
+use crate::parser::Question;
 use rtermutils::*;
 
 #[derive(Debug, Clone)]
@@ -174,7 +176,6 @@ impl State {
             })
             .sum()
     }
-
     pub fn watch_final_cutsene(&mut self) {
         self.has_watched_final_cutsene = true;
     }
@@ -189,20 +190,16 @@ impl State {
         let json = parse(&mut lexer)?;
         if let Some(q) = json.get_ident("questions") {
             match &q.value {
-                _ => (),
+                JsonType::Array(a) => {
+                    let mut questions: Vec<Question> = vec![];
+                    for v in a.values.iter() {
+                        questions.push(Question::from_json(v)?);
+                    }
+                }
+                _ => return Err(JsonConstructionError::SemanticError),
             }
         }
 
         Ok(Self::default())
-    }
-}
-
-pub enum JsonConstructionError {
-    JsonSyntaxError(JsonSyntaxError),
-    SemanticError,
-}
-impl From<JsonSyntaxError> for JsonConstructionError {
-    fn from(value: JsonSyntaxError) -> Self {
-        Self::JsonSyntaxError(value)
     }
 }

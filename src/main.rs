@@ -1,9 +1,6 @@
-use eval::diagnostics::render_error;
-use eval::repl::run;
-use parser::core::parse;
-use parser::core::ParsedFile;
-use parser::error::ErrorReport;
+use libqqml::*;
 use std::time::Instant;
+mod argparse;
 
 use std::{env::args, fs, process::exit};
 
@@ -11,12 +8,6 @@ const ANSI_RESET: &str = "\x1b[0m";
 const ANSI_GREEN: &str = "\x1b[32m";
 const ANSI_RED: &str = "\x1b[31m";
 const ANSI_BOLD: &str = "\x1b[1m";
-
-mod argparse;
-mod eval;
-mod json;
-mod lexer;
-mod parser;
 
 use argparse::*;
 
