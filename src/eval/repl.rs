@@ -7,22 +7,7 @@ use crate::parser::Question;
 use rtermutils::*;
 use std::process::exit;
 
-pub fn run(input: &String, path_to_source: Option<&String>, log_path: Option<&String>) -> ! {
-    let parsed = match parse(input) {
-        Ok(p) => p,
-        Err(_) => {
-            // Proper error reporting should be done by the caller
-            exit(1);
-        }
-    };
-    let mut s = {
-        StateConstructor {
-            path_to_source: path_to_source.cloned(),
-            questions: parsed.questions,
-            max_hints: parsed.max_hints,
-        }
-        .construct()
-    };
+pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
     unsafe {
         enter_alt_screen();
         hide_cursor();
@@ -145,6 +130,25 @@ pub fn run(input: &String, path_to_source: Option<&String>, log_path: Option<&St
     } else {
         cleanup_and_exit(None, log_path.cloned());
     }
+}
+
+pub fn run(input: &String, path_to_source: Option<&String>, log_path: Option<&String>) -> ! {
+    let parsed = match parse(input) {
+        Ok(p) => p,
+        Err(_) => {
+            // Proper error reporting should be done by the caller
+            exit(1);
+        }
+    };
+    let s = {
+        StateConstructor {
+            path_to_source: path_to_source.cloned(),
+            questions: parsed.questions,
+            max_hints: parsed.max_hints,
+        }
+        .construct()
+    };
+    run_from_state(s, log_path)
 }
 
 fn help_menu() {
