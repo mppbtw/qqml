@@ -2,7 +2,8 @@
 
 The Quiz Question Markup Language is a declarative and highly expressive
 language for defining revision questions in quite possibly the most
-overcomplicated and pointless manner possible; perfect for this project :).
+overcomplicated and pointless manner possible; perfect to flex on my teacher
+for a homework project.
 
 ## Usage
 
