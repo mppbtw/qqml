@@ -7,5 +7,6 @@ edition = "2021"
 
 [dependencies]
 
+# These don't count as dependencies, right?
 [build-dependencies]
 cmake = "0.1.50"
