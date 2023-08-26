@@ -5,7 +5,7 @@ pub mod multichoice;
 #[cfg(test)]
 mod test_correct;
 
-use crate::json::parser::{JsonConstructionError, JsonTreeNode, JsonType, JsonValue};
+use crate::json::parser::{JsonConstructionError, JsonType, JsonValue};
 use multichoice::data::MultichoiceData;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -25,11 +25,8 @@ impl Question {
                     value: JsonType::String(v),
                 }) = t.get_ident("type")
                 {
-                    match v.as_str() {
-                        "multichoice" => {
-                            return Ok(Self::Multichoice(MultichoiceData::from_json(t)?))
-                        }
-                        _ => (),
+                    if v.as_str() == "multichoice" {
+                        return Ok(Self::Multichoice(MultichoiceData::from_json(t)?));
                     };
                 }
             }
