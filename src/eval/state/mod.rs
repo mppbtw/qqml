@@ -224,8 +224,9 @@ impl State {
 
         let max_hints = *if let Some(JsonValue {
             ident: _,
-            value: JsonType::Number(n)
-        }) = json.get_ident("max_hints") {
+            value: JsonType::Number(n),
+        }) = json.get_ident("max_hints")
+        {
             n
         } else {
             return Err(JsonConstructionError::SemanticError);
@@ -233,8 +234,9 @@ impl State {
 
         let current_question_index = *if let Some(JsonValue {
             ident: _,
-            value: JsonType::Number(n)
-        }) = json.get_ident("current_question_index") {
+            value: JsonType::Number(n),
+        }) = json.get_ident("current_question_index")
+        {
             n
         } else {
             return Err(JsonConstructionError::SemanticError);
@@ -242,21 +244,25 @@ impl State {
 
         let has_watched_final_cutsene = *if let Some(JsonValue {
             ident: _,
-            value: JsonType::Bool(b)
-        }) = json.get_ident("has_watched_final_cutsene") {
+            value: JsonType::Bool(b),
+        }) = json.get_ident("has_watched_final_cutsene")
+        {
             b
         } else {
             return Err(JsonConstructionError::SemanticError);
         };
 
-        let path_to_source = Some(if let Some(JsonValue {
-            ident: _,
-            value: JsonType::String(s)
-        }) = json.get_ident("path_to_source") {
-            s.to_owned()
-        } else {
-            return Err(JsonConstructionError::SemanticError);
-        });
+        let path_to_source = Some(
+            if let Some(JsonValue {
+                ident: _,
+                value: JsonType::String(s),
+            }) = json.get_ident("path_to_source")
+            {
+                s.to_owned()
+            } else {
+                return Err(JsonConstructionError::SemanticError);
+            },
+        );
 
         Ok(State {
             questions,
