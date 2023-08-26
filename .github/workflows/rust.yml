@@ -27,10 +27,17 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Format Module
-      run: cargo +nightly fmt --verbose
+      - uses: actions/checkout@v2
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: nightly
+            override: true
+            components: rustfmt, clippy
+      - name: Run cargo fmt
+        run: cargo +nightly fmt --verbose
 
+  
   lint:
     runs-on: ubuntu-latest
     steps:
