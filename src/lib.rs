@@ -5,6 +5,9 @@ mod parser;
 
 pub use eval::diagnostics::render_error;
 pub use eval::repl::run;
+pub use eval::repl::run_from_state;
+pub use eval::state::State;
+pub use eval::state::StateConstructor;
 pub use lexer::core::Lexer;
 pub use lexer::core::LexerError;
 pub use lexer::token::Token;
