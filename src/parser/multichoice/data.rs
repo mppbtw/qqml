@@ -84,9 +84,9 @@ impl MultichoiceData {
             let mut answers: Vec<MultichoiceAnswer> = vec![];
             for r in a.values.iter().map(|v| {
                 if let JsonType::Table(t) = v {
-                    return Ok(t);
+                    Ok(t)
                 } else {
-                    return Err(JsonConstructionError::SemanticError);
+                    Err(JsonConstructionError::SemanticError)
                 }
             }) {
                 answers.push(match r {

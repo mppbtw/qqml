@@ -30,12 +30,7 @@ pub struct JsonTreeNode {
 impl JsonTreeNode {
     pub fn get_ident<S: Into<String>>(&self, ident: S) -> Option<&JsonValue> {
         let ident: String = ident.into();
-        for val in self.values.iter() {
-            if val.ident == ident {
-                return Some(&val);
-            }
-        }
-        None
+        self.values.iter().find(|&val| val.ident == ident)
     }
 }
 

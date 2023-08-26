@@ -15,8 +15,8 @@ fn main() -> ! {
     if has_help() || args().collect::<Vec<String>>().len() == 1 {
         help_msg();
     }
-    match get_file_arg() {
-        Some(i) => match fs::read_to_string(i.clone()) {
+    if let Some(i) = get_file_arg() {
+        match fs::read_to_string(i.clone()) {
             Ok(f) => {
                 if get_resume_file().is_some() {
                     eprintln!("Can't have both a resume file and a source file!");
@@ -47,8 +47,7 @@ fn main() -> ! {
                 eprintln!("Couldn't read file: {}", e);
                 exit(1);
             }
-        },
-        None => (),
+        }
     }
 
     match get_resume_file() {
