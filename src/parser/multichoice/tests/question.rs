@@ -18,34 +18,34 @@ fn test_parse_multichoice() {
     let result = parse_multichoice(&mut l, Token::Ask(TokenData { col: 0, line: 1 })).unwrap();
 
     let mut expected = MultichoiceData {
-        is_answered: false,
-        used_hints: 0,
+        is_answered:     false,
+        used_hints:      0,
         selected_answer: 0,
-        max_marks: 1,
-        hints: vec![],
-        answers: vec![],
-        line: 1,
-        text: "title".to_owned(),
+        max_marks:       1,
+        hints:           vec![],
+        answers:         vec![],
+        line:            1,
+        text:            "title".to_owned(),
     };
 
     expected.answers.push(MultichoiceAnswer {
-        is_chosen: false,
-        text: Some("correct".to_owned()),
-        marks: 1,
+        is_chosen:   false,
+        text:        Some("correct".to_owned()),
+        marks:       1,
         explanation: Some("explanation".to_owned()),
     });
 
     expected.answers.push(MultichoiceAnswer {
-        is_chosen: false,
-        text: Some("incorrect".to_owned()),
-        marks: 0,
+        is_chosen:   false,
+        text:        Some("incorrect".to_owned()),
+        marks:       0,
         explanation: Some("explanation".to_owned()),
     });
 
     expected.answers.push(MultichoiceAnswer {
-        is_chosen: false,
-        text: Some("inc".to_owned()),
-        marks: 0,
+        is_chosen:   false,
+        text:        Some("inc".to_owned()),
+        marks:       0,
         explanation: None,
     });
 
@@ -65,34 +65,34 @@ fn test_parse_multichoice_double_quotes() {
     let result = parse_multichoice(&mut l, Token::Ask(TokenData { col: 0, line: 1 })).unwrap();
 
     let mut expected = MultichoiceData {
-        is_answered: false,
-        used_hints: 0,
+        is_answered:     false,
+        used_hints:      0,
         selected_answer: 0,
-        max_marks: 1,
-        hints: vec![],
-        answers: vec![],
-        line: 1,
-        text: "title".to_owned(),
+        max_marks:       1,
+        hints:           vec![],
+        answers:         vec![],
+        line:            1,
+        text:            "title".to_owned(),
     };
 
     expected.answers.push(MultichoiceAnswer {
-        is_chosen: false,
-        text: Some("correct".to_owned()),
-        marks: 1,
+        is_chosen:   false,
+        text:        Some("correct".to_owned()),
+        marks:       1,
         explanation: Some("explanation".to_owned()),
     });
 
     expected.answers.push(MultichoiceAnswer {
-        is_chosen: false,
-        text: Some("incorrect".to_owned()),
-        marks: 0,
+        is_chosen:   false,
+        text:        Some("incorrect".to_owned()),
+        marks:       0,
         explanation: Some("explanation".to_owned()),
     });
 
     expected.answers.push(MultichoiceAnswer {
-        is_chosen: false,
-        text: Some("inc".to_owned()),
-        marks: 0,
+        is_chosen:   false,
+        text:        Some("inc".to_owned()),
+        marks:       0,
         explanation: None,
     });
 

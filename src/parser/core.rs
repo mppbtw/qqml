@@ -33,10 +33,10 @@ pub fn parse<S: Into<String>>(inp: S) -> Result<ParsedFile, ErrorReport> {
     // rather than returning more and more errors for every token in the file.
     // The other classifications being positively (extra tokens) and
     // negatively (missing tokens) tolerant. In order to hand-write a parser
-    // which is able to correctly report errors under all of the above circumstances,
-    // one must either create one parser which is negatively, positively and
-    // replacement tolerant at the same time (more reasonable for AST
-    // constructors), or have 3 seperate parsers and only run one unless an
+    // which is able to correctly report errors under all of the above
+    // circumstances, one must either create one parser which is negatively,
+    // positively and replacement tolerant at the same time (more reasonable for
+    // AST constructors), or have 3 seperate parsers and only run one unless an
     // error is detected, then run the others and get the lowest error count.
     // The latter approach is called tripartite parsing and is a good fit for
     // this kind of parsing (very strict grammar, no AST). The default parser

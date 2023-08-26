@@ -1,5 +1,3 @@
-use crate::json::parser::JsonArray;
-
 use super::lexer::Lexer;
 use super::lexer::Token;
 use super::lexer::TokenData;
@@ -7,6 +5,7 @@ use super::parser::parse;
 use super::parser::JsonTreeNode;
 use super::parser::JsonType;
 use super::parser::JsonValue;
+use crate::json::parser::JsonArray;
 
 #[test]
 fn test_tokenise() {
