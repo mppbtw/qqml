@@ -1,9 +1,6 @@
-use eval::diagnostics::render_error;
-use eval::repl::run;
-use parser::core::parse;
-use parser::core::ParsedFile;
-use parser::error::ErrorReport;
+use libqqml::*;
 use std::time::Instant;
+mod argparse;
 
 use std::{env::args, fs, process::exit};
 
@@ -12,20 +9,19 @@ const ANSI_GREEN: &str = "\x1b[32m";
 const ANSI_RED: &str = "\x1b[31m";
 const ANSI_BOLD: &str = "\x1b[1m";
 
-mod argparse;
-mod eval;
-mod lexer;
-mod parser;
-
 use argparse::*;
 
-fn main() {
+fn main() -> ! {
     if has_help() || args().collect::<Vec<String>>().len() == 1 {
         help_msg();
     }
-    match get_file_arg() {
-        Some(i) => match fs::read_to_string(i.clone()) {
+    if let Some(i) = get_file_arg() {
+        match fs::read_to_string(i.clone()) {
             Ok(f) => {
+                if get_resume_file().is_some() {
+                    eprintln!("Can't have both a resume file and a source file!");
+                    exit(1);
+                }
                 if has_check() {
                     check_file(f, i);
                 } else if has_parse() {
@@ -51,12 +47,26 @@ fn main() {
                 eprintln!("Couldn't read file: {}", e);
                 exit(1);
             }
-        },
-        None => {
-            eprintln!("Requires file argument.");
-            exit(1);
         }
     }
+
+    match get_resume_file() {
+        None => (),
+        Some(f) => match fs::read_to_string(&f) {
+            Err(e) => eprintln!("Failed to read file {}: {}", f, e),
+            Ok(json) => {
+                let state = match State::from_json(json) {
+                    Ok(s) => s,
+                    Err(e) => {
+                        eprintln!("Failed to parse JSON data into state: {:?}", e);
+                        exit(1);
+                    }
+                };
+                run_from_state(state, get_logfile().as_ref())
+            }
+        },
+    };
+    exit(0);
 }
 
 fn render_parsed_file(p: ParsedFile) -> String {
@@ -176,29 +186,34 @@ fn check_file(inp: String, path: String) -> ! {
 
 fn help_msg() -> ! {
     println!(
-        " QQML v1.0 (c) 2023 'MrPiggyPegasus'
+        "QQML v1.0 (c) 2023 'MrPiggyPegasus'
 
 usage: qqml [OPTIONS] <FILE>
 
 OPTIONS:
-    -c --check      Validate the QQML source file.
+    -c --check         Validate the QQML source file.
 
-    -h --help       Print this help message and
-                    exit.
+    -h --help          Print this help message and
+                       exit.
 
-    -V --version    Print version information and
-                    exit.
+    -V --version       Print version information and
+                       exit.
 
-    -p --parse      Attempt to parse the file, if
-                    succesful will then print the
-                    parsed data.
+    -p --parse         Attempt to parse the file, if
+                       succesful will then print the
+                       parsed data.
 
-    -j --json       Output any parsing data in a
-                    JSON format
+    -j --json          Output parsing data in a
+                       JSON format
 
-    -l --log <File> Output information about the
-                    state of the game to a specific
-                    file
+    -l --log <File>    Output information about the
+                       state of the game to a specific
+                       file in a JSON format after the
+                       player exits
+    
+    -r --resume <File> Resume from a valid JSON logfile
+                    
+
 
 More information about the QQML language
 and its related tooling is available at

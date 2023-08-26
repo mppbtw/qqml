@@ -1,6 +1,6 @@
 use std::env::args;
 
-const OPTIONS: [&str; 12] = [
+const OPTIONS: [&str; 14] = [
     "-h",
     "--help",
     "-v",
@@ -13,6 +13,8 @@ const OPTIONS: [&str; 12] = [
     "--json",
     "-l",
     "--log",
+    "-r",
+    "--resume",
 ];
 
 pub fn has_help() -> bool {
@@ -45,6 +47,16 @@ pub fn get_logfile() -> Option<String> {
     None
 }
 
+pub fn get_resume_file() -> Option<String> {
+    let args: Vec<String> = args().collect();
+    for (i, a) in args.iter().enumerate() {
+        if a == "-r" || a == "--resume" {
+            return args.get(i + 1).cloned();
+        }
+    }
+    None
+}
+
 pub fn get_file_arg() -> Option<String> {
     let mut skip_next_arg = false;
 
@@ -53,7 +65,7 @@ pub fn get_file_arg() -> Option<String> {
             skip_next_arg = false;
             continue;
         }
-        if a == "-l" || a == "--log" {
+        if a == "-l" || a == "--log" || a == "-r" || a == "--resume" {
             skip_next_arg = true;
             continue;
         }

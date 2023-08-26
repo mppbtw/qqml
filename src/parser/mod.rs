@@ -5,6 +5,7 @@ pub mod multichoice;
 #[cfg(test)]
 mod test_correct;
 
+use crate::json::parser::{JsonConstructionError, JsonType, JsonValue};
 use multichoice::data::MultichoiceData;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -16,6 +17,25 @@ pub enum Question {
 }
 
 impl Question {
+    pub fn from_json(json: &JsonType) -> Result<Question, JsonConstructionError> {
+        match json {
+            JsonType::Table(t) => {
+                if let Some(JsonValue {
+                    ident: _,
+                    value: JsonType::String(v),
+                }) = t.get_ident("type")
+                {
+                    if v.as_str() == "multichoice" {
+                        return Ok(Self::Multichoice(MultichoiceData::from_json(t)?));
+                    };
+                }
+            }
+            _ => return Err(JsonConstructionError::SemanticError),
+        }
+
+        Err(JsonConstructionError::SemanticError)
+    }
+
     pub fn to_json(&self) -> String {
         let mut output = String::new();
         output += "{";
@@ -44,7 +64,7 @@ impl Question {
                     .join(",")
             );
 
-            output += &format!("\"col\": {}", 0); // TODO: implement this
+            output += &format!("\"col\": {}", 0);
         }
         output += "}";
         output

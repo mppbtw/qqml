@@ -32,16 +32,10 @@ pub fn end_screen(s: &mut State, log_path: Option<String>) {
         unsafe { clear_screen() }
     }
     println!("You got {}/{}", s.achieved_marks(), s.get_max_marks());
-    println!("Press any to continue, return to view your answers again.");
+    println!("Press enter to review your answers, or any other key to quit.");
     if unsafe { read_single_char() } != b'\n' {
         if log_path.is_some() {
-            cleanup_and_exit(
-                Some(format!(
-                    "{{\"finished\": true, \"file_data\":{} }}",
-                    s.to_json()
-                )),
-                log_path,
-            );
+            cleanup_and_exit(Some(s.to_json()), log_path);
         } else {
             cleanup_and_exit(None, log_path);
         }
