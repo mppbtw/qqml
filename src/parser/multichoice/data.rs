@@ -5,14 +5,14 @@ use crate::json::parser::JsonValue;
 
 #[derive(Debug, Default, PartialEq, Eq, Clone)]
 pub struct MultichoiceData {
-    pub text: String,
-    pub max_marks: usize,
-    pub answers: Vec<MultichoiceAnswer>,
-    pub hints: Vec<String>,
-    pub used_hints: usize,
+    pub text:            String,
+    pub max_marks:       usize,
+    pub answers:         Vec<MultichoiceAnswer>,
+    pub hints:           Vec<String>,
+    pub used_hints:      usize,
     pub selected_answer: usize,
-    pub line: usize,
-    pub is_answered: bool,
+    pub line:            usize,
+    pub is_answered:     bool,
 }
 impl MultichoiceData {
     pub fn from_json(json: &JsonTreeNode) -> Result<MultichoiceData, JsonConstructionError> {
@@ -140,12 +140,12 @@ impl MultichoiceData {
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct MultichoiceAnswer {
-    /// This should never be None after parsing, dont ask why its an Option<_> in the first place I'm
-    /// not sure to be honest.
-    pub text: Option<String>,
-    pub marks: usize,
+    /// This should never be None after parsing, dont ask why its an Option<_>
+    /// in the first place I'm not sure to be honest.
+    pub text:        Option<String>,
+    pub marks:       usize,
     pub explanation: Option<String>,
-    pub is_chosen: bool,
+    pub is_chosen:   bool,
 }
 impl MultichoiceAnswer {
     pub fn from_json(json: &JsonTreeNode) -> Result<MultichoiceAnswer, JsonConstructionError> {
@@ -217,10 +217,10 @@ impl MultichoiceAnswer {
 impl Default for MultichoiceAnswer {
     fn default() -> Self {
         Self {
-            text: Some("".to_owned()),
-            marks: 0,
+            text:        Some("".to_owned()),
+            marks:       0,
             explanation: None,
-            is_chosen: false,
+            is_chosen:   false,
         }
     }
 }

@@ -17,14 +17,14 @@ pub struct Screen<'a> {
     // Each component of the TUI is modular,
     // such that this system can be used to
     // render multiple different question types.
-    pub pathline: Option<PathLine<'a>>,
-    pub version_line: Option<VersionLine<'a>>,
-    pub q_select_line: Option<QuestionSelectLine<'a>>,
-    pub question_line: Option<QuestionLine<'a>>,
-    pub question_body: Option<QuestionBody<'a>>,
+    pub pathline:             Option<PathLine<'a>>,
+    pub version_line:         Option<VersionLine<'a>>,
+    pub q_select_line:        Option<QuestionSelectLine<'a>>,
+    pub question_line:        Option<QuestionLine<'a>>,
+    pub question_body:        Option<QuestionBody<'a>>,
     pub question_result_body: Option<QuestionResultBody<'a>>,
-    pub hints_line: Option<HintsLine<'a>>,
-    pub hints_body: Option<HintsBody<'a>>,
+    pub hints_line:           Option<HintsLine<'a>>,
+    pub hints_body:           Option<HintsBody<'a>>,
     pub question_result_line: Option<QuestionResultLine<'a>>,
 }
 impl Render for Screen<'_> {
@@ -73,9 +73,9 @@ impl Render for Screen<'_> {
 
 #[derive(Debug, Clone)]
 pub struct QuestionResultLine<'a> {
-    pub question: &'a String,
+    pub question:       &'a String,
     pub achieved_marks: &'a usize,
-    pub max_marks: &'a usize,
+    pub max_marks:      &'a usize,
 }
 impl Render for QuestionResultLine<'_> {
     fn render(&self) -> String {
@@ -101,7 +101,7 @@ impl Render for QuestionResultLine<'_> {
 #[derive(Debug, Clone)]
 pub struct QuestionResultBody<'a> {
     pub answers: &'a Vec<MultichoiceAnswer>,
-    pub cols: &'a usize,
+    pub cols:    &'a usize,
 }
 impl Render for QuestionResultBody<'_> {
     fn render(&self) -> String {
@@ -148,7 +148,7 @@ impl Render for QuestionResultBody<'_> {
 
 #[derive(Debug, Clone)]
 pub struct QuestionBody<'a> {
-    pub answers: Vec<(String, bool)>,
+    pub answers:  Vec<(String, bool)>,
     pub selected: &'a usize,
 }
 impl Render for QuestionBody<'_> {
@@ -214,9 +214,9 @@ impl Render for PathLine<'_> {
 
 #[derive(Debug, Clone)]
 pub struct QuestionSelectLine<'a> {
-    pub max_questions: &'a usize,
+    pub max_questions:    &'a usize,
     pub current_question: &'a usize,
-    pub cols: &'a usize,
+    pub cols:             &'a usize,
 }
 impl Render for QuestionSelectLine<'_> {
     fn render(&self) -> String {
@@ -238,10 +238,10 @@ impl Render for QuestionSelectLine<'_> {
 
 #[derive(Debug, Clone)]
 pub struct HintsLine<'a> {
-    pub max_hints: &'a usize,
+    pub max_hints:        &'a usize,
     pub hints_used_total: &'a usize,
-    pub hints_available: &'a usize,
-    pub is_answered: &'a bool,
+    pub hints_available:  &'a usize,
+    pub is_answered:      &'a bool,
 }
 impl Render for HintsLine<'_> {
     fn render(&self) -> String {

@@ -1,9 +1,7 @@
-use crate::{
-    parser::multichoice::data::{MultichoiceAnswer, MultichoiceData},
-    Question,
-};
-
 use super::State;
+use crate::parser::multichoice::data::MultichoiceAnswer;
+use crate::parser::multichoice::data::MultichoiceData;
+use crate::Question;
 
 #[test]
 fn test_state_from_json() {

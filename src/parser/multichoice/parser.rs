@@ -5,7 +5,8 @@ use crate::parser::error::Error;
 use crate::parser::error::ErrorReport;
 use crate::parser::MultichoiceData;
 
-/// 't' is the token for the ask keyword used to attach some more metadata to the data
+/// 't' is the token for the ask keyword used to attach some more metadata to
+/// the data
 pub fn parse_multichoice<T: Into<Token>>(
     l: &mut Lexer,
     keyword: T,

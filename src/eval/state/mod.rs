@@ -1,17 +1,18 @@
 #[cfg(test)]
 mod test;
 
+use rtermutils::*;
+
 use crate::eval::render::*;
 use crate::json::lexer::*;
 use crate::json::parser::JsonConstructionError;
 use crate::json::parser::*;
 use crate::parser::Question;
-use rtermutils::*;
 
 #[derive(Debug, Clone)]
 pub struct StateConstructor {
-    pub max_hints: usize,
-    pub questions: Vec<Question>,
+    pub max_hints:      usize,
+    pub questions:      Vec<Question>,
     pub path_to_source: Option<String>,
 }
 impl StateConstructor {
@@ -27,15 +28,15 @@ impl StateConstructor {
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct State {
-    pub hints_used: usize,
-    pub max_hints: usize,
-    pub questions: Vec<Question>,
+    pub hints_used:             usize,
+    pub max_hints:              usize,
+    pub questions:              Vec<Question>,
     pub current_question_index: usize,
-    pub path_to_source: Option<String>,
-    questions_len: usize,
-    current_hints_available: usize,
-    cols: usize,
-    has_watched_final_cutsene: bool,
+    pub path_to_source:         Option<String>,
+    questions_len:              usize,
+    current_hints_available:    usize,
+    cols:                       usize,
+    has_watched_final_cutsene:  bool,
 
     // Used only for purpose of handing references to TUI components
     current_achieved_marks: usize,
@@ -55,8 +56,8 @@ impl State {
         // Some components which are almost universally wanted
         s.version_line = Some(VersionLine { cols: &self.cols });
         s.q_select_line = Some(QuestionSelectLine {
-            cols: &self.cols,
-            max_questions: &self.questions_len,
+            cols:             &self.cols,
+            max_questions:    &self.questions_len,
             current_question: &self.current_question_index,
         });
 
@@ -80,14 +81,14 @@ impl State {
 
             if d.is_answered {
                 s.hints_line = Some(HintsLine {
-                    max_hints: &self.max_hints,
-                    hints_available: &self.current_hints_available,
+                    max_hints:        &self.max_hints,
+                    hints_available:  &self.current_hints_available,
                     hints_used_total: &self.hints_used,
-                    is_answered: &true,
+                    is_answered:      &true,
                 });
 
                 s.question_result_body = Some(QuestionResultBody {
-                    cols: &self.cols,
+                    cols:    &self.cols,
                     answers: &d.answers,
                 });
 
@@ -99,21 +100,21 @@ impl State {
                 }
 
                 s.question_result_line = Some(QuestionResultLine {
-                    max_marks: &d.max_marks,
-                    question: &d.text,
+                    max_marks:      &d.max_marks,
+                    question:       &d.text,
                     achieved_marks: &self.current_achieved_marks,
                 });
             } else {
                 s.hints_line = Some(HintsLine {
-                    max_hints: &self.max_hints,
-                    hints_available: &self.current_hints_available,
+                    max_hints:        &self.max_hints,
+                    hints_available:  &self.current_hints_available,
                     hints_used_total: &self.hints_used,
-                    is_answered: &false,
+                    is_answered:      &false,
                 });
 
                 s.question_line = Some(QuestionLine { q: d });
                 s.question_body = Some(QuestionBody {
-                    answers: (d
+                    answers:  (d
                         .answers
                         .iter()
                         .map(|d| (d.text.clone().unwrap(), d.is_chosen))
@@ -194,6 +195,7 @@ impl State {
             })
             .sum()
     }
+
     pub fn watch_final_cutsene(&mut self) {
         self.has_watched_final_cutsene = true;
     }

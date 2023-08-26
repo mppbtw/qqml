@@ -27,14 +27,11 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
             tok = l.next_token()?;
             match tok {
                 Token::Number(_, n) => dat.marks = n,
-                _ => report.errors.push(Error::UnexpectedAnswerToken(
-                    tok,
-                    vec![
-                        Token::RArrow(TokenData::default()),
-                        Token::Semicolon(TokenData::default()),
-                        Token::Number(TokenData::default(), 0),
-                    ],
-                )),
+                _ => report.errors.push(Error::UnexpectedAnswerToken(tok, vec![
+                    Token::RArrow(TokenData::default()),
+                    Token::Semicolon(TokenData::default()),
+                    Token::Number(TokenData::default(), 0),
+                ])),
             };
 
             tok = l.next_token()?;
@@ -131,14 +128,13 @@ pub fn negative_tolerance(l: &mut Lexer) -> Result<(), ErrorReport> {
             tok = l.next_token()?;
             match tok {
                 Token::Number(..) => tok = l.next_token()?,
-                _ => report.errors.push(Error::UnexpectedAnswerToken(
-                    tok.clone(),
-                    vec![
+                _ => report
+                    .errors
+                    .push(Error::UnexpectedAnswerToken(tok.clone(), vec![
                         Token::RArrow(TokenData::default()),
                         Token::Semicolon(TokenData::default()),
                         Token::Number(TokenData::default(), 0),
-                    ],
-                )),
+                    ])),
             };
 
             if !matches!(tok, Token::RParen(_)) {
@@ -194,14 +190,11 @@ fn positive_tolerance(l: &mut Lexer) -> Result<(), ErrorReport> {
         match tok {
             Token::Number(..) => (),
             _ => {
-                report.errors.push(Error::UnexpectedAnswerToken(
-                    tok,
-                    vec![
-                        Token::RArrow(TokenData::default()),
-                        Token::Semicolon(TokenData::default()),
-                        Token::Number(TokenData::default(), 0),
-                    ],
-                ));
+                report.errors.push(Error::UnexpectedAnswerToken(tok, vec![
+                    Token::RArrow(TokenData::default()),
+                    Token::Semicolon(TokenData::default()),
+                    Token::Number(TokenData::default(), 0),
+                ]));
                 l.next_token()?;
             }
         };

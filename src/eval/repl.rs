@@ -1,11 +1,13 @@
+use std::process::exit;
+
+use rtermutils::*;
+
 use super::end_screen::end_screen;
 use super::exit::cleanup_and_exit;
 use super::render::Render;
 use super::state::*;
 use crate::parser::core::parse;
 use crate::parser::Question;
-use rtermutils::*;
-use std::process::exit;
 
 pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
     unsafe {
@@ -143,8 +145,8 @@ pub fn run(input: &String, path_to_source: Option<&String>, log_path: Option<&St
     let s = {
         StateConstructor {
             path_to_source: path_to_source.cloned(),
-            questions: parsed.questions,
-            max_hints: parsed.max_hints,
+            questions:      parsed.questions,
+            max_hints:      parsed.max_hints,
         }
         .construct()
     };

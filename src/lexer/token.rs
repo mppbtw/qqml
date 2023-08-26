@@ -75,9 +75,9 @@ pub enum Token {
 impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let name = match self {
-            Self::Literal(_, _) => "Literal",
-            Self::Number(_, _) => "Number",
-            Self::Ident(_, _) => "Identifier",
+            Self::Literal(..) => "Literal",
+            Self::Number(..) => "Number",
+            Self::Ident(..) => "Identifier",
             Self::Eof(_) => "EOF",
             Self::RArrow(_) => "RightArrow",
             Self::Semicolon(_) => "Semicolon",
@@ -149,6 +149,7 @@ impl Token {
             Self::UnterminatedLiteral(_) => Self::UnterminatedLiteral(new_data),
         }
     }
+
     pub fn get_data(&self) -> &TokenData {
         match self {
             Self::Literal(d, _) => d,
