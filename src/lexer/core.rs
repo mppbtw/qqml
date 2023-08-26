@@ -12,13 +12,13 @@ pub enum LexerError {
 
 #[derive(Debug, Clone)]
 pub struct Lexer {
-    input: String,
-    position: usize,
+    input:         String,
+    position:      usize,
     read_position: usize,
-    ch: u8,
+    ch:            u8,
 
     // For attaching token metadata
-    line_count: usize,
+    line_count:   usize,
     last_newline: usize,
 
     /// The position of the lexer when it began to
@@ -42,24 +42,24 @@ impl Lexer {
 
     pub fn get_lexer_data(&self) -> LexerData {
         LexerData {
-            position: self.position,
+            position:          self.position,
             starting_position: self.starting_position,
-            last_newline: self.last_newline,
-            line_count: self.line_count,
-            read_position: self.read_position,
-            ch: self.ch,
+            last_newline:      self.last_newline,
+            line_count:        self.line_count,
+            read_position:     self.read_position,
+            ch:                self.ch,
         }
     }
 
     pub fn from_lexer_data<S: Into<String>>(input: S, dat: LexerData) -> Self {
         Self {
-            input: input.into(),
+            input:             input.into(),
             starting_position: dat.starting_position,
-            last_newline: dat.last_newline,
-            line_count: dat.line_count,
-            position: dat.position,
-            ch: dat.ch, // It calls read_char anyway
-            read_position: dat.read_position,
+            last_newline:      dat.last_newline,
+            line_count:        dat.line_count,
+            position:          dat.position,
+            ch:                dat.ch, // It calls read_char anyway
+            read_position:     dat.read_position,
         }
     }
 
@@ -81,12 +81,12 @@ impl Lexer {
         let token_len = self.position - self.starting_position;
         if self.line_count == 0 {
             TokenData {
-                col: self.position - token_len,
+                col:  self.position - token_len,
                 line: self.line_count,
             }
         } else {
             TokenData {
-                col: ((self.position - self.last_newline) - 1) - token_len,
+                col:  ((self.position - self.last_newline) - 1) - token_len,
                 line: self.line_count,
             }
         }
@@ -233,12 +233,12 @@ impl Lexer {
 impl Default for Lexer {
     fn default() -> Self {
         Self {
-            input: "".to_owned(),
-            position: 0,
-            read_position: 0,
-            ch: 0,
-            line_count: 0,
-            last_newline: 0,
+            input:             "".to_owned(),
+            position:          0,
+            read_position:     0,
+            ch:                0,
+            line_count:        0,
+            last_newline:      0,
             starting_position: 0,
         }
     }
@@ -253,11 +253,11 @@ fn lookup_ident(ident: String) -> Token {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct LexerData {
-    position: usize,
+    position:      usize,
     read_position: usize,
 
     // For attaching token metadata
-    line_count: usize,
+    line_count:   usize,
     last_newline: usize,
 
     /// The position of the lexer when it began to

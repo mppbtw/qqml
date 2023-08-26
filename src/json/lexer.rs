@@ -1,6 +1,6 @@
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct TokenData {
-    pub col: usize,
+    pub col:  usize,
     pub line: usize, // dunno why you would need this but its an option i guess
 }
 
@@ -22,20 +22,20 @@ pub enum Token {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Lexer {
-    ch: u8,
+    ch:            u8,
     read_position: usize,
-    position: usize,
-    input: String,
+    position:      usize,
+    input:         String,
     pub tok_count: usize,
 }
 impl Lexer {
     pub fn new<S: Into<String>>(input: S) -> Lexer {
         let mut l = Lexer {
-            ch: 0,
+            ch:            0,
             read_position: 0,
-            position: 0,
-            tok_count: 0,
-            input: input.into(),
+            position:      0,
+            tok_count:     0,
+            input:         input.into(),
         };
         l.read_char();
         l

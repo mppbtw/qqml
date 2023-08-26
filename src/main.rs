@@ -1,8 +1,11 @@
-use libqqml::*;
 use std::time::Instant;
+
+use libqqml::*;
 mod argparse;
 
-use std::{env::args, fs, process::exit};
+use std::env::args;
+use std::fs;
+use std::process::exit;
 
 const ANSI_RESET: &str = "\x1b[0m";
 const ANSI_GREEN: &str = "\x1b[32m";

@@ -5,8 +5,11 @@ pub mod multichoice;
 #[cfg(test)]
 mod test_correct;
 
-use crate::json::parser::{JsonConstructionError, JsonType, JsonValue};
 use multichoice::data::MultichoiceData;
+
+use crate::json::parser::JsonConstructionError;
+use crate::json::parser::JsonType;
+use crate::json::parser::JsonValue;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 #[allow(unused)]
