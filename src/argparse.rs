@@ -45,6 +45,11 @@ pub fn get_logfile() -> Option<String> {
     None
 }
 
+pub fn get_resume_file() -> Option<String> {
+    let args: Vec<String> = args().collect();
+    None
+}
+
 pub fn get_file_arg() -> Option<String> {
     let mut skip_next_arg = false;
 
