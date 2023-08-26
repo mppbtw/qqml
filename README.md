@@ -19,7 +19,7 @@ as the only developer. The full QQML documentation can be found
 to run your code, use the `qqml` command. For more information, run
 
 ```
-qqml --help
+$ qqml --help
 ```
 
 When using this command, use the -j flag to recieve JSON data about the quiz
