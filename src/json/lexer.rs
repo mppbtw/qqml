@@ -120,7 +120,7 @@ impl Lexer {
     }
 
     fn munch_and_crunch_whitespace(&mut self) {
-        while vec![b' ', b'\t', b'\n', b'\r'].contains(&self.ch) {
+        while [b' ', b'\t', b'\n', b'\r'].contains(&self.ch) {
             self.read_char();
         }
     }
