@@ -1,8 +1,6 @@
 #[cfg(test)]
 mod test;
 
-use rtermutils::*;
-
 use crate::eval::render::*;
 use crate::json::lexer::*;
 use crate::json::parser::JsonConstructionError;
@@ -44,8 +42,8 @@ pub struct State {
 
 #[allow(clippy::field_reassign_with_default)]
 impl State {
-    pub fn create_screen(&mut self) -> Screen {
-        self.cols = unsafe { clear_screen_with_width() } as usize;
+    pub fn create_screen(&mut self, screen_width: usize) -> Screen {
+        self.cols = screen_width;
         self.questions_len = self.questions.len();
         self.current_hints_available = match &self.questions[self.current_question_index] {
             Question::Multichoice(d) => d.hints.len() - d.used_hints,
