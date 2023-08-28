@@ -15,10 +15,21 @@ pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
         hide_cursor();
     }
     let mut refresh_needed = false;
-    println!("{}", s.create_screen().render());
+    unsafe {
+        println!(
+            "{}",
+            s.create_screen(clear_screen_with_width() as usize).render()
+        );
+    }
     loop {
         if refresh_needed {
-            println!("{}", s.create_screen().render());
+            unsafe {
+                // We break cursor here to prevent any frame rendering from happening while the
+                // screen is cleared, causing a flicker every frame.
+                let next_frame = s.create_screen(break_cursor_with_width() as usize).render();
+                clear_screen();
+                println!("{}", next_frame);
+            }
         }
 
         refresh_needed = true;

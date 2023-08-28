@@ -108,7 +108,7 @@ int clear_screen_with_height() {
 struct TerminalSize clear_screen_with_termsize() {
     struct termios original, changed;
 
-    // change terminal settings
+    // Change terminal settings
     tcgetattr(STDIN_FILENO, &original);
     changed = original;
     changed.c_lflag &= ~(ICANON | ECHO);
@@ -118,20 +118,54 @@ struct TerminalSize clear_screen_with_termsize() {
 
     printf(ANSI_CLEAR);
 
-    // Move the cursor really far awway
+    // Move the cursor really far away
     cursorjmp(999, 999);
 
     struct CursorPosition pos = get_cursor_position();
 
-    // move to upper left corner
+    // Move to upper left corner
     cursorjmp(1, 1);
 
-    // restore terminal settings
+    // Restore terminal settings
     tcsetattr(STDIN_FILENO, TCSANOW, &original);
     fflush(stdout);
 
     struct TerminalSize t = {pos.cols, pos.lines};
     return t;
+}
+
+// By 'break cursor' I mean that the cursor will be in some arbitrary place
+// after calling the function. This is OK because the we might need to do
+// more computation before clearing the screen to prevent flickering.
+struct TerminalSize break_cursor_with_termsize() {
+    struct termios original, changed;
+
+    // Change terminal settings
+    tcgetattr(STDIN_FILENO, &original);
+    changed = original;
+    changed.c_lflag &= ~(ICANON | ECHO);
+    changed.c_cc[VMIN] = 1;
+    changed.c_cc[VTIME] = 0;
+    tcsetattr(STDIN_FILENO, TCSANOW, &changed);
+
+    // Move the cursor really far away where it will stay
+    cursorjmp(999, 999);
+
+    struct CursorPosition pos = get_cursor_position();
+
+    // Restore terminal settings
+    tcsetattr(STDIN_FILENO, TCSANOW, &original);
+    fflush(stdout);
+
+    struct TerminalSize t = {pos.cols, pos.lines};
+    return t;
+}
+
+int break_cursor_with_width() {
+    return break_cursor_with_termsize().width;
+}
+int break_cursor_with_height() {
+    return break_cursor_with_termsize().height;
 }
 
 void clear_screen() {
