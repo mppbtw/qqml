@@ -5,6 +5,7 @@ import (
 )
 
 func main() {
-	p := argparse.NewParser("qpm", "The QQML Package Manager")
+	p := argparse.NewCommand("qpm", "The QQML Package Manager")
+	p.AddSubcommand(argparse.NewCommand("run", "Run a quiz"))
 	p.Parse()
 }
