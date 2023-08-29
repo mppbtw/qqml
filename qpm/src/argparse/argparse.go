@@ -19,47 +19,66 @@ type Argument struct {
 	Name, HelpMsg string
 }
 
-type Parser struct {
+type Command struct {
 	ProgName, Description, HelpMsg string
 	Options []Option
 	Arguments []Argument
+	Subcommands []Command
 }
 
-func NewParser(progName, description string) Parser {
-	p := Parser {
+func NewCommand(progName, description string) Command {
+	c := Command {
 		ProgName: progName,
 		Description: description,
 	}
 
-	p.Options = append(p.Options, Option {
+	c.Options = append(c.Options, Option {
 		FullName: "--help",
 		AbrevName: "-h",
 		HelpMsg: "Show this error message.",
 		TakesArg: false,
 	})
 
-	return p
+	return c
 }
 
-func (p Parser) AddOption(opt Option) {
+func (p *Command) AddOption(opt Option) {
 	p.Options = append(p.Options, opt)
 }
 
-func (p Parser) AddArgument(arg Argument) {
+func (p *Command) AddArgument(arg Argument) {
 	p.Arguments = append(p.Arguments, arg)
 }
 
-func (p Parser) PrintHelp() {
-	fmt.Println("Help goes here")
+func (p *Command) AddSubcommand(subcmd Command) {
+	p.Subcommands = append(p.Subcommands, subcmd)
 }
 
-func (p Parser) Parse() {
-	args := os.Args[1:]
+func (c Command) PrintHelp() {
+	fmt.Println("Help goes here for command: ", c.ProgName)
+}
+
+func (c Command) Parse() ParsedArgs {
+	parseFromIndex(0, c)
+	return ParsedArgs{}
+}
+
+func parseFromIndex(index int, c Command) ParsedArgs {
+	args := os.Args[index+1:]
+	
+	// Get the next subcommand
+	for i:=0; i<len(c.Subcommands); i++ {
+		if c.Subcommands[i].ProgName == args[0] {
+			return parseFromIndex(index+1, c.Subcommands[i])
+		}
+	}
+
 	for i:=0; i<len(args); i++ {
-		for j:=0; j<len(p.Options); j++ {
-			if p.Options[j].AbrevName == args[i] || p.Options[j].FullName == args[i] {
-				p.PrintHelp()
+		for j:=0; j<len(c.Options); j++ {
+			if c.Options[j].AbrevName == args[i] || c.Options[j].FullName == args[i] {
+				c.PrintHelp()
 			}
 		}
 	}
+	return ParsedArgs{}
 }
