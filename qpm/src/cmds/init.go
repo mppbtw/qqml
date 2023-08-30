@@ -2,7 +2,6 @@ package cmds
 
 import (
 	"fmt"
-	"errors"
 	"os"
 )
 
@@ -29,7 +28,7 @@ func ensureExists(path string) {
 		fmt.Println("Failed to retrieve you home directory. Are you root?")
 	}
 
-	if dirExists(homeDir + path) {
+	if DirExists(homeDir + path) {
 		fmt.Println("The directory " + homeDir + path + " already exists")
 	} else {
 		if err := os.Mkdir(homeDir + path, os.FileMode(0777)); err != nil {
@@ -40,9 +39,4 @@ func ensureExists(path string) {
 			fmt.Println("Created the directory " + homeDir + path)
 		}
 	}
-}
-
-func dirExists(path string) bool {
-	_, err := os.Stat(path)
-	return !errors.Is(err, os.ErrNotExist)
 }
