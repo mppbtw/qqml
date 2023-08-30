@@ -1,10 +1,9 @@
-
 package cmds
 
 import (
-    "fmt"
+	"fmt"
 )
 
 func Run() {
-    fmt.Println("run command here")
+	fmt.Println("run command here")
 }
