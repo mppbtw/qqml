@@ -1,11 +1,26 @@
 package main
 
 import (
-	"qpm/src/argparse"
+	"os"
+	"qpm/src/cmds"
+	"fmt"
 )
 
 func main() {
-	p := argparse.NewCommand("qpm", "The QQML Package Manager")
-	p.AddSubcommand(argparse.NewCommand("run", "Run a quiz"))
-	p.Parse()
+
+	args := os.Args[1:]
+	if len(args) == 0 {
+		fmt.Println("No command specified, use --help for more info")
+		os.Exit(1)
+	}
+
+	switch args[0] {
+
+	case "init":
+		cmds.Init()
+	case "run":
+		cmds.Run()
+	default:
+		os.Exit(1)
+	}
 }
