@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func Run() {
@@ -18,9 +19,13 @@ func Run() {
 	path, isLogFile := FindQuizPath(quiz)
 	var cmd *exec.Cmd
 	if isLogFile {
-		cmd = exec.Command("qqml", "--resume", path, "-log", path)
+		cmd = exec.Command("qqml", "--resume", path, "--log", path)
 	} else {
-		cmd = exec.Command("qqml", path)
+		logPath, err := logFileFromSrc(path)
+		if err != nil {
+			fmt.Println("Invalid path to the QQML file")
+		}
+		cmd = exec.Command("qqml", path, "--log", logPath)
 	}
 
 	cmd.Stdin = os.Stdin
@@ -31,6 +36,24 @@ func Run() {
 		fmt.Println("Executing qqml failed with error: ", err)
 	}
 	os.Exit(0)
+}
+
+type InvalidPathError struct {}
+
+func (e InvalidPathError) Error() string {
+	return "Invalid path to the source QQML file"
+}
+
+
+func logFileFromSrc(srcPath string) (string, error) {
+	pathArr := strings.Split(srcPath, "/")
+	for i:=0; i<len(pathArr); i++ {
+		if pathArr[i] == "src" {
+			pathArr[i] = "log"
+			return strings.Join(pathArr, "/") + ".json", nil
+		}
+	}
+	return "", InvalidPathError{}
 }
 
 func FindQuizPath(fname string) (string, bool) {
