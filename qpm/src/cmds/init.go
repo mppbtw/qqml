@@ -31,7 +31,7 @@ func ensureExists(path string) {
 	if DirExists(homeDir + path) {
 		fmt.Println("The directory " + homeDir + path + " already exists")
 	} else {
-		if err := os.Mkdir(homeDir + path, os.FileMode(0777)); err != nil {
+		if err := os.Mkdir(homeDir+path, os.FileMode(0777)); err != nil {
 			fmt.Println("Failed to create the directory " + homeDir + path)
 			fmt.Println(err)
 			os.Exit(1)
