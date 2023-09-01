@@ -38,16 +38,15 @@ func Run() {
 	os.Exit(0)
 }
 
-type InvalidPathError struct {}
+type InvalidPathError struct{}
 
 func (e InvalidPathError) Error() string {
 	return "Invalid path to the source QQML file"
 }
 
-
 func logFileFromSrc(srcPath string) (string, error) {
 	pathArr := strings.Split(srcPath, "/")
-	for i:=0; i<len(pathArr); i++ {
+	for i := 0; i < len(pathArr); i++ {
 		if pathArr[i] == "src" {
 			pathArr[i] = "log"
 			return strings.Join(pathArr, "/") + ".json", nil
