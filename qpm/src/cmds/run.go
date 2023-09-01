@@ -12,7 +12,7 @@ func Run() {
 	var quiz string
 	flag.StringVar(&quiz, "q", "", "The quiz to run")
 	flag.CommandLine.Parse(os.Args[2:])
-	if !isFlagPassed("q") {
+	if !IsFlagPassed("q") || quiz == "" {
 		fmt.Println("The -q flag is required")
 		os.Exit(1)
 	}
@@ -72,16 +72,4 @@ func FindQuizPath(fname string) (string, bool) {
 	fmt.Println("Cannot find the qqml quiz: " + fname)
 	os.Exit(1)
 	return "", false
-}
-
-
-
-func isFlagPassed(name string) bool {
-    found := false
-    flag.Visit(func(f *flag.Flag) {
-        if f.Name == name {
-            found = true
-        }
-    })
-    return found
 }

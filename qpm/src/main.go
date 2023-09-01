@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	args := os.Args[1:]
 	if len(args) == 0 {
 		fmt.Println("No command specified, use --help for more info")
@@ -20,6 +19,8 @@ func main() {
 		cmds.Init()
 	case "run":
 		cmds.Run()
+	case "install":
+		cmds.Install()
 	default:
 		os.Exit(1)
 	}
