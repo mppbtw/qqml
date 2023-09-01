@@ -7,16 +7,18 @@ on:
     branches: [ "main" ]
 
 jobs:
-  vet:
+  build:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Vet Go Code
-      run: cd ./qpm/ && go vet ./src/main.go
 
-  format:
-    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Format Go Code
-      run: cd ./qpm/ && test -z $(gofmt -l .)
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.x'
+      - name: Install dependencies
+        run: go get .
+      - name: Build
+        run: go build -v ./...
+      - name: Test with the Go CLI
+        run: go test
