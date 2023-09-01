@@ -18,3 +18,14 @@ jobs:
           go-version: "1.21.x"
       - name: Build
         run: go build -C ./qpm/ ./src/main.go
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setpu-go@v4
+        with:
+          go-version: "1.21.x"
+      - name: Format
+        run: test -z $(gofmt -l .)
