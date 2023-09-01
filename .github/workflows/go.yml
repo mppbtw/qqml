@@ -17,4 +17,4 @@ jobs:
         with:
           go-version: "1.21.x"
       - name: Build
-        run: go build -v ./qpm/src/main.go
+        run: go build -C ./qpm/ ./src/main.go
