@@ -12,13 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Vet Go Code
-      run: cd ./qpm/
-      run: go vet ./src/main.go
+      run: cd ./qpm/ && go vet ./src/main.go
 
   format:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Format Go Code
-      run: cd ./qpm/
-      run: test -z $(gofmt -l .)
+      run: cd ./qpm/ && test -z $(gofmt -l .)
