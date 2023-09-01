@@ -2,9 +2,9 @@ package cmds
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
-	"flag"
 )
 
 func DirExists(path string) bool {
@@ -38,31 +38,35 @@ func dirExistsWithWarningAndExit(path string) {
 }
 
 func IsFlagPassed(name string) bool {
-    found := false
-    flag.Visit(func(f *flag.Flag) {
-        if f.Name == name {
-            found = true
-        }
-    })
-    return found
+	found := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == name {
+			found = true
+		}
+	})
+	return found
 }
 
 func FileExists(filename string) bool {
-    info, err := os.Stat(filename)
-    if os.IsNotExist(err) {
-        return false
-    }
-    return !info.IsDir()
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
 
 func CopyFile(in, out string) (int64, error) {
-   i, err := os.Open(in)
-   if err != nil { return 0, err }
-   defer i.Close()
+	i, err := os.Open(in)
+	if err != nil {
+		return 0, err
+	}
+	defer i.Close()
 
-   o, err := os.Create(out)
-   if err != nil { return 0, err }
-   defer o.Close()
+	o, err := os.Create(out)
+	if err != nil {
+		return 0, err
+	}
+	defer o.Close()
 
-   return o.ReadFrom(i)
+	return o.ReadFrom(i)
 }

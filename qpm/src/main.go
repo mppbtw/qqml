@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"qpm/src/cmds"
-	"fmt"
 )
 
 func main() {
