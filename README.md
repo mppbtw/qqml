@@ -41,6 +41,8 @@ $ ./install.sh qqml
 
 # Syntax
 
+>> Examples are available in [examples.qqml](https://github.com/MrPiggyPegasus/qqml/blob/main/example.qqml)
+
 ## Questions
 
 Questions in QQML are defined in 3 parts, the signature, the body and the
