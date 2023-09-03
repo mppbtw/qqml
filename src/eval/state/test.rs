@@ -24,7 +24,8 @@ fn test_state_from_json() {
                     MultichoiceAnswer {
                         text: Some("To make it go faster".to_owned()),
                         marks: 0,
-                        explanation: Some("".to_owned()),
+                        explanation: Some("Virtual memory does not help the CPU or GPU run any faster, ".to_owned()
+                                          + "it only helps memory."),
                         is_chosen: true
                     },
                     MultichoiceAnswer {
@@ -36,7 +37,7 @@ fn test_state_from_json() {
                     MultichoiceAnswer {
                         text: Some("To increase the number of files you can store".to_owned()),
                         marks: 0,
-                        explanation: Some("".to_owned()),
+                        explanation: Some("Virtual memory actually takes away some of your disk space.".to_owned()),
                         is_chosen: false
                     }
                 ],
@@ -52,7 +53,7 @@ fn test_state_from_json() {
             }),
             Question::Multichoice(MultichoiceData {
                 max_marks: 2,
-                line: 8,
+                line: 11,
                 selected_answer: 0,
                 used_hints: 0,
                 is_answered: false,
@@ -76,7 +77,7 @@ fn test_state_from_json() {
                     },
                     MultichoiceAnswer {
                         text: Some("Veiltail".to_owned()),
-                        explanation: Some("".to_owned()),
+                        explanation: Some("Veiltail actually come in many colours".to_owned()),
                         marks: 0,
                         is_chosen: false,
                     },
@@ -84,7 +85,7 @@ fn test_state_from_json() {
             }),
             Question::Multichoice(MultichoiceData {
                 max_marks: 1,
-                line: 14,
+                line: 21,
                 selected_answer: 0,
                 is_answered: false,
                 text: "Which organ is used for digestion?".to_owned(),
@@ -106,7 +107,7 @@ fn test_state_from_json() {
                     MultichoiceAnswer {
                         text: Some("Pipe organ".to_owned()),
                         marks: 0,
-                        explanation: Some("".to_owned()),
+                        explanation: Some("Well, if your talking about the oesophagus then...".to_owned()),
                         is_chosen: false,
                     },
                 ],
