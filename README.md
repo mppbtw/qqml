@@ -41,7 +41,7 @@ $ ./install.sh qqml
 
 # Syntax
 
->> Examples are available in [examples.qqml](https://github.com/MrPiggyPegasus/qqml/blob/main/example.qqml)
+> Examples are available in [examples.qqml](https://github.com/MrPiggyPegasus/qqml/blob/main/example.qqml)
 
 ## Questions
 
