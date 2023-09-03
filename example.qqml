@@ -1,6 +1,6 @@
 hints 2;
 
-ask multichoice (1) 'What is the purpose of virtual memory in a computer?' {
+sk multichoice (1) 'What is the purpose of virtual memory in a computer?' {
     * 'To make it go faster' ->
         'Virtual memory does not help the CPU or GPU run any faster, it only helps memory.';
     * 'To help when the Random Access Memory is full' (1);
