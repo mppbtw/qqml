@@ -1,19 +1,26 @@
 hints 2;
 
 ask multichoice (1) 'What is the purpose of virtual memory in a computer?' {
-    * 'To make it go faster';
+    * 'To make it go faster' ->
+        'Virtual memory does not help the CPU or GPU run any faster, it only helps memory.';
     * 'To help when the Random Access Memory is full' (1);
-    * 'To increase the number of files you can store';
+    * 'To increase the number of files you can store' ->
+        'Virtual memory actually takes away some of your disk space.';
+
 } hints 'Virtual memory is only used when lots of programs are open';
 
 ask multichoice (2) "Which of these fish are red?" {
     * "Bream" (1);
     * "Shubunkin" (1);
-    * "Veiltail";
-} hints "The veiltail, a name coined by William T. Innes, originated in the United States in the 1890s when Franklin Barrett of Philadelphia crossed a Japanese-bred fringetail ryukin to a telescope eye goldfish that exhibited a short, square-edged caudal.", "Bream fish are half white.";
+    * "Veiltail" -> "Veiltail actually come in many colours";
+} hints
+
+"The veiltail, a name coined by William T. Innes, originated in the United States in the 1890s when Franklin Barrett of Philadelphia crossed a Japanese-bred fringetail ryukin to a telescope eye goldfish that exhibited a short, square-edged caudal.",
+
+"Bream fish are half white.";
 
 ask multichoice (1) "Which organ is used for digestion?" {
     * "Reed organ";
     * "Stomach" (1);
-    * "Pipe organ";
+    * "Pipe organ" -> "Well, if your talking about the oesophagus then...";
 };
