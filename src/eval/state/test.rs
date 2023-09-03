@@ -31,7 +31,7 @@ fn test_state_from_json() {
                     MultichoiceAnswer {
                         text: Some("To help when the Random Access Memory is full".to_owned()),
                         marks: 1,
-                        explanation: Some("".to_owned()),
+                        explanation: None,
                         is_chosen: false
                     },
                     MultichoiceAnswer {
@@ -65,13 +65,13 @@ fn test_state_from_json() {
                 answers: vec![
                     MultichoiceAnswer {
                         text: Some("Bream".to_owned()),
-                        explanation: Some("".to_owned()),
+                        explanation: None,
                         marks: 1,
                         is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("Shubunkin".to_owned()),
-                        explanation: Some("".to_owned()),
+                        explanation: None,
                         marks: 1,
                         is_chosen: false,
                     },
@@ -95,13 +95,13 @@ fn test_state_from_json() {
                     MultichoiceAnswer {
                         text: Some("Reed organ".to_owned()),
                         marks: 0,
-                        explanation: Some("".to_owned()),
+                        explanation: None,
                         is_chosen: false,
                     },
                     MultichoiceAnswer {
                         text: Some("Stomach".to_owned()),
                         marks: 1,
-                        explanation: Some("".to_owned()),
+                        explanation: None,
                         is_chosen: false,
                     },
                     MultichoiceAnswer {
