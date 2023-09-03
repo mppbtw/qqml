@@ -9,3 +9,4 @@ tui/Cargo.lock
 help/Cargo.lock
 mock.txt
 qpm/main
+example.qqml.json
