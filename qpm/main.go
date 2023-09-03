@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"qpm/src/cmds"
+	"qpm/cmds"
 )
 
 func main() {
