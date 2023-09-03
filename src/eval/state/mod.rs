@@ -202,7 +202,6 @@ impl State {
         self.has_watched_final_cutsene
     }
 
-    #[allow(unused)]
     pub fn from_json(input: String) -> Result<Self, JsonConstructionError> {
         let mut lexer = Lexer::new(input);
         let json = parse(&mut lexer)?;
@@ -269,6 +268,7 @@ impl State {
             max_hints,
             has_watched_final_cutsene,
             path_to_source,
+            current_question_index,
             ..Default::default()
         })
     }

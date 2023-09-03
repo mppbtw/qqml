@@ -176,7 +176,11 @@ impl MultichoiceAnswer {
             value: JsonType::String(s),
         }) = json.get_ident("explanation")
         {
-            Some(s.to_owned())
+            if s == "" {
+                None
+            } else {
+                Some(s.to_owned())
+            }
         } else {
             None
         };
