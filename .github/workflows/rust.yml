@@ -33,7 +33,7 @@ jobs:
         with:
             toolchain: nightly
             override: true
-            components: rustfmt, clippy
+            components: rustfmt
       - name: Run cargo fmt
         run: cargo +nightly fmt --verbose
 
@@ -42,5 +42,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Install latest nightly toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+          toolchain: nightly
+          override: true
+          components: clippy
     - name: Lint Module
-      run: cargo clippy --verbose
+      run: RUSTFLAGS="-Dwarnings" cargo +nightly clippy --verbose
