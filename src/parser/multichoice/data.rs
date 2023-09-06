@@ -192,7 +192,7 @@ impl MultichoiceAnswer {
             value: JsonType::String(s),
         }) = json.get_ident("explanation")
         {
-            if s == "" {
+            if s.is_empty() {
                 None
             } else {
                 Some(s.to_owned())
