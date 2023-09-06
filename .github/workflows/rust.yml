@@ -49,4 +49,4 @@ jobs:
           override: true
           components: clippy
     - name: Lint Module
-      run: cargo clippy --verbose
+      run: RUSTFLAGS="-Dwarnings" cargo +nightly clippy --verbose
