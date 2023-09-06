@@ -59,7 +59,13 @@ fn main() -> ! {
                         }
                     };
                 } else {
-                    run(&f, Some(&i), (&get_logfile()).into());
+                    match run(&f, Some(&i), (&get_logfile()).into()) {
+                        Ok(_) => (),
+                        Err(e) => {
+                            println!("{}", render_error_report(e, i, f));
+                            exit(1);
+                        }
+                    };
                 }
             }
             Err(e) => {
@@ -149,14 +155,11 @@ fn render_parsed_file(p: ParsedFile) -> String {
 fn render_error_report(r: ErrorReport, path: String, inp: String) -> String {
     let mut output = String::new();
     for e in r.errors.iter().rev() {
-        output += &render_error(&inp, e, Some(&path));
+        output += &(render_error(&inp, e, Some(&path)) + "\n\n");
     }
 
     output += &format!(
-        "{}{}    Error:{} Failed to parse {} due to {} error{}",
-        ANSI_RED,
-        ANSI_BOLD,
-        ANSI_RESET,
+        "\n\n\nFailed to parse {} due to {} error{}",
         path,
         r.errors.len(),
         if r.errors.len() == 1 { "" } else { "s" }
