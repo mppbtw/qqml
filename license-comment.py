@@ -29,23 +29,20 @@ def is_empty(string: str) -> bool:
 
 
 def remove_comment_lines(lines: list[str]) -> list[str]:
-    output = []
-    for i, line in enumerate(lines):
-        if not line.startswith("//"):
-            if not is_empty(line):
-                print("first not empty line: ", line)
-                break
-            output += line
-    return output
-    ...
+    for i in range(len(lines)):
+        if not lines[i].startswith("//"):
+            if not is_empty(lines[i]):
+                return (lines[i:len(lines)])
+    return []
+
 
 print(remove_comment_lines([
     "// alkwdjlawkjd ",
     "// wlakjdwldj",
     "",
     "\n",
-    "alwdawd"
-    ]))
+    "alwdawd"]))
+
 
 def search_down(path):
     for s in [".gitignore", ".git", "target"]:
