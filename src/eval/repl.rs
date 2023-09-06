@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use std::process::exit;
+use std::convert::Infallible;
 
 use rtermutils::*;
 
@@ -22,6 +22,7 @@ use super::end_screen::end_screen;
 use super::exit::cleanup_and_exit;
 use super::render::Render;
 use super::state::*;
+use crate::ErrorReport;
 use crate::parser::core::parse;
 use crate::parser::Question;
 
@@ -161,14 +162,12 @@ pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
     }
 }
 
-pub fn run(input: &String, path_to_source: Option<&String>, log_path: Option<&String>) -> ! {
-    let parsed = match parse(input) {
-        Ok(p) => p,
-        Err(_) => {
-            // Proper error reporting should be done by the caller
-            exit(1);
-        }
-    };
+pub fn run(
+    input: &String,
+    path_to_source: Option<&String>,
+    log_path: Option<&String>,
+) -> Result<Infallible, ErrorReport> {
+    let parsed = parse(input)?;
     let s = {
         StateConstructor {
             path_to_source: path_to_source.cloned(),
