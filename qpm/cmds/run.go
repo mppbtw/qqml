@@ -1,3 +1,19 @@
+//  QQML or the Quiz Question Markup Language.
+//  Copyright (C) 2023 'MrPiggyPegasus'
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 package cmds
 
 import (
@@ -27,7 +43,6 @@ func Run() {
 		}
 		cmd = exec.Command("qqml", path, "--log", logPath)
 	}
-
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -43,7 +58,6 @@ type InvalidPathError struct{}
 func (e InvalidPathError) Error() string {
 	return "Invalid path to the source QQML file"
 }
-
 func logFileFromSrc(srcPath string) (string, error) {
 	pathArr := strings.Split(srcPath, "/")
 	for i := 0; i < len(pathArr); i++ {
@@ -54,11 +68,9 @@ func logFileFromSrc(srcPath string) (string, error) {
 	}
 	return "", InvalidPathError{}
 }
-
 func FindQuizPath(fname string) (string, bool) {
 	homeDir := GetHomeDir()
 	ValidateQpmDirElseExit()
-
 	// If a log file already exists, we will continue from it
 	logPath := homeDir + ".qpm/local/log/" + fname + ".qqml.json"
 	if DirExists(logPath) {
