@@ -17,26 +17,23 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
-	"os"
+	"qpm/internal"
 )
 
-var (
-	rootCmd = &cobra.Command{
-		Use:   "qpm",
-		Short: "QPM is the package manager for QQML.",
-		Long: `QPM is the QQML (Quiz Question Markup Language) package manager.
-It is used to install QQML quizzes from either local files or remote repositories.
-See <https://github.com/mrpiggypegasus/qqml> for more info.`,
-	}
-)
-
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
-	}
+var initCmd = &cobra.Command{
+	Use:   "init",
+	Short: "Initialise the ~/.qpm directory.",
+	Long:  "Initialise the ~/.qpm directory to store QQML quiz files",
+	Run: func(cmd *cobra.Command, args []string) {
+		if internal.IsInitialised() {
+			fmt.Println("QPM is already initialised.")
+			return
+		}
+	},
 }
 
 func init() {
-	rootCmd.AddCommand()
+	rootCmd.AddCommand(initCmd)
 }
