@@ -14,29 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-package cmd
+package internal
 
-import (
-	"github.com/spf13/cobra"
-	"os"
-)
-
-var (
-	rootCmd = &cobra.Command{
-		Use:   "qpm",
-		Short: "QPM is the package manager for QQML.",
-		Long: `QPM is the QQML (Quiz Question Markup Language) package manager.
-It is used to install QQML quizzes from either local files or remote repositories.
-See <https://github.com/mrpiggypegasus/qqml> for more info.`,
-	}
-)
-
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
-	}
-}
-
-func init() {
-	rootCmd.AddCommand()
+func IsInitialised() bool {
+	return true
 }
