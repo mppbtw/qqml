@@ -16,6 +16,22 @@
 
 package internal
 
-func IsInitialised() bool {
-	return true
+import "os"
+
+func IsInitialised() (bool, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return false, err
+	}
+	qpmDir := homeDir + "/.qpm/"
+
+	return DirExists(qpmDir) &&
+		DirExists(qpmDir+"local") &&
+		DirExists(qpmDir+"local/src") &&
+		DirExists(qpmDir+"local/log") &&
+		DirExists(qpmDir+"repos"), nil
+}
+func DirExists(path string) bool {
+	_, err := os.Stat(path)
+	return !os.IsNotExist(err)
 }
