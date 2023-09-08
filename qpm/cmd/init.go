@@ -48,7 +48,7 @@ var initCmd = &cobra.Command{
 		qpmDir := homeDir + "/.qpm/"
 		for _, dir := range requiredDirs {
 			dir = qpmDir + dir
-			if internal.DirExists(dir) {
+			if internal.PathExists(dir) {
 				fmt.Println("The directory", dir, "already exists")
 				continue
 			}

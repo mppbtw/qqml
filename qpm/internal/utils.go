@@ -25,13 +25,13 @@ func IsInitialised() (bool, error) {
 	}
 	qpmDir := homeDir + "/.qpm/"
 
-	return DirExists(qpmDir) &&
-		DirExists(qpmDir+"local") &&
-		DirExists(qpmDir+"local/src") &&
-		DirExists(qpmDir+"local/log") &&
-		DirExists(qpmDir+"repos"), nil
+	return PathExists(qpmDir) &&
+		PathExists(qpmDir+"local") &&
+		PathExists(qpmDir+"local/src") &&
+		PathExists(qpmDir+"local/log") &&
+		PathExists(qpmDir+"repos"), nil
 }
-func DirExists(path string) bool {
+func PathExists(path string) bool {
 	_, err := os.Stat(path)
 	return !os.IsNotExist(err)
 }
