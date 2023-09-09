@@ -36,14 +36,6 @@ def remove_comment_lines(lines: list[str]) -> list[str]:
     return []
 
 
-print(remove_comment_lines([
-    "// alkwdjlawkjd ",
-    "// wlakjdwldj",
-    "",
-    "\n",
-    "alwdawd"]))
-
-
 def search_down(path):
     for s in [".gitignore", ".git", "target"]:
         if s in path:
