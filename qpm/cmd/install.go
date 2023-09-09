@@ -20,7 +20,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"os/exec"
 	"qpm/internal"
 	"strings"
 	"unicode"
@@ -101,27 +100,6 @@ var (
 				fmt.Println("Failed to install quiz:", err.Error())
 				os.Exit(1)
 			}
-
-			// Compile and cache the JSON
-			cacheFilePath := qpmDir + "local/cache/" + name + ".qqml"
-			if internal.PathExists(cacheFilePath) {
-				fmt.Println("The JSON cache file", cacheFilePath, "already exists, removing it")
-				err := os.Remove(cacheFilePath)
-				if err != nil {
-					fmt.Println("Failed to remove", cacheFilePath+":", err.Error())
-					os.Exit(1)
-				}
-
-			}
-			f, err := os.Create(cacheFilePath)
-			if err != nil {
-				fmt.Println("Failed to create file", cacheFilePath+":", err.Error())
-				os.Exit(1)
-			}
-
-			command := exec.Command("qqml", "--json", qpmDir+"local/src/"+name+".qqml")
-			command.Stdout = f
-			command.Run()
 		},
 	}
 )

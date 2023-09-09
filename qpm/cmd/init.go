@@ -39,7 +39,7 @@ var initCmd = &cobra.Command{
 			os.Exit(0)
 		}
 
-		requiredDirs := [6]string{"", "local", "local/src", "local/log", "local/cache", "repos"}
+		requiredDirs := [5]string{"", "local", "local/src", "local/log", "repos"}
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
 			fmt.Println("Failed to get your home directory:", err.Error())
