@@ -16,15 +16,13 @@
 
 use std::env::args;
 
-const OPTIONS: [&str; 14] = [
+const OPTIONS: [&str; 12] = [
     "-h",
     "--help",
     "-v",
     "--version",
     "-c",
     "--check",
-    "-p",
-    "--parse",
     "-j",
     "--json",
     "-l",
@@ -41,11 +39,6 @@ pub fn has_help() -> bool {
 pub fn has_check() -> bool {
     let args = args().collect::<Vec<String>>();
     args.contains(&"-c".to_owned()) || args.contains(&"--check".to_owned())
-}
-
-pub fn has_parse() -> bool {
-    let args = args().collect::<Vec<String>>();
-    args.contains(&"-p".to_owned()) || args.contains(&"--parse".to_owned())
 }
 
 pub fn has_json() -> bool {
