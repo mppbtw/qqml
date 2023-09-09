@@ -1,5 +1,6 @@
-# QQML 
+<img align="right" width="30%" src="https://github.com/MrPiggyPegasus/qqml/blob/main/assets/logo.png">
 
+# QQML 
 The Quiz Question Markup Language is a declarative and highly expressive
 language for defining revision questions in quite possibly the most
 overcomplicated and pointless manner possible; perfect to flex on my teacher
