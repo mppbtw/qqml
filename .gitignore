@@ -8,5 +8,5 @@ qqml_eval/Cargo.lock
 tui/Cargo.lock
 help/Cargo.lock
 mock.txt
-qpm/main
+qpm/qpm
 example.qqml.json
