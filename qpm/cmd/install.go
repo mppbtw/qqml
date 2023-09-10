@@ -119,7 +119,7 @@ var (
 				os.Exit(1)
 			}
 
-			command := exec.Command("qqml", "--json", qpmDir+"local/src/"+name+".qqml")
+			command := exec.Command("qqml", "--json", qpmDir+"local/src/"+name+".qqml.json")
 			command.Stdout = f
 			command.Run()
 		},
