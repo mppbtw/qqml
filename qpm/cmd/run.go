@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -10,10 +11,13 @@ var (
 	fromFilePath string
 	runCmd       = &cobra.Command{
 		Use:   "run",
-		Short: "Run an installed quiz",
-		Long:  "Run an installed quiz from any of the available repos or locally installed files",
+		Short: "Run a quiz",
+		Long:  "Run a quiz from any of the available repos or locally installed files",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("placeholder")
+			if fromFilePath == "" {
+				fmt.Println("placeholder")
+				os.Exit(1)
+			}
 		},
 	}
 )
