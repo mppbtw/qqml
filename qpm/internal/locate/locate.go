@@ -7,11 +7,13 @@ import (
 )
 
 type ErrNotInitialised struct{}
+
 func (e *ErrNotInitialised) Error() string {
 	return "QPM is not initialised, please run qpm init"
 }
 
 type ErrNoSuchCacheFile struct{}
+
 func (e *ErrNoSuchCacheFile) Error() string {
 	return "The cache file does not exist"
 }
@@ -35,7 +37,7 @@ func FindCacheFile(name string) ([]string, error) {
 
 	// Search local directory first
 
-	localCacheDir := qpmDir + "local/cache"
+	localCacheDir := qpmDir + "local/cache/"
 	localCacheFiles, err := os.ReadDir(localCacheDir)
 	if err != nil {
 		fmt.Println("Failed to read the directory", localCacheDir+":"+err.Error())
@@ -43,6 +45,7 @@ func FindCacheFile(name string) ([]string, error) {
 	for _, f := range localCacheFiles {
 		if !f.IsDir() || f.Name() == name {
 			filesFound = append(filesFound, localCacheDir+name)
+			break
 		}
 	}
 
