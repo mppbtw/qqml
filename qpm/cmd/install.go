@@ -103,7 +103,7 @@ var (
 			}
 
 			// Compile and cache the JSON
-			cacheFilePath := qpmDir + "local/cache/" + name + ".qqml"
+			cacheFilePath := qpmDir + "local/cache/" + name + ".qqml.json"
 			if internal.PathExists(cacheFilePath) {
 				fmt.Println("The JSON cache file", cacheFilePath, "already exists, removing it")
 				err := os.Remove(cacheFilePath)
@@ -119,9 +119,13 @@ var (
 				os.Exit(1)
 			}
 
-			command := exec.Command("qqml", "--json", qpmDir+"local/src/"+name+".qqml.json")
+			command := exec.Command("qqml", "--json", qpmDir+"local/src/"+name+".qqml")
+			fmt.Println("qqml", "--json", qpmDir+"local/src/"+name+".qqml")
 			command.Stdout = f
-			command.Run()
+			err = command.Run()
+			if err != nil {
+				fmt.Println("Error during compilation: ", err.Error())
+			}
 		},
 	}
 )
