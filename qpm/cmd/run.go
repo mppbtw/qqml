@@ -51,7 +51,6 @@ var (
 				fmt.Println("Multiple quizzes found with that name")
 				os.Exit(1)
 			}
-			fmt.Println("qqml", "--resume", paths[0], "--log", paths[0])
 			command := exec.Command("qqml", "--resume", paths[0], "--log", paths[0])
 			command.Stdout = os.Stdout
 			command.Stderr = os.Stderr
