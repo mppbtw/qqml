@@ -46,7 +46,11 @@ fn main() -> ! {
                 } else if has_json() {
                     match parse(&f) {
                         Ok(p) => {
-                            println!("{}", p.to_json());
+                            println!("{}", StateConstructor {
+                                max_hints: p.max_hints,
+                                questions: p.questions,
+                                path_to_source: Some(i)
+                            }.construct().to_json());
                             exit(0);
                         }
                         Err(r) => {
