@@ -11,12 +11,14 @@ import (
 )
 
 var (
-	fromFilePath string
-	runCmd       = &cobra.Command{
+	runCmd = &cobra.Command{
 		Use:   "run",
 		Short: "Run a quiz",
 		Long:  "Run a quiz from any of the available repos or locally installed files",
+		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			
+			// Check that QPM is in a valid state
 			res, err := internal.IsInitialised()
 			if !res {
 				fmt.Println("QPM is not initialised, please run qpm init")
@@ -27,31 +29,38 @@ var (
 				os.Exit(1)
 			}
 
-			if fromFilePath == "" {
-				files, err := locate.FindCacheFile(fromFilePath)
+			quiz := args[0]
+			paths, err := locate.FindLogFile(quiz)
+			if err != nil {
+				paths, err := locate.FindCacheFile(quiz)
 				if err != nil {
-					fmt.Println("Failed to locate that quiz:", err.Error())
-				}
-				if len(files) != 1 {
-					fmt.Println("Multiple files found, placeholder")
+					fmt.Println("No such quiz", quiz)
 					os.Exit(1)
 				}
-				file := files[0]
-				fmt.Println("file: ", file)
-			} else {
-				cmd := exec.Command("qqml", fromFilePath)
-				cmd.Stdout = os.Stdout
-				cmd.Stdin = os.Stdin
-				err := cmd.Run()
-				if err != nil {
-					fmt.Println(err.Error())
+				if len(paths) != 1 {
+					fmt.Println("Multiple quizzes found with that name")
+					os.Exit(1)
 				}
+				cmd := exec.Command("qqml", "--resume", paths[0], "--log", locate.GenLogFileFromCache(paths[0]))
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
+				cmd.Stdin = os.Stdin
+				cmd.Run()
 			}
+			if len(paths) != 1 {
+				fmt.Println("Multiple quizzes found with that name")
+				os.Exit(1)
+			}
+			fmt.Println("qqml", "--resume", paths[0], "--log", paths[0])
+			command := exec.Command("qqml", "--resume", paths[0], "--log", paths[0])
+			command.Stdout = os.Stdout
+			command.Stderr = os.Stderr
+			command.Stdin = os.Stdin
+			command.Run()
 		},
 	}
 )
 
 func init() {
-	runCmd.Flags().StringVarP(&fromFilePath, "file", "f", "", "from a file")
 	rootCmd.AddCommand(runCmd)
 }
