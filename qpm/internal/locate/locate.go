@@ -82,8 +82,7 @@ func FindLogFile(name string) ([]string, error) {
 	qpmDir := homeDir + "/.qpm/"
 
 	// Search local directory first
-
-	localLogDir := qpmDir + "local/cache/"
+	localLogDir := qpmDir + "local/log/"
 	localLogFiles, err := os.ReadDir(localLogDir)
 	if err != nil {
 		fmt.Println("Failed to read the directory", localLogDir+":"+err.Error())
@@ -103,6 +102,6 @@ func FindLogFile(name string) ([]string, error) {
 
 func GenLogFileFromCache(cachePath string) string {
 	pathSegments := strings.Split(cachePath, "/")
-	pathSegments[len(pathSegments)-2] = "cache"
+	pathSegments[len(pathSegments)-2] = "log"
 	return strings.Join(pathSegments, "/")
 }
