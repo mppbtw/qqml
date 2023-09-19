@@ -176,7 +176,7 @@ OPTIONS:
 
 More information about the QQML language
 and its related tooling is available at
-https://github.com/MrPiggyPegasus/qqml "
+https://github.com/MrPiggyPegasus/qqml"
     );
     exit(1);
 }
