@@ -43,14 +43,14 @@ fn main() -> ! {
                 }
                 if has_check() {
                     check_file(f, i);
-                } else if has_parse() {
+                } else if has_json() {
                     match parse(&f) {
                         Ok(p) => {
-                            if has_json() {
-                                println!("{}", p.to_json());
-                            } else {
-                                println!("{}", render_parsed_file(p));
-                            }
+                            println!("{}", StateConstructor {
+                                max_hints: p.max_hints,
+                                questions: p.questions,
+                                path_to_source: Some(i)
+                            }.construct().to_json());
                             exit(0);
                         }
                         Err(r) => {
@@ -92,64 +92,6 @@ fn main() -> ! {
         },
     };
     exit(0);
-}
-
-fn render_parsed_file(p: ParsedFile) -> String {
-    let mut output = String::new();
-
-    // Put all of the newlines in the right place
-    for ch in format!("{p:?}").chars().map(String::from) {
-        output += &ch;
-        match ch.as_str() {
-            "," => output += "\n",
-            "{" | "[" => output += "\n",
-            "]" | "}" => output.insert(output.len() - 2, '\n'),
-            _ => (),
-        };
-    }
-
-    let mut current_indent = 0;
-    let mut indented = String::new();
-    for mut l in output.lines() {
-        loop {
-            if l.starts_with(' ') {
-                l = l.strip_prefix(' ').unwrap();
-            } else {
-                break;
-            }
-        }
-
-        loop {
-            if l.ends_with(' ') {
-                l = l.strip_suffix(' ').unwrap();
-            } else {
-                break;
-            }
-        }
-
-        if l.contains('{') {
-            current_indent += 4;
-        }
-        if l.contains('[') {
-            current_indent += 4;
-        }
-
-        if l.contains('}') {
-            current_indent -= 4;
-        }
-        if l.contains(']') {
-            current_indent -= 4;
-        }
-
-        indented += &l.replace(['{', '[', '}', ']', ',', ':'], "");
-
-        if l.len() > 2 {
-            indented += "\n";
-            (0..current_indent).for_each(|_| indented += " ");
-        }
-    }
-
-    indented
 }
 
 fn render_error_report(r: ErrorReport, path: String, inp: String) -> String {
@@ -221,12 +163,7 @@ OPTIONS:
     -V --version       Print version information and
                        exit.
 
-    -p --parse         Attempt to parse the file, if
-                       succesful will then print the
-                       parsed data.
-
-    -j --json          Output parsing data in a
-                       JSON format
+    -j --json          Transpile QQML source code to JSON
 
     -l --log <File>    Output information about the
                        state of the game to a specific
@@ -239,7 +176,7 @@ OPTIONS:
 
 More information about the QQML language
 and its related tooling is available at
-https://github.com/MrPiggyPegasus/qqml "
+https://github.com/MrPiggyPegasus/qqml"
     );
     exit(1);
 }
