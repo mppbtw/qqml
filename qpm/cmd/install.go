@@ -120,11 +120,12 @@ var (
 			}
 
 			command := exec.Command("qqml", "--json", qpmDir+"local/src/"+name+".qqml")
-			fmt.Println("qqml", "--json", qpmDir+"local/src/"+name+".qqml")
 			command.Stdout = f
 			err = command.Run()
 			if err != nil {
 				fmt.Println("Error during compilation: ", err.Error())
+				fmt.Println("Attempted commmand: qqml --json", qpmDir+"local/src/"+name+".qqml")
+				os.Exit(1)
 			}
 		},
 	}
