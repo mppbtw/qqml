@@ -23,23 +23,6 @@ use crate::json::parser::JsonConstructionError;
 use crate::json::parser::*;
 use crate::parser::Question;
 
-#[derive(Debug, Clone)]
-pub struct StateConstructor {
-    pub max_hints:      usize,
-    pub questions:      Vec<Question>,
-    pub path_to_source: Option<String>,
-}
-impl StateConstructor {
-    pub fn construct(self) -> State {
-        State {
-            max_hints: self.max_hints,
-            questions: self.questions,
-            path_to_source: self.path_to_source,
-            ..Default::default()
-        }
-    }
-}
-
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct State {
     pub hints_used:             usize,
@@ -47,13 +30,15 @@ pub struct State {
     pub questions:              Vec<Question>,
     pub current_question_index: usize,
     pub path_to_source:         Option<String>,
-    questions_len:              usize,
-    current_hints_available:    usize,
-    cols:                       usize,
-    has_watched_final_cutsene:  bool,
 
-    // Used only for purpose of handing references to TUI components
-    current_achieved_marks: usize,
+    // This stuff is used internally, because when creating screens they must
+    // only hold references to values, these fields shouldnt matter during
+    // construction.
+    current_achieved_marks:    usize,
+    questions_len:             usize,
+    current_hints_available:   usize,
+    cols:                      usize,
+    has_watched_final_cutsene: bool,
 }
 
 #[allow(clippy::field_reassign_with_default)]
@@ -63,11 +48,11 @@ impl State {
         self.questions_len = self.questions.len();
         self.current_hints_available = match &self.questions[self.current_question_index] {
             Question::Multichoice(d) => d.hints.len() - d.used_hints,
-            _ => 0,
+            _ => unimplemented!(),
         };
         let mut s = Screen::default();
 
-        // Some components which are almost universally wanted
+        // Some components which are universally wanted
         s.version_line = Some(VersionLine { cols: &self.cols });
         s.q_select_line = Some(QuestionSelectLine {
             cols:             &self.cols,
@@ -76,15 +61,12 @@ impl State {
         });
 
         // Other components are added depending on the state
-        match &self.path_to_source {
-            Some(p) => {
-                s.pathline = Some(PathLine {
-                    path: p,
-                    cols: &self.cols,
-                })
-            }
-            None => (),
-        };
+        if let Some(p) = &self.path_to_source {
+            s.pathline = Some(PathLine {
+                path: p,
+                cols: &self.cols,
+            })
+        }
 
         if let Question::Multichoice(d) = &self.questions[self.current_question_index] {
             if d.used_hints != 0 {
@@ -131,7 +113,7 @@ impl State {
                     answers:  (d
                         .answers
                         .iter()
-                        .map(|d| (d.text.clone().unwrap(), d.is_chosen))
+                        .map(|d| ((d.text.as_ref().unwrap()), &d.is_chosen))
                         .collect()),
                     selected: &d.selected_answer,
                 })

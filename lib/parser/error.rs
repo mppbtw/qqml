@@ -194,29 +194,11 @@ impl fmt::Display for Error {
     }
 }
 
-#[derive(Default, Clone, PartialEq, Debug)]
-pub struct ErrorReport {
-    pub errors: Vec<Error>,
-}
-impl From<LexerError> for ErrorReport {
+impl From<LexerError> for Error {
     fn from(value: LexerError) -> Self {
-        Self {
-            errors: vec![match value {
-                LexerError::IntegerTooLarge(d) => Error::IntegerTooLarge(d),
-                LexerError::UnterminatedStringError(d) => Error::UnterminatedLiteral(d),
-            }],
-        }
-    }
-}
-
-impl ErrorReport {
-    pub fn new() -> ErrorReport {
-        Self::default()
-    }
-
-    pub fn extend(&mut self, other: ErrorReport) {
-        for error in other.errors {
-            self.errors.push(error);
+        match value {
+            LexerError::IntegerTooLarge(t) => Self::IntegerTooLarge(t),
+            LexerError::UnterminatedStringError(t) => Self::UnterminatedLiteral(t),
         }
     }
 }
