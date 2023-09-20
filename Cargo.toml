@@ -6,11 +6,11 @@ edition = "2021"
 
 [lib]
 name = "libqqml"
-path = "./src/lib.rs"
+path = "./lib/lib.rs"
 
 [[bin]]
 name = "qqml"
-path = "./src/main.rs"
+path = "./cli/main.rs"
 
 [dependencies]
 rtermutils = { path = "./rtermutils/" }

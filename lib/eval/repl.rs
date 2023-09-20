@@ -15,16 +15,18 @@
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use std::convert::Infallible;
+use std::io::stdout;
+use std::io::Write;
 
 use rtermutils::*;
 
 use super::end_screen::end_screen;
 use super::exit::cleanup_and_exit;
 use super::render::Render;
-use super::state::*;
-use crate::ErrorReport;
 use crate::parser::core::parse;
 use crate::parser::Question;
+use crate::Error;
+use crate::State;
 
 pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
     unsafe {
@@ -33,10 +35,11 @@ pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
     }
     let mut refresh_needed = false;
     unsafe {
-        println!(
+        print!(
             "{}",
             s.create_screen(clear_screen_with_width() as usize).render()
         );
+        stdout().flush().unwrap();
     }
     loop {
         if refresh_needed {
@@ -45,7 +48,8 @@ pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
                 // screen is cleared, causing a flicker every frame.
                 let next_frame = s.create_screen(break_cursor_with_width() as usize).render();
                 clear_screen();
-                println!("{}", next_frame);
+                print!("{}", next_frame);
+                stdout().flush().unwrap();
             }
         }
 
@@ -166,17 +170,8 @@ pub fn run(
     input: &String,
     path_to_source: Option<&String>,
     log_path: Option<&String>,
-) -> Result<Infallible, ErrorReport> {
-    let parsed = parse(input)?;
-    let s = {
-        StateConstructor {
-            path_to_source: path_to_source.cloned(),
-            questions:      parsed.questions,
-            max_hints:      parsed.max_hints,
-        }
-        .construct()
-    };
-    run_from_state(s, log_path)
+) -> Result<Infallible, Error> {
+    run_from_state(parse(input, path_to_source.cloned())?, log_path)
 }
 
 fn help_menu() {
