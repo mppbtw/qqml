@@ -16,7 +16,6 @@
 
 use crate::lexer::core::Lexer;
 use crate::lexer::token::Token;
-use crate::lexer::token::TokenData;
 use crate::parser::error::Error;
 use crate::parser::multichoice::data::MultichoiceAnswer;
 
@@ -32,44 +31,33 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
         _ => return Err(Error::ExpectedAnswerText(tok)),
     };
 
-    loop {
+    tok = l.next_token()?;
+    if matches!(tok, Token::LParen(_)) {
         tok = l.next_token()?;
-        if matches!(tok, Token::LParen(_)) {
-            tok = l.next_token()?;
-            match tok {
-                Token::Number(_, n) => dat.marks = n,
-                _ => {
-                    return Err(Error::UnexpectedAnswerToken(tok, vec![
-                        Token::RArrow(TokenData::default()),
-                        Token::Semicolon(TokenData::default()),
-                        Token::Number(TokenData::default(), 0),
-                    ]))
-                }
-            };
-
-            tok = l.next_token()?;
-            if !matches!(tok, Token::RParen(_)) {
-                return Err(Error::ExpectedRParenForAnswerMark(tok));
-            }
-
-            tok = l.next_token()?;
+        match tok {
+            Token::Number(_, n) => dat.marks = n,
+            _ => return Err(Error::ExpectedNumberForAnswerMark(tok))
         }
 
-        if matches!(tok, Token::RArrow(_)) {
-            tok = l.next_token()?;
-            match tok {
-                Token::Literal(_, l) => dat.explanation = Some(l),
-                _ => return Err(Error::ExpectedAnswerExplanationText(tok)),
-            };
-            tok = l.next_token()?;
+        tok = l.next_token()?;
+        if !matches!(tok, Token::RParen(_)) {
+            return Err(Error::ExpectedRParenForAnswerMark(tok));
         }
 
-        if !matches!(tok, Token::Semicolon(_)) {
-            return Err(Error::ExpectedAnswerSemicolon(tok));
-        }
-        if matches!(tok, Token::Eof(_)) {
-            break;
-        }
+        tok = l.next_token()?;
+    }
+
+    if matches!(tok, Token::RArrow(_)) {
+        tok = l.next_token()?;
+        match tok {
+            Token::Literal(_, l) => dat.explanation = Some(l),
+            _ => return Err(Error::ExpectedAnswerExplanationText(tok)),
+        };
+        tok = l.next_token()?;
+    }
+
+    if !matches!(tok, Token::Semicolon(_)) {
+        return Err(Error::ExpectedAnswerSemicolon(tok));
     }
 
     Ok(dat)

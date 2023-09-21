@@ -14,11 +14,27 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use super::core::parse;
-use super::core::ParsedFile;
-use super::multichoice::data::MultichoiceAnswer;
-use super::multichoice::data::MultichoiceData;
-use super::Question;
+use crate::eval::state::State;
+use crate::parser::core::parse;
+use crate::parser::multichoice::data::MultichoiceAnswer;
+use crate::parser::multichoice::data::MultichoiceData;
+use crate::parser::Question;
+
+/// This makes it easier to test because I wrote all the tests before a pretty
+/// large refactor and I dont wanna rewrite them
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+struct ParsedFile {
+    max_hints: usize,
+    questions: Vec<Question>,
+}
+impl From<State> for ParsedFile {
+    fn from(value: State) -> Self {
+        Self {
+            max_hints: value.max_hints,
+            questions: value.questions,
+        }
+    }
+}
 
 #[test]
 fn test_parse_hints_directive() {
@@ -26,13 +42,13 @@ fn test_parse_hints_directive() {
         hints 1;
         "
     .to_string();
-    assert_eq!(parse(input1).unwrap().max_hints, 1);
+    assert_eq!(parse(input1, None).unwrap().max_hints, 1);
 
     let input2 = "
         hints 2;
         "
     .to_string();
-    assert_eq!(parse(input2).unwrap().max_hints, 2);
+    assert_eq!(parse(input2, None).unwrap().max_hints, 2);
 }
 
 #[test]
@@ -56,7 +72,7 @@ fn test_parse_multichoice_questions_with_hints() {
         } hints 'hint1', 'hint2';
         ";
 
-    let result = parse(input).unwrap();
+    let result: ParsedFile = parse(input, None).unwrap().into();
     let expected = ParsedFile {
         max_hints: 2,
         questions: vec![
@@ -158,7 +174,7 @@ fn test_parse_multichoice_questions_with_hints_double_quotes() {
         } hints \"hint1\", \"hint2\";
         ";
 
-    let result = parse(input).unwrap();
+    let result: ParsedFile = parse(input, None).unwrap().into();
     let expected = ParsedFile {
         max_hints: 2,
         questions: vec![
@@ -260,7 +276,7 @@ fn test_parse_multichoice_questions_with_hints_mixed_quotes() {
         } hints \"hint1\", \"hint2\";
         ";
 
-    let result = parse(input).unwrap();
+    let result: ParsedFile = parse(input, None).unwrap().into();
     let expected = ParsedFile {
         max_hints: 2,
         questions: vec![

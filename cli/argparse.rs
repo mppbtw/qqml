@@ -1,5 +1,20 @@
+//  QQML or the Quiz Question Markup Language.
+//  Copyright (C) 2023 'MrPiggyPegasus'
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 use std::convert::Infallible;
-use std::env::args;
 use std::process::exit;
 use std::sync::Arc;
 
@@ -35,7 +50,7 @@ impl Command {
     fn lookup_command(&self, arg: &str) -> Option<&Command> {
         for child in self.children.iter() {
             if child.usage == arg {
-                return Some(&child)
+                return Some(&child);
             }
         }
         None
@@ -58,8 +73,10 @@ impl Command {
                         println!("Unknown command: {}", arg);
                         exit(1);
                     };
-                },
-                None => {self.help_screen();},
+                }
+                None => {
+                    self.help_screen();
+                }
             }
         }
 
@@ -73,4 +90,5 @@ pub struct CommandBuilder {
     pub long:  &'static str,
     pub short: &'static str,
     pub run:   Option<fn(&[String]) -> Infallible>,
+    pub args:  usize,
 }
