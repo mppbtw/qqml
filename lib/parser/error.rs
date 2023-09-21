@@ -22,6 +22,7 @@ use crate::lexer::token::TokenData;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Error {
+    ExpectedNumberForAnswerMark(Token),
     HintsDirectiveRequiresNumber(Token),
     HintsDirectiveRepeated(Token),
 
@@ -68,6 +69,7 @@ impl Error {
 
     pub fn get_token(&self) -> Token {
         match self {
+            Self::ExpectedNumberForAnswerMark(t) => t.clone(),
             Self::OnlyOneMultichoiceAnswer(t) => t.clone(),
             Self::NoMultichoiceAnswers(t) => t.clone(),
             Self::MaxMarkIsZero(t) => t.clone(),
@@ -105,6 +107,9 @@ impl Error {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let msg = match self {
+            Self::ExpectedNumberForAnswerMark(t) => {
+                format!("Expected numbeer for the answer's mark, found {}.", t)
+            }
             Self::ExpectedQuestionText(t) => {
                 format!("Expected text for the question, found {}.", t)
             }
