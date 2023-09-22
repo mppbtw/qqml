@@ -14,31 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use std::convert::Infallible;
-use std::env::args;
-use std::process::exit;
-use std::sync::Arc;
+use crate::lexer::core::Lexer;
+use crate::lexer::token::Token;
+use crate::lexer::token::TokenData;
+use crate::parser::multichoice::parser::parse_multichoice;
 
-mod argparse;
-mod cmd;
-
-use argparse::Command;
-use argparse::CommandBuilder;
-
-fn main() -> Infallible {
-    println!("running cli command parsing");
-    let mut root_cmd = Command::new(CommandBuilder {
-        short: "The QQML interpreter",
-        long:  "The QQML interpreter.",
-        run:   None,
-        usage: "",
-        args:  0,
-        ..Default::default()
-    });
-
-    cmd::init(&mut root_cmd);
-    let args = args().collect::<Arc<[String]>>();
-    root_cmd.execute(&args[1..]);
-
-    exit(0)
-}

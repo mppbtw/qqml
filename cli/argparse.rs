@@ -16,7 +16,6 @@
 
 use std::convert::Infallible;
 use std::process::exit;
-use std::sync::Arc;
 
 /// This is a pretty simple argparsing solution inspired by Go's Cobra library.
 pub struct Command {
@@ -25,6 +24,7 @@ pub struct Command {
     long:     &'static str,
     short:    &'static str,
     run:      Option<fn(&[String]) -> Infallible>,
+    args: usize,
 }
 
 impl Command {
@@ -35,6 +35,7 @@ impl Command {
             long:     cmd_info.long,
             short:    cmd_info.short,
             run:      cmd_info.run,
+            args: cmd_info.args,
         }
     }
 
@@ -57,8 +58,18 @@ impl Command {
     }
 
     /// Call this on the root command to initate the parsing sequence.
-    pub fn execute<A: Into<Arc<[String]>>>(&self, args: A) -> Infallible {
-        let args: &[String] = &args.into();
+    pub fn execute(&self, args: &[String]) -> Infallible {
+
+        // We only want the positional arguments from this, flags are handled seperately
+        let mut args: Vec<String> = args.into();
+        args = args.into_iter().filter(|_| {
+            true
+        }).collect();
+
+        if args.len() != self.args {
+            println!("Expected {} arguments, got {}", self.args, args.len());
+            exit(0);
+        }
 
         // If it's a leaf command
         if self.run.is_some() {
@@ -91,4 +102,19 @@ pub struct CommandBuilder {
     pub short: &'static str,
     pub run:   Option<fn(&[String]) -> Infallible>,
     pub args:  usize,
+    pub flags: Vec<Flag>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Eq)]
+pub struct Flag {
+    pub long: &'static str,
+    pub short: &'static str,
+    pub arg: Option<FlagArgumentType>
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum FlagArgumentType {
+    Int(i128),
+    Uint(i128),
+    String(String),
 }

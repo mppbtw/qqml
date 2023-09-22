@@ -37,8 +37,7 @@ pub fn init(parent: &mut Command) {
                 Ok(s) => match run(&s, Some(&path), None) {
                     Ok(_) => (),
                     Err(e) => {
-                        print!("{}", render_error(&s, &e, Some(&path)));
-                        stdout().flush().unwrap();
+                        println!("{}", render_error(&s, &e, Some(&path)));
                     }
                 },
                 Err(e) => {
@@ -48,5 +47,6 @@ pub fn init(parent: &mut Command) {
             }
             exit(0);
         }),
+        ..Default::default()
     }))
 }
