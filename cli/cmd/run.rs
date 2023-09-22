@@ -23,6 +23,7 @@ use libqqml::render_error;
 use libqqml::run;
 
 use crate::argparse::CommandBuilder;
+use crate::argparse::Flag;
 use crate::Command;
 
 pub fn init(parent: &mut Command) {
@@ -47,6 +48,10 @@ pub fn init(parent: &mut Command) {
             }
             exit(0);
         }),
-        ..Default::default()
+        flags: vec![Flag {
+            short: Some("-l"),
+            long:  "--log",
+            arg:   None,
+        }],
     }))
 }

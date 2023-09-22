@@ -26,13 +26,11 @@ use argparse::Command;
 use argparse::CommandBuilder;
 
 fn main() -> Infallible {
-    println!("running cli command parsing");
     let mut root_cmd = Command::new(CommandBuilder {
         short: "The QQML interpreter",
-        long:  "The QQML interpreter.",
-        run:   None,
-        usage: "",
-        args:  0,
+        long: "The QQML interpreter.",
+        usage: "qqml",
+        args: 0,
         ..Default::default()
     });
 

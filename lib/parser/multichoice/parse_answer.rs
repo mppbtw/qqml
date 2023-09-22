@@ -36,7 +36,7 @@ pub fn parse_multichoice_answer(l: &mut Lexer) -> Result<MultichoiceAnswer, Erro
         tok = l.next_token()?;
         match tok {
             Token::Number(_, n) => dat.marks = n,
-            _ => return Err(Error::ExpectedNumberForAnswerMark(tok))
+            _ => return Err(Error::ExpectedNumberForAnswerMark(tok)),
         }
 
         tok = l.next_token()?;
