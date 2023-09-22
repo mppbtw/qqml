@@ -23,8 +23,9 @@ pub struct Command {
     usage:    &'static str,
     long:     &'static str,
     short:    &'static str,
+    flags:    Vec<Flag>,
     run:      Option<fn(&[String]) -> Infallible>,
-    args: usize,
+    args:     usize,
 }
 
 impl Command {
@@ -35,7 +36,8 @@ impl Command {
             long:     cmd_info.long,
             short:    cmd_info.short,
             run:      cmd_info.run,
-            args: cmd_info.args,
+            args:     cmd_info.args,
+            flags:    cmd_info.flags,
         }
     }
 
@@ -59,20 +61,37 @@ impl Command {
 
     /// Call this on the root command to initate the parsing sequence.
     pub fn execute(&self, args: &[String]) -> Infallible {
-
         // We only want the positional arguments from this, flags are handled seperately
         let mut args: Vec<String> = args.into();
-        args = args.into_iter().filter(|_| {
-            true
-        }).collect();
 
-        if args.len() != self.args {
-            println!("Expected {} arguments, got {}", self.args, args.len());
-            exit(0);
+        let mut i = 0;
+        while i < args.len() {
+            let arg = args.get(i).unwrap().to_owned();
+            for flag in self.flags.iter() {
+                match flag.short {
+                    None => (),
+                    Some(s) => {
+                        if s == &arg {
+                            args.remove(i);
+                        }
+                    }
+                }
+                if flag.long == &arg {
+                    args.remove(i);
+                    if flag.arg.is_some() {
+                        args.remove(i + 1);
+                    };
+                }
+            }
+            i += 1;
         }
 
         // If it's a leaf command
         if self.run.is_some() {
+            if args.len() != self.args {
+                println!("Expected {} arguments, got {}", self.args, args.len());
+                exit(0);
+            }
             self.run.unwrap()(&args[..]);
         // It has subcommands
         } else {
@@ -107,14 +126,28 @@ pub struct CommandBuilder {
 
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub struct Flag {
-    pub long: &'static str,
-    pub short: &'static str,
-    pub arg: Option<FlagArgumentType>
+    pub long:  &'static str,
+    pub short: Option<&'static str>,
+    pub arg:   Option<FlagArgumentType>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FlagArgumentType {
-    Int(i128),
-    Uint(i128),
+    Int,
+    Uint,
+    String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Eq)]
+pub struct AnsweredFlag {
+    pub long:  &'static str,
+    pub short: Option<&'static str>,
+    pub arg:   Option<FlagArgumentType>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum AnsweredFlagArgument {
+    Int(isize),
+    Uint(usize),
     String(String),
 }
