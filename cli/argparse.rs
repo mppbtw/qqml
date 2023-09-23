@@ -24,7 +24,7 @@ pub struct Command {
     long:     &'static str,
     short:    &'static str,
     flags:    Vec<Flag>,
-    run:      Option<fn(&[String]) -> Infallible>,
+    run:      Option<fn(&[String], AnsweredFlags) -> Infallible>,
     args:     usize,
 }
 
@@ -63,24 +63,22 @@ impl Command {
     pub fn execute(&self, args: &[String]) -> Infallible {
         // We only want the positional arguments from this, flags are handled seperately
         let mut args: Vec<String> = args.into();
+        let mut answered_flags: Vec<AnsweredFlag> = vec![];
 
         let mut i = 0;
         while i < args.len() {
             let arg = args.get(i).unwrap().to_owned();
             for flag in self.flags.iter() {
-                match flag.short {
-                    None => (),
-                    Some(s) => {
-                        if s == &arg {
-                            args.remove(i);
-                        }
-                    }
-                }
-                if flag.long == &arg {
+                if flag.long == &arg || flag.aliases.contains(&arg.as_str()) {
                     args.remove(i);
                     if flag.arg.is_some() {
                         args.remove(i + 1);
                     };
+
+                    answered_flags.push(AnsweredFlag {
+                        long: flag.long,
+                        arg:  None,
+                    })
                 }
             }
             i += 1;
@@ -92,7 +90,10 @@ impl Command {
                 println!("Expected {} arguments, got {}", self.args, args.len());
                 exit(0);
             }
-            self.run.unwrap()(&args[..]);
+            self.run.unwrap()(&args[..], AnsweredFlags {
+                flags: answered_flags,
+            });
+
         // It has subcommands
         } else {
             match args.get(0) {
@@ -100,7 +101,6 @@ impl Command {
                     if let Some(c) = self.lookup_command(arg) {
                         c.execute(&args[1..])
                     } else {
-                        println!("Unknown command: {}", arg);
                         exit(1);
                     };
                 }
@@ -119,18 +119,19 @@ pub struct CommandBuilder {
     pub usage: &'static str,
     pub long:  &'static str,
     pub short: &'static str,
-    pub run:   Option<fn(&[String]) -> Infallible>,
+    pub run:   Option<fn(&[String], AnsweredFlags) -> Infallible>,
     pub args:  usize,
     pub flags: Vec<Flag>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub struct Flag {
-    pub long:  &'static str,
-    pub short: Option<&'static str>,
-    pub arg:   Option<FlagArgumentType>,
+    pub long:    &'static str,
+    pub aliases: Vec<&'static str>,
+    pub arg:     Option<FlagArgumentType>,
 }
 
+#[allow(unused)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FlagArgumentType {
     Int,
@@ -140,14 +141,29 @@ pub enum FlagArgumentType {
 
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub struct AnsweredFlag {
-    pub long:  &'static str,
-    pub short: Option<&'static str>,
-    pub arg:   Option<FlagArgumentType>,
+    pub long: &'static str,
+    pub arg:  Option<FlagArgumentType>,
 }
 
+#[allow(unused)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum AnsweredFlagArgument {
     Int(isize),
     Uint(usize),
     String(String),
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Eq)]
+pub struct AnsweredFlags {
+    pub flags: Vec<AnsweredFlag>,
+}
+impl AnsweredFlags {
+    pub fn get(&self, name: &str) -> Option<&AnsweredFlag> {
+        for flag in self.flags.iter() {
+            if flag.long == name {
+                return Some(&flag);
+            }
+        }
+        None
+    }
 }
