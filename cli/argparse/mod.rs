@@ -71,13 +71,31 @@ impl Command {
             for flag in self.flags.iter() {
                 if flag.long == &arg || flag.aliases.contains(&arg.as_str()) {
                     args.remove(i);
-                    if flag.arg.is_some() {
-                        args.remove(i + 1);
-                    };
 
                     answered_flags.push(AnsweredFlag {
                         long: flag.long,
-                        arg:  None,
+                        arg:  'a: {
+                            if flag.arg.is_none() {
+                                break 'a None;
+                            }
+
+                            if !matches!(flag.clone().arg.unwrap(), FlagArgumentType::String) {
+                                unreachable!("Only the string argument type is implemented yet.");
+                            }
+
+                            let flag_argument = args.get(i).cloned();
+                            if flag_argument.is_none() {
+                                println!(
+                                    "The flag {} requires an argument of type STRING",
+                                    flag.long
+                                );
+                                exit(1);
+                            }
+                            args.remove(i);
+                            Some(AnsweredFlagArgument::String(
+                                flag_argument.unwrap().to_owned(),
+                            ))
+                        },
                     })
                 }
             }
@@ -142,7 +160,7 @@ pub enum FlagArgumentType {
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub struct AnsweredFlag {
     pub long: &'static str,
-    pub arg:  Option<FlagArgumentType>,
+    pub arg:  Option<AnsweredFlagArgument>,
 }
 
 #[allow(unused)]
