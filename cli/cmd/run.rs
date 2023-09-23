@@ -15,8 +15,6 @@
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use std::fs::read_to_string;
-use std::io::stdout;
-use std::io::Write;
 use std::process::exit;
 
 use libqqml::render_error;
@@ -30,15 +28,24 @@ pub fn init(parent: &mut Command) {
     parent.add_command(Command::new(CommandBuilder {
         usage: "run",
         short: "Run a QQML file from the specified path",
-        long:  "Run a QQML file from the specified path",
+        long:  "Run a QQML file from the specified path, or report any parsing errors.",
         args:  1,
-        run:   Some(|args| {
+        run:   Some(|args, flags| {
+
+            // We can be sure that args has a length of 1 because of my epic argparsing
+            // library
             let path = args[0].to_owned();
             match read_to_string(&path) {
-                Ok(s) => match run(&s, Some(&path), None) {
-                    Ok(_) => (),
-                    Err(e) => {
-                        println!("{}", render_error(&s, &e, Some(&path)));
+                Ok(s) => {
+                    match flags.get("--log") {
+                        None => (),
+                        Some(_) => println!("log flag found")
+                    };
+                    match run(&s, Some(&path), None) {
+                        Ok(_) => (),
+                        Err(e) => {
+                            println!("{}", render_error(&s, &e, Some(&path)));
+                        }
                     }
                 },
                 Err(e) => {
@@ -49,9 +56,9 @@ pub fn init(parent: &mut Command) {
             exit(0);
         }),
         flags: vec![Flag {
-            short: Some("-l"),
-            long:  "--log",
-            arg:   None,
+            aliases: vec!["-l"],
+            long:    "--log",
+            arg:     None,
         }],
     }))
 }
