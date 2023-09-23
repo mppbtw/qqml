@@ -20,8 +20,10 @@ use std::process::exit;
 use libqqml::render_error;
 use libqqml::run;
 
+use crate::argparse::AnsweredFlagArgument;
 use crate::argparse::CommandBuilder;
 use crate::argparse::Flag;
+use crate::argparse::FlagArgumentType;
 use crate::Command;
 
 pub fn init(parent: &mut Command) {
@@ -31,21 +33,26 @@ pub fn init(parent: &mut Command) {
         long:  "Run a QQML file from the specified path, or report any parsing errors.",
         args:  1,
         run:   Some(|args, flags| {
+            // Check for the path to a log file
+            let mut log_path: Option<String> = None;
+            match flags.get("--log") {
+                None => (),
+                Some(f) => {
+                    log_path = match f.arg.clone().unwrap() {
+                        AnsweredFlagArgument::String(s) => Some(s),
+                        _ => None,
+                    }
+                }
+            };
 
             // We can be sure that args has a length of 1 because of my epic argparsing
             // library
             let path = args[0].to_owned();
             match read_to_string(&path) {
-                Ok(s) => {
-                    match flags.get("--log") {
-                        None => (),
-                        Some(_) => println!("log flag found")
-                    };
-                    match run(&s, Some(&path), None) {
-                        Ok(_) => (),
-                        Err(e) => {
-                            println!("{}", render_error(&s, &e, Some(&path)));
-                        }
+                Ok(s) => match run(&s, Some(&path), log_path.as_ref()) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        println!("{}", render_error(&s, &e, Some(&path)));
                     }
                 },
                 Err(e) => {
@@ -58,7 +65,7 @@ pub fn init(parent: &mut Command) {
         flags: vec![Flag {
             aliases: vec!["-l"],
             long:    "--log",
-            arg:     None,
+            arg:     Some(FlagArgumentType::String),
         }],
     }))
 }
