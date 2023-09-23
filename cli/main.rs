@@ -19,6 +19,7 @@ use std::env::args;
 use std::process::exit;
 use std::sync::Arc;
 
+#[allow(unused)]
 mod argparse;
 mod cmd;
 
