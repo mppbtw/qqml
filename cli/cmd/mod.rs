@@ -14,10 +14,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+mod compile;
 mod run;
 
 use crate::argparse::Command;
 
 pub fn init(parent: &mut Command) {
     run::init(parent);
+    compile::init(parent);
 }
