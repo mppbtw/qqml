@@ -20,7 +20,6 @@ use std::process::exit;
 use libqqml::render_error;
 use libqqml::run;
 
-use crate::argparse::AnsweredFlagArgument;
 use crate::argparse::CommandBuilder;
 use crate::argparse::Flag;
 use crate::argparse::FlagArgumentType;

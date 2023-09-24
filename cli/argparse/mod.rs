@@ -165,9 +165,11 @@ impl AnsweredFlag {
     pub fn int(&self) -> Result<&isize, ErrIncorrectArgType> {
         self.arg.as_ref().unwrap().int()
     }
+
     pub fn uint(&self) -> Result<&usize, ErrIncorrectArgType> {
         self.arg.as_ref().unwrap().uint()
     }
+
     pub fn string(&self) -> Result<&String, ErrIncorrectArgType> {
         self.arg.as_ref().unwrap().string()
     }
@@ -183,19 +185,21 @@ impl AnsweredFlagArgument {
     pub fn int(&self) -> Result<&isize, ErrIncorrectArgType> {
         match self {
             Self::Int(i) => Ok(i),
-            _ => Err(ErrIncorrectArgType)
+            _ => Err(ErrIncorrectArgType),
         }
     }
+
     pub fn uint(&self) -> Result<&usize, ErrIncorrectArgType> {
         match self {
             Self::Uint(u) => Ok(u),
-            _ => Err(ErrIncorrectArgType)
+            _ => Err(ErrIncorrectArgType),
         }
     }
+
     pub fn string(&self) -> Result<&String, ErrIncorrectArgType> {
         match self {
             Self::String(s) => Ok(s),
-            _ => Err(ErrIncorrectArgType)
+            _ => Err(ErrIncorrectArgType),
         }
     }
 }
