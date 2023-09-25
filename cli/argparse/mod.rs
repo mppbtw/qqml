@@ -143,7 +143,6 @@ impl Command {
 
     /// Call this on the root command to initate the parsing sequence.
     pub fn execute(&self, args: &[String]) -> Infallible {
-
         // We only want the positional arguments from this, flags are handled seperately
         let mut args: Vec<String> = args.into();
 
@@ -157,7 +156,6 @@ impl Command {
             Some(arg) => {
                 if let Some(c) = self.lookup_command(arg) {
                     c.execute(&args[1..]);
-
                 } else if match self.lookup_flag(arg) {
                     Some(f) => f.long == "--help",
                     None => false,
