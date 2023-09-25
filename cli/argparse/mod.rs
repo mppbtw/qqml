@@ -30,7 +30,7 @@ pub struct Command {
 
 impl Command {
     pub fn new(cmd_info: CommandBuilder) -> Self {
-        Self {
+        let mut new = Self {
             children: vec![],
             usage:    cmd_info.usage,
             long:     cmd_info.long,
@@ -38,7 +38,41 @@ impl Command {
             run:      cmd_info.run,
             args:     cmd_info.args,
             flags:    cmd_info.flags,
+        };
+
+        if new.flags.len() != 0 && new.run.is_none() {
+            panic!("Only leaf commands (without subcommands) can have custom flags!");
         }
+
+        // Check if the --help flag already exists
+        if !new
+            .flags
+            .iter()
+            .map(|f| f.long)
+            .collect::<Vec<&str>>()
+            .contains(&"--help")
+        {
+            let mut help_flag = Flag {
+                long:    "--help",
+                aliases: vec![],
+                arg:     None,
+            };
+
+            // Check if the -h alias has already been taken (either by an alias or the full
+            // name of a flag)
+            if 'a: {
+                for f in new.flags.iter() {
+                    if f.aliases.contains(&"-h") || f.long == "-h" {
+                        break 'a false;
+                    }
+                }
+                true // treesitter chokes on this keyword for some reason
+            } {
+                help_flag.aliases.push("-h");
+            }
+            new.flags.push(help_flag);
+        }
+        new
     }
 
     pub fn add_command(&mut self, cmd: Command) {
@@ -59,12 +93,8 @@ impl Command {
         None
     }
 
-    /// Call this on the root command to initate the parsing sequence.
-    pub fn execute(&self, args: &[String]) -> Infallible {
-        // We only want the positional arguments from this, flags are handled seperately
-        let mut args: Vec<String> = args.into();
+    fn execute_leaf(&self, mut args: Vec<String>) -> Infallible {
         let mut answered_flags: Vec<AnsweredFlag> = vec![];
-
         let mut i = 0;
         while i < args.len() {
             let arg = args.get(i).unwrap().to_owned();
@@ -80,7 +110,7 @@ impl Command {
                             }
 
                             if !matches!(flag.clone().arg.unwrap(), FlagArgumentType::String) {
-                                unreachable!("Only the string argument type is implemented yet.");
+                                unimplemented!("Only the string argument type is implemented yet.");
                             }
 
                             let flag_argument = args.get(i).cloned();
@@ -96,39 +126,68 @@ impl Command {
                                 flag_argument.unwrap().to_owned(),
                             ))
                         },
-                    })
+                    });
+                    break;
                 }
             }
             i += 1;
         }
 
-        // If it's a leaf command
-        if self.run.is_some() {
-            if args.len() != self.args {
-                println!("Expected {} arguments, got {}", self.args, args.len());
-                exit(0);
-            }
-            self.run.unwrap()(&args[..], AnsweredFlags {
-                flags: answered_flags,
-            });
+        let flags_result = AnsweredFlags {
+            flags: answered_flags,
+        };
 
-        // It has subcommands
-        } else {
-            match args.get(0) {
-                Some(arg) => {
-                    if let Some(c) = self.lookup_command(arg) {
-                        c.execute(&args[1..])
-                    } else {
-                        exit(1);
-                    };
-                }
-                None => {
-                    self.help_screen();
-                }
-            }
+        if args.len() != self.args {
+            println!("Expected {} arguments, got {}", self.args, args.len());
+            exit(0);
         }
 
+        self.run.unwrap()(&args[..], flags_result);
+
+        exit(0);
+    }
+
+    /// Call this on the root command to initate the parsing sequence.
+    pub fn execute(&self, args: &[String]) -> Infallible {
+        // We only want the positional arguments from this, flags are handled seperately
+        let mut args: Vec<String> = args.into();
+
+        // If it's a leaf command
+        if self.run.is_some() {
+            self.execute_leaf(args);
+        }
+
+        // If it has more subcommands
+
+        match args.get(0) {
+            Some(arg) => {
+                if let Some(c) = self.lookup_command(arg) {
+                    c.execute(&args[1..]);
+                } else if {
+                    match self.lookup_flag(arg) {
+                        Some(f) => true,
+                        None => false,
+                    }
+                } {
+                    self.help_screen();
+                } else {
+                    exit(1);
+                };
+            }
+            None => {
+                self.help_screen();
+            }
+        }
         exit(0)
+    }
+
+    fn lookup_flag(&self, arg: &str) -> Option<&Flag> {
+        for f in self.flags.iter() {
+            if f.long == arg || f.aliases.contains(&arg) {
+                return Some(&f)
+            }
+        }
+        None
     }
 }
 
