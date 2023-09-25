@@ -95,42 +95,36 @@ impl Command {
 
     fn execute_leaf(&self, mut args: Vec<String>) -> Infallible {
         let mut answered_flags: Vec<AnsweredFlag> = vec![];
-        let mut i = 0;
-        while i < args.len() {
-            let arg = args.get(i).unwrap().to_owned();
-            for flag in self.flags.iter() {
-                if flag.long == &arg || flag.aliases.contains(&arg.as_str()) {
+
+        for (i, arg) in args.clone().into_iter().enumerate() {
+            let f = match self.lookup_flag(&arg) {
+                None => continue,
+                Some(f) => f,
+            };
+
+            args.remove(i);
+            answered_flags.push(AnsweredFlag {
+                long: f.long,
+                arg:  'a: {
+                    if f.arg.is_none() {
+                        break 'a None;
+                    }
+
+                    if !matches!(f.arg, Some(FlagArgumentType::String)) {
+                        unimplemented!("Only the string argument type is implemented yet.");
+                    }
+
+                    let flag_argument = args.get(i).cloned();
+                    if flag_argument.is_none() {
+                        println!("The f {} requires an argument of type STRING", f.long);
+                        exit(1);
+                    }
                     args.remove(i);
-
-                    answered_flags.push(AnsweredFlag {
-                        long: flag.long,
-                        arg:  'a: {
-                            if flag.arg.is_none() {
-                                break 'a None;
-                            }
-
-                            if !matches!(flag.clone().arg.unwrap(), FlagArgumentType::String) {
-                                unimplemented!("Only the string argument type is implemented yet.");
-                            }
-
-                            let flag_argument = args.get(i).cloned();
-                            if flag_argument.is_none() {
-                                println!(
-                                    "The flag {} requires an argument of type STRING",
-                                    flag.long
-                                );
-                                exit(1);
-                            }
-                            args.remove(i);
-                            Some(AnsweredFlagArgument::String(
-                                flag_argument.unwrap().to_owned(),
-                            ))
-                        },
-                    });
-                    break;
-                }
-            }
-            i += 1;
+                    Some(AnsweredFlagArgument::String(
+                        flag_argument.unwrap().to_owned(),
+                    ))
+                },
+            });
         }
 
         let flags_result = AnsweredFlags {
@@ -149,6 +143,7 @@ impl Command {
 
     /// Call this on the root command to initate the parsing sequence.
     pub fn execute(&self, args: &[String]) -> Infallible {
+
         // We only want the positional arguments from this, flags are handled seperately
         let mut args: Vec<String> = args.into();
 
@@ -158,16 +153,14 @@ impl Command {
         }
 
         // If it has more subcommands
-
         match args.get(0) {
             Some(arg) => {
                 if let Some(c) = self.lookup_command(arg) {
                     c.execute(&args[1..]);
-                } else if {
-                    match self.lookup_flag(arg) {
-                        Some(f) => true,
-                        None => false,
-                    }
+
+                } else if match self.lookup_flag(arg) {
+                    Some(f) => f.long == "--help",
+                    None => false,
                 } {
                     self.help_screen();
                 } else {
@@ -184,7 +177,7 @@ impl Command {
     fn lookup_flag(&self, arg: &str) -> Option<&Flag> {
         for f in self.flags.iter() {
             if f.long == arg || f.aliases.contains(&arg) {
-                return Some(&f)
+                return Some(&f);
             }
         }
         None
