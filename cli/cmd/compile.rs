@@ -21,22 +21,20 @@ use libqqml::parse;
 use libqqml::render_error;
 
 use crate::argparse::CommandBuilder;
-use crate::Command;
 use crate::argparse::Flag;
 use crate::argparse::FlagArgumentType;
+use crate::Command;
 
 pub fn init(parent: &mut Command) {
     parent.add_command(Command::new(CommandBuilder {
         usage: "compile",
-        long: "Compile QQML to a JSON format, which can later be ran.",
+        long:  "Compile QQML to a JSON format, which can later be ran.",
         short: "Compile QQML to JSON",
-        args: 1,
-        run: Some(|args, flags| {
+        args:  1,
+        run:   Some(|args, flags| {
             let src_path = &*args[0];
             let src = match fs::read_to_string(src_path) {
-                Ok(s) => {
-                    s
-                },
+                Ok(s) => s,
                 Err(e) => {
                     println!("Failed to read from path {}: {}", src_path, e);
                     exit(1);
@@ -56,23 +54,21 @@ pub fn init(parent: &mut Command) {
                                     exit(1);
                                 }
                             }
-                        },
-                        None => println!("{}", output)
+                        }
+                        None => println!("{}", output),
                     }
                     exit(0);
-                },
+                }
                 Err(e) => {
                     println!("{}", render_error(&src, &e, Some(&src_path.to_string())));
                     exit(1);
                 }
             }
         }),
-        flags: vec![
-            Flag {
-                long: "--output",
-                aliases: vec!["-o"],
-                arg: Some(FlagArgumentType::String)
-            }
-        ]
+        flags: vec![Flag {
+            long:    "--output",
+            aliases: vec!["-o"],
+            arg:     Some(FlagArgumentType::String),
+        }],
     }))
 }
