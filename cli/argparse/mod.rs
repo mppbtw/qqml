@@ -96,13 +96,19 @@ impl Command {
     fn execute_leaf(&self, mut args: Vec<String>) -> Infallible {
         let mut answered_flags: Vec<AnsweredFlag> = vec![];
 
-        for (i, arg) in args.clone().into_iter().enumerate() {
+        let mut flag_indeces: Vec<usize> = vec![];
+        let mut i = 0;
+        while i < args.len() {
+            let arg = args.get(i).unwrap();
             let f = match self.lookup_flag(&arg) {
-                None => continue,
+                None => {
+                    i += 1;
+                    continue;
+                }
                 Some(f) => f,
             };
 
-            args.remove(i);
+            flag_indeces.push(i);
             answered_flags.push(AnsweredFlag {
                 long: f.long,
                 arg:  'a: {
@@ -114,22 +120,37 @@ impl Command {
                         unimplemented!("Only the string argument type is implemented yet.");
                     }
 
-                    let flag_argument = args.get(i).cloned();
+                    let flag_argument = args.get(i+1).cloned();
                     if flag_argument.is_none() {
                         println!("The f {} requires an argument of type STRING", f.long);
                         exit(1);
                     }
-                    args.remove(i);
+
+                    flag_indeces.push(i+1);
+                    i += 1;
                     Some(AnsweredFlagArgument::String(
                         flag_argument.unwrap().to_owned(),
                     ))
                 },
             });
+            i += 1;
+        }
+
+
+        // Sort backwards so we dont have to shift the indeces when removing them from the args
+        flag_indeces.sort_by(|a, b| b.cmp(a));
+
+        for i in flag_indeces {
+            args.remove(i);
         }
 
         let flags_result = AnsweredFlags {
             flags: answered_flags,
         };
+
+        if flags_result.get("--help").is_some() {
+            self.help_screen();
+        }
 
         if args.len() != self.args {
             println!("Expected {} arguments, got {}", self.args, args.len());
