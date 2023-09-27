@@ -120,13 +120,13 @@ impl Command {
                         unimplemented!("Only the string argument type is implemented yet.");
                     }
 
-                    let flag_argument = args.get(i+1).cloned();
+                    let flag_argument = args.get(i + 1).cloned();
                     if flag_argument.is_none() {
                         println!("The f {} requires an argument of type STRING", f.long);
                         exit(1);
                     }
 
-                    flag_indeces.push(i+1);
+                    flag_indeces.push(i + 1);
                     i += 1;
                     Some(AnsweredFlagArgument::String(
                         flag_argument.unwrap().to_owned(),
@@ -136,8 +136,8 @@ impl Command {
             i += 1;
         }
 
-
-        // Sort backwards so we dont have to shift the indeces when removing them from the args
+        // Sort backwards so we dont have to shift the indeces when removing them from
+        // the args
         flag_indeces.sort_by(|a, b| b.cmp(a));
 
         for i in flag_indeces {

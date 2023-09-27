@@ -19,6 +19,8 @@ use std::process::exit;
 
 use libqqml::render_error;
 use libqqml::run;
+use libqqml::run_from_state;
+use libqqml::State;
 
 use crate::argparse::CommandBuilder;
 use crate::argparse::Flag;
@@ -33,35 +35,57 @@ pub fn init(parent: &mut Command) {
         args:  1,
         run:   Some(|args, flags| {
             // Check for the path to a log file
-            let mut log_path: Option<&String> = None;
-            match flags.get("--log") {
-                None => (),
-                Some(f) => {
-                    log_path = Some(f.string().unwrap());
-                }
+            let log_path: Option<&String> = match flags.get("--log") {
+                None => None,
+                Some(f) => Some(f.string().unwrap()),
             };
 
             // We can be sure that args has a length of 1 because of my epic argparsing
-            // library
+            // library (tm)
             let path = args[0].to_owned();
-            match read_to_string(&path) {
-                Ok(s) => match run(&s, Some(&path), log_path) {
-                    Ok(_) => (),
-                    Err(e) => {
-                        println!("{}", render_error(&s, &e, Some(&path)));
-                    }
-                },
+            let f_contents = match read_to_string(&path) {
+                Ok(s) => s,
                 Err(e) => {
                     println!("Failed to read from file {}: {}", path, e.to_string());
                     exit(1)
                 }
+            };
+
+            match flags.get("--json") {
+                None => {
+                    match run(&f_contents, Some(&path), log_path) {
+                        Ok(_) => (),
+                        Err(e) => {
+                            println!("{}", render_error(&f_contents, &e, Some(&path)));
+                            exit(1);
+                        }
+                    }
+                    exit(0);
+                }
+                Some(_) => {
+                    let state = match State::from_json(f_contents) {
+                        Ok(s) => s,
+                        Err(e) => {
+                            println!("Failed to construct state from JSON: {:?}", e);
+                            exit(1);
+                        }
+                    };
+
+                    run_from_state(state, log_path);
+                }
             }
-            exit(0);
         }),
-        flags: vec![Flag {
-            aliases: vec!["-l"],
-            long:    "--log",
-            arg:     Some(FlagArgumentType::String),
-        }],
+        flags: vec![
+            Flag {
+                aliases: vec!["-l"],
+                long:    "--log",
+                arg:     Some(FlagArgumentType::String),
+            },
+            Flag {
+                aliases: vec!["-j"],
+                long:    "--json",
+                arg:     None,
+            },
+        ],
     }))
 }
