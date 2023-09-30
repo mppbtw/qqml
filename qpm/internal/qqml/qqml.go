@@ -1,6 +1,7 @@
 package qqml
 
 import (
+	"os"
 	"os/exec"
 )
 
@@ -29,20 +30,6 @@ type QQMLRunCommand struct {
 	srcType SrcType
 }
 
-func (c *QQMLRunCommand) run() error {
-	args, err := c.constructArgs()
-	if err != nil {
-		return err
-	}
-
-	err = exec.Command("qqml", args).Run()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (c *QQMLRunCommand) constructArgs() (string, error) {
 	args := "run"
 
@@ -64,4 +51,53 @@ func (c *QQMLRunCommand) constructArgs() (string, error) {
 	return args, nil
 }
 
-func (c *QQMLRunCommand) output() {}
+func (c *QQMLRunCommand) Output() (string, error) {
+	args, err := c.constructArgs()
+	if err != nil {
+		return "", err
+	}
+
+	cmd := exec.Command("qqml", args)
+
+	out, err := cmd.Output()
+
+	if err != nil {
+		return "", err
+	}
+
+	return string(out), nil
+}
+
+func (c *QQMLRunCommand) Run() error {
+	args, err := c.constructArgs()
+	if err != nil {
+		return err
+	}
+
+	cmd := exec.Command("qqml", args)
+
+	cmd.Stdout = os.Stdout
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+
+	err = cmd.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *QQMLRunCommand) RunHeadless() error {
+	args, err := c.constructArgs()
+	if err != nil {
+		return err
+	}
+
+	err = exec.Command("qqml", args).Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
