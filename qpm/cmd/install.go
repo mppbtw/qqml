@@ -20,8 +20,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"os/exec"
 	"qpm/internal"
+	"qpm/internal/qqml"
 	"strings"
 	"unicode"
 
@@ -113,18 +113,14 @@ var (
 				}
 
 			}
-			f, err := os.Create(cacheFilePath)
-			if err != nil {
-				fmt.Println("Failed to create file", cacheFilePath+":", err.Error())
-				os.Exit(1)
-			}
 
-			command := exec.Command("qqml", "--json", qpmDir+"local/src/"+name+".qqml")
-			command.Stdout = f
+			command := qqml.QQMLRunCommand{}
+			command.SrcType = qqml.QQMLFile
+			command.SrcPath = qpmDir+"local/src/"+name+".qqml"
+			command.LogPath = cacheFilePath
 			err = command.Run()
 			if err != nil {
 				fmt.Println("Error during compilation: ", err.Error())
-				fmt.Println("Attempted commmand: qqml --json", qpmDir+"local/src/"+name+".qqml")
 				os.Exit(1)
 			}
 		},
