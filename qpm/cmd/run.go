@@ -19,9 +19,9 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"qpm/internal"
 	"qpm/internal/locate"
+	"qpm/internal/qqml"
 
 	"github.com/spf13/cobra"
 )
@@ -59,33 +59,26 @@ var (
 					fmt.Println("Multiple quizzes found with that name")
 					os.Exit(1)
 				}
-				command := exec.Command("qqml",
-					"--resume",
-					paths[0],
-					"--log",
-					locate.GenLogFileFromCache(paths[0]),
-				)
-				command.Stdout = os.Stdout
-				command.Stderr = os.Stderr
-				command.Stdin = os.Stdin
-				command.Run()
+				command := qqml.QQMLRunCommand{}
+				command.LogPath = locate.GenLogFileFromCache(paths[0])
+				command.SrcType = qqml.QQMLFile
+				command.SrcPath = paths[0]
+				err = command.Run()
+				if err != nil {
+					fmt.Println("Error: ", err.Error())
+					os.Exit(1)
+				}
 				os.Exit(0)
 			}
 			if len(paths) != 1 {
 				fmt.Println("Multiple quizzes found with that name")
 				os.Exit(1)
 			}
-			fmt.Println("logfile path: ", paths[0])
 
-			command := exec.Command("qqml",
-				"--resume",
-				paths[0],
-				"--log",
-				paths[0],
-			)
-			command.Stdout = os.Stdout
-			command.Stderr = os.Stderr
-			command.Stdin = os.Stdin
+			command := qqml.QQMLRunCommand{}
+			command.LogPath = paths[0]
+			command.SrcType = qqml.JsonFile
+			command.SrcPath = paths[0]
 			command.Run()
 		},
 	}
