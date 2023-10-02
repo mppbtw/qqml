@@ -1,7 +1,6 @@
 package qqml
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"strings"
@@ -36,7 +35,7 @@ func (c *QQMLRunCommand) constructArgs() ([]string, error) {
 	}
 
 	if len(c.LogPath) != 0 {
-		args += " --log " + c.LogPath
+		args += "--log " + c.LogPath
 	}
 	return strings.Split(args, " "), nil
 }
