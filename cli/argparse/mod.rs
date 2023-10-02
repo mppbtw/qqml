@@ -40,7 +40,7 @@ impl Command {
             flags:    cmd_info.flags,
         };
 
-        if new.flags.len() != 0 && new.run.is_none() {
+        if !new.flags.is_empty() && new.run.is_none() {
             panic!("Only leaf commands (without subcommands) can have custom flags!");
         }
 
@@ -60,14 +60,14 @@ impl Command {
 
             // Check if the -h alias has already been taken (either by an alias or the full
             // name of a flag)
-            if 'a: {
+            let alias_avaliable = 'a: {
                 for f in new.flags.iter() {
                     if f.aliases.contains(&"-h") || f.long == "-h" {
                         break 'a false;
                     }
                 }
                 true // treesitter chokes on this keyword for some reason
-            } {
+            }; if alias_avaliable {
                 help_flag.aliases.push("-h");
             }
             new.flags.push(help_flag);
@@ -85,12 +85,7 @@ impl Command {
     }
 
     fn lookup_command(&self, arg: &str) -> Option<&Command> {
-        for child in self.children.iter() {
-            if child.usage == arg {
-                return Some(&child);
-            }
-        }
-        None
+        self.children.iter().find(|&child| child.usage == arg)
     }
 
     fn execute_leaf(&self, mut args: Vec<String>) -> Infallible {
@@ -100,7 +95,7 @@ impl Command {
         let mut i = 0;
         while i < args.len() {
             let arg = args.get(i).unwrap();
-            let f = match self.lookup_flag(&arg) {
+            let f = match self.lookup_flag(arg) {
                 None => {
                     i += 1;
                     continue;
@@ -194,12 +189,7 @@ impl Command {
     }
 
     fn lookup_flag(&self, arg: &str) -> Option<&Flag> {
-        for f in self.flags.iter() {
-            if f.long == arg || f.aliases.contains(&arg) {
-                return Some(&f);
-            }
-        }
-        None
+        self.flags.iter().find(|&f| f.long == arg || f.aliases.contains(&arg))
     }
 }
 
@@ -284,11 +274,6 @@ pub struct AnsweredFlags {
 }
 impl AnsweredFlags {
     pub fn get(&self, name: &str) -> Option<&AnsweredFlag> {
-        for flag in self.flags.iter() {
-            if flag.long == name {
-                return Some(&flag);
-            }
-        }
-        None
+        self.flags.iter().find(|f| f.long == name)
     }
 }

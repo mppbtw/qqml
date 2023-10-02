@@ -175,7 +175,7 @@ impl Render for QuestionBody<'_> {
                 output += "  ";
                 output += ANSI_BLACK;
                 output += ANSI_BG_WHITE;
-                output += &a.0;
+                output += a.0;
                 output += ANSI_RESET;
                 if &i == self.selected {
                     output += " <";
@@ -183,7 +183,7 @@ impl Render for QuestionBody<'_> {
             } else if &i == self.selected {
                 output += &format!("   {} <", a.0);
             } else {
-                output += &("   ".to_owned() + &a.0);
+                output += &("   ".to_owned() + a.0);
             }
             output += "\n";
         }
