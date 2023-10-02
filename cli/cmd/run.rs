@@ -46,7 +46,7 @@ pub fn init(parent: &mut Command) {
             let f_contents = match read_to_string(&path) {
                 Ok(s) => s,
                 Err(e) => {
-                    println!("Failed to read from file {}: {}", path, e.to_string());
+                    println!("Failed to read from file {}: {}", path, e);
                     exit(1)
                 }
             };
