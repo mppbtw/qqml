@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+const SPACE_BETWEEN_CMD_AND_DESC: usize = 2;
+
 use std::convert::Infallible;
 use std::process::exit;
 
@@ -83,7 +85,71 @@ impl Command {
     }
 
     pub fn help_screen(&self) -> Infallible {
-        println!("placeholder help screen");
+        // Long description
+        println!("{}\n", self.long);
+
+        // Usage part
+        let mut usage_msg = String::new();
+        usage_msg += "Usage:\n  ";
+        usage_msg += self.usage;
+        usage_msg += " ";
+
+        if self.children.len() != 0 {
+            usage_msg += "[command]";
+            usage_msg += " "
+        }
+
+        if self.args > 0 {
+            usage_msg += &format!("[{} arguments]", self.args);
+            usage_msg += " ";
+        }
+
+        if self.flags.len() > 1 {
+            usage_msg += "[flags]";
+            usage_msg += " ";
+        };
+
+        println!("{}\n", usage_msg);
+
+        // Commands list
+        if self.children.len() != 0 {
+            println!("Commands:\n");
+            // The descriptions should be evenly spaced like this:
+            //
+            // run      Run a file
+            // compile  Compile some code
+            // check    Check to see if some QQML code is valid
+            //
+
+            let longest_command_len = self
+                .children
+                .iter()
+                .map(|cmd| cmd.usage.len())
+                .max()
+                .unwrap();
+
+            // jordan peterson when saying literally anything:
+            let chars_before_desc_starts = longest_command_len + SPACE_BETWEEN_CMD_AND_DESC + 1;
+
+            self.children.iter().for_each(|cmd| {
+                // The first 2 spaces in this print are not counted in calculations of
+                // decscription spacing
+                println!(
+                    "  {}{}{}",
+                    cmd.usage,
+                    (0..(chars_before_desc_starts) - cmd.usage.len())
+                        .map(|_| "")
+                        .collect::<Vec<&str>>()
+                        .join(" "),
+                    cmd.short
+                )
+            });
+        }
+
+        // Flags list
+        if self.flags.len() != 0 {
+            println!("Flags:\n");
+        }
         exit(0);
     }
 
