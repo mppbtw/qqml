@@ -19,7 +19,7 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"qpm/internal"
+	"qpm/internal/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -29,7 +29,7 @@ var initCmd = &cobra.Command{
 	Short: "Initialise the ~/.qpm directory",
 	Long:  "Initialise the ~/.qpm directory to store QQML quiz files",
 	Run: func(cmd *cobra.Command, args []string) {
-		res, err := internal.IsInitialised()
+		res, err := utils.IsInitialised()
 		if err != nil {
 			fmt.Println("Failed to tell if QPM is already initialised:", err.Error())
 			os.Exit(1)
@@ -48,7 +48,7 @@ var initCmd = &cobra.Command{
 		qpmDir := homeDir + "/.qpm/"
 		for _, dir := range requiredDirs {
 			dir = qpmDir + dir
-			if internal.PathExists(dir) {
+			if utils.PathExists(dir) {
 				fmt.Println("The directory", dir, "already exists")
 				continue
 			}
