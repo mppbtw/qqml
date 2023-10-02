@@ -11,7 +11,7 @@ func CompileQQML(srcPath string) (string, error) {
 	return string(out), err
 }
 
-func CompileQQMLToFile(srcPath, outPath string) (error) {
+func CompileQQMLToFile(srcPath, outPath string) error {
 	cmd := exec.Command("qqml", "compile", srcPath, "--output", outPath)
 
 	return cmd.Run()

@@ -19,9 +19,9 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"qpm/internal/utils"
 	"qpm/internal/locate"
 	"qpm/internal/qqml"
+	"qpm/internal/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -63,7 +63,7 @@ var (
 				command := qqml.QQMLRunCommand{}
 				command.SrcType = qqml.JsonFile
 				command.SrcPath = logPath[0]
-				command.LogPath = logPath[0] 
+				command.LogPath = logPath[0]
 				if err = command.Run(); err != nil {
 					fmt.Println("Failed to run the quiz:", err.Error())
 					os.Exit(1)
