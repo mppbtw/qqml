@@ -82,7 +82,7 @@ pub fn init(parent: &mut Command) {
                 arg:     Some(FlagArgumentType::String),
             },
             Flag {
-                aliases: vec!["-j"],
+                aliases: vec!["-j", "--jays-son"],
                 long:    "--json",
                 arg:     None,
             },

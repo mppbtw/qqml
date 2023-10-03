@@ -20,6 +20,7 @@ use std::convert::Infallible;
 use std::process::exit;
 
 use super::flag::*;
+use super::utils::separate_lines;
 
 /// This is a pretty simple argparsing solution inspired by Go's Cobra library.
 pub struct Command {
@@ -144,11 +145,32 @@ impl Command {
                     cmd.short
                 )
             });
+            println!("")
         }
 
         // Flags list
         if self.flags.len() != 0 {
             println!("Flags:\n");
+
+            // The descriptions and aliases should be evenly spaced like this:
+            //
+            // --help    [-h]  Run a file
+            // --verbose [-v]  Compile some code
+            // --version [-V]  Check to see if some QQML code is valid
+            //
+
+            // We first need to space the aliases list
+            let longest_flag_len = self.flags.iter().map(|f| f.long.len()).max().unwrap();
+            let chars_before_aliases_list = longest_flag_len + SPACE_BETWEEN_CMD_AND_DESC + 1;
+            println!(
+                "{}",
+                separate_lines(vec![
+                    self.flags.iter().map(|f| f.long.to_owned()).collect(),
+                    self.flags.iter().map(|f| f.aliases.join(", ")).collect(),
+                ])
+            )
+
+            // We then space the aliases list and the description
         }
         exit(0);
     }
