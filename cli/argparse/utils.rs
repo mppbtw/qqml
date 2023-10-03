@@ -14,12 +14,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use std::convert::Infallible;
-use std::process::exit;
+pub struct LineSeparationError;
 
-mod command;
-mod flag;
-mod utils;
-
-pub use command::*;
-pub use flag::*;
+pub fn separate_lines<S>(inp: Vec<Vec<S>>, gaps_size: usize) -> Result<String, LineSeparationError>
+where
+    S: ToString,
+{
+    let mut output = String::new();
+    inp.iter().for_each(|v| {
+        let longest = match v.iter().map(|s| s.to_string().len()).max() {
+            Some(l) => l,
+            None => 0,
+        };
+    });
+    Ok(output)
+}
