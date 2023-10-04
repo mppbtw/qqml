@@ -164,10 +164,14 @@ impl Command {
             let chars_before_aliases_list = longest_flag_len + SPACE_BETWEEN_CMD_AND_DESC + 1;
             println!(
                 "{}",
-                separate_lines(vec![
-                    self.flags.iter().map(|f| f.long.to_owned()).collect(),
-                    self.flags.iter().map(|f| f.aliases.join(", ")).collect(),
-                ])
+                separate_lines(
+                    vec![
+                        self.flags.iter().map(|f| f.long.to_owned()).collect(),
+                        self.flags.iter().map(|f| f.aliases.join(", ")).collect(),
+                    ],
+                    2
+                )
+                .unwrap()
             )
 
             // We then space the aliases list and the description
