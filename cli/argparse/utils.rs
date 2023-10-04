@@ -28,38 +28,57 @@ pub struct LineSeparationError;
 ///
 ///        ^^ gaps_size
 pub fn separate_lines<S>(
-    mut inp: Vec<Vec<S>>,
+    mut inp: Vec<Vec<S>>, // This is mutable because its already a nice data structure to construct
+    // the output with.
     gaps_size: usize,
 ) -> Result<String, LineSeparationError>
 where
     S: ToString + From<String>,
 {
-    let mut output = String::new();
-    if inp.len() == 0 {
-        return Ok(output);
+    let mut output: Vec<Vec<String>> = vec![];
+    for (i, line) in inp.iter().enumerate() {
+        output.push(vec![]);
+        for col in line {
+            output[i].push("".to_owned());
+        }
     }
 
-    // Make sure that every one of the inner vectors is the same size
+    if inp.len() == 0 {
+        return Ok("".to_owned());
+    }
+
+    // Make sure that every one of the inner vectors is the same size.
     let longest_line = match inp.iter().map(|v| v.len()).max() {
         Some(l) => l,
         None => return Err(LineSeparationError),
     };
 
     for line in inp.iter_mut() {
-        (0..line.len() - longest_line).for_each(|_| line.push(String::from("").into()))
+        (0..line.len() - longest_line).for_each(|_| line.push(String::from("").into()));
+    }
+    for line in output.iter_mut() {
+        (0..line.len() - longest_line).for_each(|_| line.push(String::from("")));
     }
 
-    for (i, col) in inp[0].iter().enumerate() {'a: {
-        if i == inp[0].len() - 1 {
-            break 'a;
+    for (i, col) in inp[0].iter().enumerate() {
+        'a: {
+            let longest_in_col = match inp.iter().map(|l| l[i].to_string().len()).max() {
+                Some(n) => n,
+                None => return Err(LineSeparationError),
+            };
+
+            let chars_before_next_col = longest_in_col + gaps_size + 1;
+            for (j, lines) in inp.iter().enumerate() {
+                let item: String = lines[i].to_string();
+                output[j][i] = inp[j][i].to_string();
+                (0..chars_before_next_col - item.len()).for_each(|_| output[j][i] += " ");
+            }
         }
+    }
 
-        let longest_in_col = match inp.iter().map(|l| l.len()).max() {
-            Some(n) => n,
-            None => return Err(LineSeparationError),
-        };
-
-        let chars_before_next_col = longest_in_col + gaps_size + 1;
-    }}
-    Ok(output)
+    Ok(output
+        .iter()
+        .map(|l| l.join(""))
+        .collect::<Vec<String>>()
+        .join("\n"))
 }
