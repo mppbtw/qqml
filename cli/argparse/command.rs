@@ -21,6 +21,7 @@ use std::process::exit;
 
 use super::flag::*;
 use super::utils::separate_lines;
+use crate::argparse::utils::the_one_and_only_left_pad;
 
 /// This is a pretty simple argparsing solution inspired by Go's Cobra library.
 pub struct Command {
@@ -114,9 +115,8 @@ impl Command {
 
         // Commands list
         if self.children.len() != 0 {
-            println!("Commands:\n");
             println!(
-                "{}",
+                "Commands:\n{}\n",
                 separate_lines(
                     self.children
                         .iter()
@@ -125,37 +125,30 @@ impl Command {
                     2
                 )
                 .unwrap()
+                .split("\n")
+                .map(|line| the_one_and_only_left_pad(line, 3, ' '))
+                .collect::<Vec<String>>()
+                .join("\n"),
             );
-            println!("")
         }
 
         // Flags list
         if self.flags.len() != 0 {
-            println!("Flags:\n");
-
-            // The descriptions and aliases should be evenly spaced like this:
-            //
-            // --help    [-h]  Run a file
-            // --verbose [-v]  Compile some code
-            // --version [-V]  Check to see if some QQML code is valid
-            //
-
-            // We first need to space the aliases list
-            let longest_flag_len = self.flags.iter().map(|f| f.long.len()).max().unwrap();
-            let chars_before_aliases_list = longest_flag_len + SPACE_BETWEEN_CMD_AND_DESC + 1;
             println!(
-                "{}",
+                "Flags:\n{}",
                 separate_lines(
-                    vec![
-                        self.flags.iter().map(|f| f.long.to_owned()).collect(),
-                        self.flags.iter().map(|f| f.aliases.join(", ")).collect(),
-                    ],
+                    self.flags
+                        .iter()
+                        .map(|c| vec![c.long.to_string(), c.aliases.join(", ")])
+                        .collect::<Vec<Vec<String>>>(),
                     2
                 )
                 .unwrap()
-            )
-
-            // We then space the aliases list and the description
+                .split("\n")
+                .map(|line| the_one_and_only_left_pad(line, 3, ' '))
+                .collect::<Vec<String>>()
+                .join("\n"),
+            );
         }
         exit(0);
     }
