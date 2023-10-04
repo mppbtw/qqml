@@ -43,7 +43,7 @@ where
         }
     }
 
-    if inp.len() == 0 {
+    if inp.is_empty() {
         return Ok("".to_owned());
     }
 
@@ -88,10 +88,10 @@ where
     S: ToString,
 {
     let inp = inp.to_string();
-    return (0..chars)
+    (0..chars)
         .map(|_| "")
         .collect::<Vec<&'static str>>()
         .join(&pad_char.to_string())
         .to_string()
-        + &inp;
+        + &inp
 }
