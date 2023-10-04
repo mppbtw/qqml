@@ -115,36 +115,17 @@ impl Command {
         // Commands list
         if self.children.len() != 0 {
             println!("Commands:\n");
-            // The descriptions should be evenly spaced like this:
-            //
-            // run      Run a file
-            // compile  Compile some code
-            // check    Check to see if some QQML code is valid
-            //
-
-            let longest_command_len = self
-                .children
-                .iter()
-                .map(|cmd| cmd.usage.len())
-                .max()
-                .unwrap();
-
-            // jordan peterson when saying literally anything:
-            let chars_before_desc_starts = longest_command_len + SPACE_BETWEEN_CMD_AND_DESC + 1;
-
-            self.children.iter().for_each(|cmd| {
-                // The first 2 spaces in this print are not counted in calculations of
-                // decscription spacing
-                println!(
-                    "  {}{}{}",
-                    cmd.usage,
-                    (0..(chars_before_desc_starts) - cmd.usage.len())
-                        .map(|_| "")
-                        .collect::<Vec<&str>>()
-                        .join(" "),
-                    cmd.short
+            println!(
+                "{}",
+                separate_lines(
+                    self.children
+                        .iter()
+                        .map(|c| vec![c.usage.to_string(), c.short.to_string()])
+                        .collect::<Vec<Vec<String>>>(),
+                    2
                 )
-            });
+                .unwrap()
+            );
             println!("")
         }
 
