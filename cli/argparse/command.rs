@@ -96,7 +96,7 @@ impl Command {
         usage_msg += self.usage;
         usage_msg += " ";
 
-        if self.children.len() != 0 {
+        if !self.children.is_empty() {
             usage_msg += "[command]";
             usage_msg += " "
         }
@@ -114,7 +114,7 @@ impl Command {
         println!("{}\n", usage_msg);
 
         // Commands list
-        if self.children.len() != 0 {
+        if !self.children.is_empty() {
             println!(
                 "Commands:\n{}\n",
                 separate_lines(
@@ -125,7 +125,7 @@ impl Command {
                     2
                 )
                 .unwrap()
-                .split("\n")
+                .split('\n')
                 .map(|line| the_one_and_only_left_pad(line, 3, ' '))
                 .collect::<Vec<String>>()
                 .join("\n"),
@@ -133,7 +133,7 @@ impl Command {
         }
 
         // Flags list
-        if self.flags.len() != 0 {
+        if !self.flags.is_empty() {
             println!(
                 "Flags:\n{}",
                 separate_lines(
@@ -144,7 +144,7 @@ impl Command {
                     2
                 )
                 .unwrap()
-                .split("\n")
+                .split('\n')
                 .map(|line| the_one_and_only_left_pad(line, 3, ' '))
                 .collect::<Vec<String>>()
                 .join("\n"),
