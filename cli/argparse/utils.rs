@@ -67,7 +67,7 @@ where
                 None => return Err(LineSeparationError),
             };
 
-            let chars_before_next_col = longest_in_col + gaps_size + 1;
+            let chars_before_next_col = longest_in_col + gaps_size;
             for (j, lines) in inp.iter().enumerate() {
                 let item: String = lines[i].to_string();
                 output[j][i] = inp[j][i].to_string();
@@ -81,4 +81,17 @@ where
         .map(|l| l.join(""))
         .collect::<Vec<String>>()
         .join("\n"))
+}
+
+pub fn the_one_and_only_left_pad<S>(inp: S, chars: usize, pad_char: char) -> String
+where
+    S: ToString,
+{
+    let inp = inp.to_string();
+    return (0..chars)
+        .map(|_| "")
+        .collect::<Vec<&'static str>>()
+        .join(&pad_char.to_string())
+        .to_string()
+        + &inp;
 }
