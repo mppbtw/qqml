@@ -78,13 +78,15 @@ pub fn init(parent: &mut Command) {
         flags: vec![
             Flag {
                 aliases: vec!["-l"],
-                long:    "--log",
+                usage:   "--log",
                 arg:     Some(FlagArgumentType::String),
+                long:    None,
             },
             Flag {
-                aliases: vec!["-j", "--jays-son"],
-                long:    "--json",
+                aliases: vec!["-j"],
+                usage:   "--json",
                 arg:     None,
+                long:    None,
             },
         ],
     }))

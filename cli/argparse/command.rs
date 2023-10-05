@@ -54,21 +54,22 @@ impl Command {
         if !new
             .flags
             .iter()
-            .map(|f| f.long)
+            .map(|f| f.usage)
             .collect::<Vec<&str>>()
             .contains(&"--help")
         {
             let mut help_flag = Flag {
-                long:    "--help",
+                usage:   "--help",
                 aliases: vec![],
                 arg:     None,
+                long:    Some("Show this help message"),
             };
 
             // Check if the -h alias has already been taken (either by an alias or the full
             // name of a flag)
             let alias_avaliable = 'a: {
                 for f in new.flags.iter() {
-                    if f.aliases.contains(&"-h") || f.long == "-h" {
+                    if f.aliases.contains(&"-h") || f.usage == "-h" {
                         break 'a false;
                     }
                 }
@@ -139,7 +140,11 @@ impl Command {
                 separate_lines(
                     self.flags
                         .iter()
-                        .map(|c| vec![c.long.to_string(), c.aliases.join(", ")])
+                        .map(|c| vec![
+                            c.usage.to_string(),
+                            c.aliases.join(", "),
+                            c.long.unwrap_or("").to_string()
+                        ])
                         .collect::<Vec<Vec<String>>>(),
                     2
                 )
@@ -174,8 +179,8 @@ impl Command {
 
             flag_indeces.push(i);
             answered_flags.push(AnsweredFlag {
-                long: f.long,
-                arg:  'a: {
+                usage: f.usage,
+                arg:   'a: {
                     if f.arg.is_none() {
                         break 'a None;
                     }
@@ -186,7 +191,7 @@ impl Command {
 
                     let flag_argument = args.get(i + 1).cloned();
                     if flag_argument.is_none() {
-                        println!("The f {} requires an argument of type STRING", f.long);
+                        println!("The f {} requires an argument of type STRING", f.usage);
                         exit(1);
                     }
 
@@ -242,11 +247,12 @@ impl Command {
                 if let Some(c) = self.lookup_command(arg) {
                     c.execute(&args[1..]);
                 } else if match self.lookup_flag(arg) {
-                    Some(f) => f.long == "--help",
+                    Some(f) => f.usage == "--help",
                     None => false,
                 } {
                     self.help_screen();
                 } else {
+                    println!("Unknown argument or subcommand");
                     exit(1);
                 };
             }
@@ -260,7 +266,7 @@ impl Command {
     fn lookup_flag(&self, arg: &str) -> Option<&Flag> {
         self.flags
             .iter()
-            .find(|&f| f.long == arg || f.aliases.contains(&arg))
+            .find(|&f| f.usage == arg || f.aliases.contains(&arg))
     }
 }
 
