@@ -14,24 +14,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-package internal
+mod eval;
+mod json;
+mod lexer;
+mod parser;
 
-import "os"
-
-func IsInitialised() (bool, error) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return false, err
-	}
-	qpmDir := homeDir + "/.qpm/"
-
-	return PathExists(qpmDir) &&
-		PathExists(qpmDir+"local") &&
-		PathExists(qpmDir+"local/src") &&
-		PathExists(qpmDir+"local/log") &&
-		PathExists(qpmDir+"repos"), nil
-}
-func PathExists(path string) bool {
-	_, err := os.Stat(path)
-	return !os.IsNotExist(err)
-}
+pub use eval::diagnostics::render_error;
+pub use eval::repl::run;
+pub use eval::repl::run_from_state;
+pub use eval::state::State;
+pub use lexer::core::Lexer;
+pub use lexer::core::LexerError;
+pub use lexer::token::Token;
+pub use lexer::token::TokenData;
+pub use parser::core::parse;
+pub use parser::error::Error;
+pub use parser::multichoice::parse_answer::parse_multichoice_answer;
+pub use parser::multichoice::parser::parse_multichoice;
+pub use parser::Question;

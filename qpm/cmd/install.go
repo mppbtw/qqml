@@ -20,8 +20,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"os/exec"
-	"qpm/internal"
+	"qpm/internal/qqml"
+	"qpm/internal/utils"
 	"strings"
 	"unicode"
 
@@ -36,11 +36,11 @@ var (
 		Long:    "Install QQML quizzes from either local files or remote repos",
 		Aliases: []string{"i"},
 		Run: func(cmd *cobra.Command, args []string) {
-			if !internal.PathExists(filePath) {
+			if !utils.PathExists(filePath) {
 				fmt.Println("File", filePath, "does not exist")
 				os.Exit(1)
 			}
-			if res, err := internal.IsInitialised(); !(res && err == nil) {
+			if res, err := utils.IsInitialised(); !(res && err == nil) {
 				fmt.Println("QPM has not been initialised, please run qpm init")
 				os.Exit(1)
 			}
@@ -78,7 +78,7 @@ var (
 					fmt.Printf("The name must not be empty\n\n")
 					continue
 				}
-				if internal.PathExists(qpmDir + "local/src/" + name + ".qqml") {
+				if utils.PathExists(qpmDir + "local/src/" + name + ".qqml") {
 					fmt.Printf("A quiz of that name already exists\n\n")
 					continue
 				}
@@ -104,7 +104,7 @@ var (
 
 			// Compile and cache the JSON
 			cacheFilePath := qpmDir + "local/cache/" + name + ".qqml.json"
-			if internal.PathExists(cacheFilePath) {
+			if utils.PathExists(cacheFilePath) {
 				fmt.Println("The JSON cache file", cacheFilePath, "already exists, removing it")
 				err := os.Remove(cacheFilePath)
 				if err != nil {
@@ -113,18 +113,10 @@ var (
 				}
 
 			}
-			f, err := os.Create(cacheFilePath)
-			if err != nil {
-				fmt.Println("Failed to create file", cacheFilePath+":", err.Error())
-				os.Exit(1)
-			}
 
-			command := exec.Command("qqml", "--json", qpmDir+"local/src/"+name+".qqml")
-			command.Stdout = f
-			err = command.Run()
+			err = qqml.CompileQQMLToFile(qpmDir+"local/src/"+name+".qqml", cacheFilePath)
 			if err != nil {
 				fmt.Println("Error during compilation: ", err.Error())
-				fmt.Println("Attempted commmand: qqml --json", qpmDir+"local/src/"+name+".qqml")
 				os.Exit(1)
 			}
 		},

@@ -14,24 +14,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-mod eval;
-mod json;
-mod lexer;
-mod parser;
+package qqml
 
-pub use eval::diagnostics::render_error;
-pub use eval::repl::run;
-pub use eval::repl::run_from_state;
-pub use eval::state::State;
-pub use eval::state::StateConstructor;
-pub use lexer::core::Lexer;
-pub use lexer::core::LexerError;
-pub use lexer::token::Token;
-pub use lexer::token::TokenData;
-pub use parser::core::parse;
-pub use parser::core::ParsedFile;
-pub use parser::error::Error;
-pub use parser::error::ErrorReport;
-pub use parser::multichoice::parse_answer::parse_multichoice_answer;
-pub use parser::multichoice::parser::parse_multichoice;
-pub use parser::Question;
+import (
+	"os/exec"
+)
+
+func CompileQQML(srcPath string) (string, error) {
+	cmd := exec.Command("qqml", "compile", srcPath)
+
+	out, err := cmd.Output()
+	return string(out), err
+}
+
+func CompileQQMLToFile(srcPath, outPath string) error {
+	cmd := exec.Command("qqml", "compile", srcPath, "--output", outPath)
+
+	return cmd.Run()
+}

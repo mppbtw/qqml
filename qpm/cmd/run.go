@@ -19,9 +19,9 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"qpm/internal"
 	"qpm/internal/locate"
+	"qpm/internal/qqml"
+	"qpm/internal/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -36,7 +36,7 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 
 			// Check that QPM is in a valid state
-			res, err := internal.IsInitialised()
+			res, err := utils.IsInitialised()
 			if !res {
 				fmt.Println("QPM is not initialised, please run qpm init")
 				os.Exit(1)
@@ -47,46 +47,61 @@ var (
 			}
 
 			quiz := args[0]
-
-			paths, err := locate.FindLogFile(quiz)
+			logPath, err := locate.FindLogFile(quiz)
 			if err != nil {
-				paths, err := locate.FindCacheFile(quiz)
-				if err != nil {
-					fmt.Println("No such quiz", quiz)
-					os.Exit(1)
-				}
-				if len(paths) != 1 {
-					fmt.Println("Multiple quizzes found with that name")
-					os.Exit(1)
-				}
-				command := exec.Command("qqml",
-					"--resume",
-					paths[0],
-					"--log",
-					locate.GenLogFileFromCache(paths[0]),
-				)
-				command.Stdout = os.Stdout
-				command.Stderr = os.Stderr
-				command.Stdin = os.Stdin
-				command.Run()
-				os.Exit(0)
-			}
-			if len(paths) != 1 {
-				fmt.Println("Multiple quizzes found with that name")
+				fmt.Println("Error locating the quiz:", err)
 				os.Exit(1)
 			}
-			fmt.Println("logfile path: ", paths[0])
 
-			command := exec.Command("qqml",
-				"--resume",
-				paths[0],
-				"--log",
-				paths[0],
-			)
-			command.Stdout = os.Stdout
-			command.Stderr = os.Stderr
-			command.Stdin = os.Stdin
-			command.Run()
+			// We know there is a log file
+			if len(logPath) != 0 {
+				if len(logPath) > 1 {
+					fmt.Println("Many quizzes found by the name:", quiz)
+					os.Exit(1)
+				}
+
+				command := qqml.QQMLRunCommand{}
+				command.SrcType = qqml.JsonFile
+				command.SrcPath = logPath[0]
+				command.LogPath = logPath[0]
+				if err = command.Run(); err != nil {
+					fmt.Println("Failed to run the quiz:", err.Error())
+					os.Exit(1)
+				}
+
+			} else {
+				// We know there is no log file and we have to use the cache
+				cachePaths, err := locate.FindCacheFile(quiz)
+				if err != nil {
+					fmt.Println("Error locating the quiz:", err)
+					os.Exit(1)
+				}
+
+				// There is no log file so there not being a cache means the quiz
+				// doesn't exist because the cache should be created upon installation
+				if len(cachePaths) == 0 {
+					fmt.Println("Failed to find the quiz:", quiz)
+					os.Exit(1)
+				}
+
+				// There will be a process in the future for selecting one of these
+				if len(cachePaths) > 1 {
+					fmt.Println("Many quizzes found by the name:", quiz)
+					os.Exit(1)
+				}
+
+				// We can now be sure that the cache file has been found
+				command := qqml.QQMLRunCommand{}
+				command.SrcType = qqml.JsonFile
+				command.SrcPath = cachePaths[0]
+				command.LogPath = locate.GenLogFileFromCache(cachePaths[0])
+				if err = command.Run(); err != nil {
+					fmt.Println("Failed to run the quiz:", err.Error())
+					os.Exit(1)
+				}
+			}
+
+			os.Exit(0)
 		},
 	}
 )

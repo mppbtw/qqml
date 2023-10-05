@@ -14,14 +14,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#[cfg(test)]
-mod question;
+mod compile;
+mod run;
 
-#[cfg(test)]
-mod answer;
+use crate::argparse::Command;
 
-#[cfg(test)]
-mod answer_errors;
-
-#[cfg(test)]
-mod question_errors;
+pub fn init(parent: &mut Command) {
+    run::init(parent);
+    compile::init(parent);
+}

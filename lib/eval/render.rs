@@ -164,18 +164,18 @@ impl Render for QuestionResultBody<'_> {
 
 #[derive(Debug, Clone)]
 pub struct QuestionBody<'a> {
-    pub answers:  Vec<(String, bool)>,
+    pub answers:  Vec<(&'a String, &'a bool)>,
     pub selected: &'a usize,
 }
 impl Render for QuestionBody<'_> {
     fn render(&self) -> String {
         let mut output = String::new();
         for (i, a) in self.answers.iter().enumerate() {
-            if a.1 {
+            if *a.1 {
                 output += "  ";
                 output += ANSI_BLACK;
                 output += ANSI_BG_WHITE;
-                output += &a.0;
+                output += a.0;
                 output += ANSI_RESET;
                 if &i == self.selected {
                     output += " <";
@@ -183,7 +183,7 @@ impl Render for QuestionBody<'_> {
             } else if &i == self.selected {
                 output += &format!("   {} <", a.0);
             } else {
-                output += &("   ".to_owned() + &a.0);
+                output += &("   ".to_owned() + a.0);
             }
             output += "\n";
         }
@@ -224,7 +224,7 @@ pub struct PathLine<'a> {
 }
 impl Render for PathLine<'_> {
     fn render(&self) -> String {
-        pad_to_width(self.path, *(self).cols).unwrap_or(self.path.clone())
+        pad_to_width(self.path, *(self).cols).unwrap_or(self.path.to_owned())
     }
 }
 
