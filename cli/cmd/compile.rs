@@ -66,9 +66,10 @@ pub fn init(parent: &mut Command) {
             }
         }),
         flags: vec![Flag {
-            long:    "--output",
+            usage:   "--output",
             aliases: vec!["-o"],
             arg:     Some(FlagArgumentType::String),
+            long:    None,
         }],
     }))
 }

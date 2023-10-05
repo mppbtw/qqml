@@ -16,9 +16,10 @@
 
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub struct Flag {
-    pub long:    &'static str,
+    pub usage:   &'static str,
     pub aliases: Vec<&'static str>,
     pub arg:     Option<FlagArgumentType>,
+    pub long:    Option<&'static str>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -30,8 +31,8 @@ pub enum FlagArgumentType {
 
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub struct AnsweredFlag {
-    pub long: &'static str,
-    pub arg:  Option<AnsweredFlagArgument>,
+    pub usage: &'static str,
+    pub arg:   Option<AnsweredFlagArgument>,
 }
 impl AnsweredFlag {
     pub fn int(&self) -> Result<&isize, ErrIncorrectArgType> {
@@ -85,6 +86,6 @@ pub struct AnsweredFlags {
 }
 impl AnsweredFlags {
     pub fn get(&self, name: &str) -> Option<&AnsweredFlag> {
-        self.flags.iter().find(|f| f.long == name)
+        self.flags.iter().find(|f| f.usage == name)
     }
 }
