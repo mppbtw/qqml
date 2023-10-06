@@ -1,4 +1,4 @@
-<img align="right" width="30%" src="https://github.com/MrPiggyPegasus/qqml/blob/main/assets/logo.png">
+<img align="right" width="30%" src="https://gitlab.com/MrPiggyPegasus/qqml/-/raw/main/assets/logo.png?ref_type=heads">
 
 # QQML 
 The Quiz Question Markup Language is a declarative and highly expressive
@@ -15,9 +15,7 @@ longform questions, the latter of which can be marked automatically using
 [OpenAI ChatGPT](https://openai.com/chatgpt). Hints and answer
 explanations can also be added to your quizzes to enhance not only the
 learning experience but also the level of complexity I have to deal with
-as the only developer. The full QQML documentation can be found
-[here](https://github.com/MrPiggyPegasus/qqml/blob/main/doc/QQML.md). In order
-to run your code, use the `qqml` command. For more information, run
+as the only developer.In order to run your code, use the `qqml` command. For more information, run
 
 ```
 $ qqml --help
@@ -42,7 +40,7 @@ $ ./install.sh qqml
 
 # Syntax
 
-> Examples are available in [examples.qqml](https://github.com/MrPiggyPegasus/qqml/blob/main/example.qqml)
+> Examples are available in [examples.qqml](https://gitlab.com/MrPiggyPegasus/qqml/-/blob/15e8491e57b39f3c0da45b8f0c865faf4ba70a03/example.qqml)
 
 ## Questions
 
