@@ -1,4 +1,5 @@
-<img align="right" width="30%" src="https://gitlab.com/MrPiggyPegasus/qqml/-/raw/main/assets/logo.png?ref_type=heads">
+<img align="right" width="30%"
+src="https://gitlab.com/MrPiggyPegasus/qqml/-/raw/main/logo.png?ref_type=heads">
 
 # QQML 
 The Quiz Question Markup Language is a declarative and highly expressive
