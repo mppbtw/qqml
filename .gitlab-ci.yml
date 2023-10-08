@@ -1,7 +1,22 @@
 stages:
+    - Format
+    - Lint
+    - Test
     - Build
 
-QQML Build:
+Format QQML:
+    image: rustlang/rust:nightly
+    stage: Format
+    script:
+        cargo +nightly fmt --all --verbose --check
+
+Lint QQML:
+    image: rustlang/rust:nightly
+    stage: Lint
+    script:
+        RUSTFLAGS="-Dwarnings" cargo +nightly clippy --verbose
+
+Build QQML:
     image: rust
     stage: Build
     before_script:
@@ -9,3 +24,11 @@ QQML Build:
         - apt-get update && apt-get -y install build-essential && apt-get install -y wget && rm -rf /var/lib/apt/lists/* && wget https://github.com/Kitware/CMake/releases/download/v3.24.1/cmake-3.24.1-Linux-x86_64.sh -q -O /tmp/cmake-install.sh && chmod u+x /tmp/cmake-install.sh && mkdir /opt/cmake-3.24.1 && /tmp/cmake-install.sh --skip-license --prefix=/opt/cmake-3.24.1 && rm /tmp/cmake-install.sh && ln -s /opt/cmake-3.24.1/bin/* /usr/local/bin
     script:
         cargo build
+
+Test QQML:
+    image: rust
+    stage: Test
+    before_script:
+        - apt-get update && apt-get -y install build-essential && apt-get install -y wget && rm -rf /var/lib/apt/lists/* && wget https://github.com/Kitware/CMake/releases/download/v3.24.1/cmake-3.24.1-Linux-x86_64.sh -q -O /tmp/cmake-install.sh && chmod u+x /tmp/cmake-install.sh && mkdir /opt/cmake-3.24.1 && /tmp/cmake-install.sh --skip-license --prefix=/opt/cmake-3.24.1 && rm /tmp/cmake-install.sh && ln -s /opt/cmake-3.24.1/bin/* /usr/local/bin
+    script:
+        cargo test
