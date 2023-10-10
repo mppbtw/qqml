@@ -1,3 +1,9 @@
+<center>
+  <h3>if you is on the github</h3>
+
+  <img src="https://gitlab.com/MrPiggyPegasus/qqml/-/raw/main/go-to-the-gitlab.jpg?ref_type=heads">
+</center>
+
 <img align="right" width="30%"
 src="https://gitlab.com/MrPiggyPegasus/qqml/-/raw/main/logo.png?ref_type=heads">
 
