@@ -60,7 +60,7 @@ where
         (0..line.len() - longest_line).for_each(|_| line.push(String::from("")));
     }
 
-    for (i, col) in inp[0].iter().enumerate() {
+    for i in 0..inp[0].len() {
         'a: {
             let longest_in_col = match inp.iter().map(|l| l[i].to_string().len()).max() {
                 Some(n) => n,
