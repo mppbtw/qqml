@@ -191,7 +191,7 @@ impl Command {
 
                     let flag_argument = args.get(i + 1).cloned();
                     if flag_argument.is_none() {
-                        println!("The f {} requires an argument of type STRING", f.usage);
+                        println!("The flag {} requires an argument of type STRING", f.usage);
                         exit(1);
                     }
 
