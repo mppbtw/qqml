@@ -5,21 +5,6 @@ import (
 	"os"
 )
 
-type ErrNoSuchFlag struct{}
-
-func (_ ErrNoSuchFlag) Error() string {
-	return ""
-}
-
-type FlagArgumentType int8
-
-const (
-	IntegerFlagArgumentType FlagArgumentType = 0
-	UintFlagArgumentType    FlagArgumentType = 1
-	StringFlagArgumentType  FlagArgumentType = 2
-	NoneFlagArgumentType    FlagArgumentType = 3
-)
-
 type CommandBuilder struct {
 	Usage string
 	Long  string
@@ -36,13 +21,6 @@ type command struct {
 	short    string
 	flags    []Flag
 	run      func([]string)
-}
-
-type Flag struct {
-	Usage   string
-	Aliases []string
-	Arg     FlagArgumentType
-	Long    string
 }
 
 func NewCommand(cmdInfo CommandBuilder) command {
@@ -93,11 +71,11 @@ func NewCommand(cmdInfo CommandBuilder) command {
 }
 
 func (c *command) lookupFlag(flag string) (Flag, error) {
-	for i:=0; i<len(c.flags); i++ {
+	for i := 0; i < len(c.flags); i++ {
 		if c.flags[i].Usage == flag {
 			return c.flags[i], nil
 		}
-		for j:=0; j<len(c.flags[i].Aliases); j++ {
+		for j := 0; j < len(c.flags[i].Aliases); j++ {
 			if c.flags[i].Aliases[j] == flag {
 				return c.flags[i], nil
 			}
@@ -153,16 +131,4 @@ func (c *command) Execute(args []string) {
 	if c.run != nil {
 		c.ExecuteLeaf(args)
 	}
-}
-
-type AnsweredFlag struct {
-	Usage string
-	Arg AnsweredFlagArgument
-}
-
-type AnsweredFlagArgument struct {
-	argType FlagArgumentType
-	intArg int
-	uintArg uint
-	stringArg string
 }
