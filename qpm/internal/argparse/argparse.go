@@ -3,85 +3,166 @@ package argparse
 import (
 	"fmt"
 	"os"
-	"strings"
 )
 
+type ErrNoSuchFlag struct{}
+
+func (_ ErrNoSuchFlag) Error() string {
+	return ""
+}
+
 type FlagArgumentType int8
+
 const (
-    IntegerFlagArgumentType FlagArgumentType = 0
-    UintFlagArgumentType FlagArgumentType = 1
-    StringFlagArgumentType FlagArgumentType = 2
-    NoneFlagArgumentType FlagArgumentType = 3
+	IntegerFlagArgumentType FlagArgumentType = 0
+	UintFlagArgumentType    FlagArgumentType = 1
+	StringFlagArgumentType  FlagArgumentType = 2
+	NoneFlagArgumentType    FlagArgumentType = 3
 )
 
 type CommandBuilder struct {
-    Usage string
-    Long string
-    Short string
-    Run func([]string)
-    Args uint
-    Flags []Flag
+	Usage string
+	Long  string
+	Short string
+	Run   func([]string)
+	Args  uint
+	Flags []Flag
 }
 
-type Command struct {
-    children []Command
-    usage string
-    long string
-    short string
-    flags []Flag
-    run func([]string)
+type command struct {
+	children []command
+	usage    string
+	long     string
+	short    string
+	flags    []Flag
+	run      func([]string)
 }
 
-type Flag struct{
-    Usage string
-    Aliases []string
-    Arg FlagArgumentType
-    Long string
+type Flag struct {
+	Usage   string
+	Aliases []string
+	Arg     FlagArgumentType
+	Long    string
 }
 
-func NewCommand(cmdInfo CommandBuilder) Command {
-    out := Command{
-        usage: cmdInfo.Usage,
-        long: cmdInfo.Long,
-        short: cmdInfo.Short,
-        children: []Command{},
-        flags: cmdInfo.Flags,
-        run: cmdInfo.Run,
-    }
-    if len(out.flags)>0 && out.run != nil {
-        fmt.Println("INTERNAL ERROR: Only leaf commands (without subcommands) can have custom flags!")
-        os.Exit(1)
-    }
+func NewCommand(cmdInfo CommandBuilder) command {
+	out := command{
+		usage:    cmdInfo.Usage,
+		long:     cmdInfo.Long,
+		short:    cmdInfo.Short,
+		children: []command{},
+		flags:    cmdInfo.Flags,
+		run:      cmdInfo.Run,
+	}
+	if len(out.flags) > 0 && out.run != nil {
+		fmt.Println("INTERNAL ERROR: Only leaf commands (without subcommands) can have custom flags!")
+		os.Exit(1)
+	}
 
-    hasHelp := false
+	hasHelp := false
 
-    for i:=0; i<len(out.flags); i++ {
-        if out.flags[i].Usage == "--help" {
-            hasHelp = true
-            break
-        }
-    }
+	for i := 0; i < len(out.flags); i++ {
+		if out.flags[i].Usage == "--help" {
+			hasHelp = true
+			break
+		}
+	}
 
-    if !hasHelp {
-        helpFlag := Flag{
-            Usage: "--help",
-            Aliases: []string{},
-            Arg: NoneFlagArgumentType,
-            Long: "Show this help message",
-        }
-        aliasIsAvaliable := true
-        for i:=0; i<len(out.flags); i++ {
-            for j:=0; j<len(out.flags[i].Aliases); j++ {
-                if out.flags[i].Aliases[j] == "-h" {
-                    aliasIsAvaliable = false
-                    break
-                }
-            }
-        }
-        if aliasIsAvaliable {
-            helpFlag.Aliases = append(helpFlag.Aliases, "-h")
-        }
-        out.flags = append(out.flags, helpFlag)
-    }
-    return out
+	if !hasHelp {
+		helpFlag := Flag{
+			Usage:   "--help",
+			Aliases: []string{},
+			Arg:     NoneFlagArgumentType,
+			Long:    "Show this help message",
+		}
+		aliasIsAvaliable := true
+		for i := 0; i < len(out.flags); i++ {
+			for j := 0; j < len(out.flags[i].Aliases); j++ {
+				if out.flags[i].Aliases[j] == "-h" {
+					aliasIsAvaliable = false
+					break
+				}
+			}
+		}
+		if aliasIsAvaliable {
+			helpFlag.Aliases = append(helpFlag.Aliases, "-h")
+		}
+		out.flags = append(out.flags, helpFlag)
+	}
+	return out
+}
+
+func (c *command) lookupFlag(flag string) (Flag, error) {
+	for i:=0; i<len(c.flags); i++ {
+		if c.flags[i].Usage == flag {
+			return c.flags[i], nil
+		}
+		for j:=0; j<len(c.flags[i].Aliases); j++ {
+			if c.flags[i].Aliases[j] == flag {
+				return c.flags[i], nil
+			}
+		}
+	}
+	return Flag{}, ErrNoSuchFlag{}
+}
+
+func (c *command) ExecuteLeaf(args []string) {
+	flagIndeces := []int{}
+	answeredFlags := []AnsweredFlag{}
+	i := 0
+	for i < len(args) {
+		arg := args[i]
+		f, err := c.lookupFlag(arg)
+		if err != nil {
+			i++
+			continue
+		}
+		flagIndeces = append(flagIndeces, i)
+
+		answeredFlag := AnsweredFlag{
+			Usage: f.Usage,
+		}
+
+		if f.Arg != NoneFlagArgumentType {
+			answeredArg := AnsweredFlagArgument{}
+			answeredArg.argType = f.Arg
+
+			if f.Arg != StringFlagArgumentType {
+				fmt.Println("INTERNAL ERROR: Only the string argument type is implemented yet.")
+				os.Exit(1)
+			}
+
+			if len(args) < i+1 {
+				fmt.Println("The flag", f.Usage, "requires an argument of type STRING")
+				os.Exit(1)
+			}
+			flagArg := args[i+1]
+			flagIndeces = append(flagIndeces, i+1)
+			i++
+			answeredArg.stringArg = flagArg
+		}
+
+		answeredFlags = append(answeredFlags, answeredFlag)
+	}
+}
+
+// / Call this on the root command to initiate the parsing sequence
+func (c *command) Execute(args []string) {
+
+	// If it's a leaf command
+	if c.run != nil {
+		c.ExecuteLeaf(args)
+	}
+}
+
+type AnsweredFlag struct {
+	Usage string
+	Arg AnsweredFlagArgument
+}
+
+type AnsweredFlagArgument struct {
+	argType FlagArgumentType
+	intArg int
+	uintArg uint
+	stringArg string
 }
