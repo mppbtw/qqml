@@ -126,6 +126,20 @@ func (c *command) ExecuteLeaf(args []string) {
 	// Sort backwards so we dont have to shift the indeces when removing them from
 	// the args
 	flagIndeces = backwardsSort(flagIndeces)
+	for _, i := range flagIndeces {
+		args = remove(args, i)
+	}
+
+	flagsResult := AnsweredFlags {
+		Flags: answeredFlags,
+	}
+	if _, err := flagsResult.Get("--help"); err != nil {
+		c.helpScreen()
+	}
+}
+
+func (c *command) helpScreen() {
+	fmt.Println("placeholder help screen")
 }
 
 // / Call this on the root command to initiate the parsing sequence
