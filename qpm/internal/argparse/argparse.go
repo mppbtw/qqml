@@ -122,6 +122,10 @@ func (c *command) ExecuteLeaf(args []string) {
 
 		answeredFlags = append(answeredFlags, answeredFlag)
 	}
+
+	// Sort backwards so we dont have to shift the indeces when removing them from
+	// the args
+	flagIndeces = backwardsSort(flagIndeces)
 }
 
 // / Call this on the root command to initiate the parsing sequence
