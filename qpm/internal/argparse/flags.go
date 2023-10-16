@@ -33,3 +33,16 @@ type AnsweredFlagArgument struct {
 	uintArg   uint
 	stringArg string
 }
+
+type AnsweredFlags struct {
+	Flags []AnsweredFlag
+}
+func (a *AnsweredFlags) Get(name string) (*AnsweredFlag, error) {
+	for _, f := range a.Flags {
+		if f.Usage == name {
+			return &f, nil
+		}
+
+	}
+	return nil, ErrNoSuchFlag{}
+}
