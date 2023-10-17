@@ -20,13 +20,20 @@ import (
 	"fmt"
 	"os"
 )
+
+type ErrNoSuchCommand struct{}
+func (e ErrNoSuchCommand) Error() string {
+	return "There is no such command"
+}
+
 type Command struct {
 	children []Command
 	Usage    string
 	Long     string
 	Short    string
 	flags    []Flag
-	run      func([]string)
+	run      func([]string, AnsweredFlags)
+	Args     int
 }
 
 func (c *Command) Init() {
@@ -65,6 +72,15 @@ func (c *Command) Init() {
 		}
 		c.flags = append(c.flags, helpFlag)
 	}
+}
+
+func (c *Command) lookupCommand(search string) (*Command, error) {
+	for _, cmd := range c.children {
+		if cmd.Usage == search {
+			return &cmd, nil
+		}
+	}
+	return &Command{}, ErrNoSuchCommand{}
 }
 
 func (c *Command) lookupFlag(flag string) (Flag, error) {
@@ -133,6 +149,14 @@ func (c *Command) ExecuteLeaf(args []string) {
 	if _, err := flagsResult.Get("--help"); err != nil {
 		c.helpScreen()
 	}
+
+	if len(args) != c.Args {
+		fmt.Println("Expected", c.Args, "arguments, got", len(args))
+		os.Exit(1)
+	}
+
+	c.run(args, flagsResult)
+	os.Exit(0)
 }
 
 func (c *Command) helpScreen() {
@@ -146,4 +170,8 @@ func (c *Command) Execute(args []string) {
 	if c.run != nil {
 		c.ExecuteLeaf(args)
 	}
+}
+
+func (c *Command) AddCommand(cmd Command) {
+	c.children = append(c.children, cmd)
 }

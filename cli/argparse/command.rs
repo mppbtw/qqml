@@ -223,7 +223,7 @@ impl Command {
 
         if args.len() != self.args {
             println!("Expected {} arguments, got {}", self.args, args.len());
-            exit(0);
+            exit(1);
         }
 
         self.run.unwrap()(&args[..], flags_result);
