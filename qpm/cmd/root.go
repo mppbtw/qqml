@@ -17,13 +17,14 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
+	"fmt"
 	"os"
+	"qpm/internal/argparse"
 )
 
 var (
-	rootCmd = &cobra.Command{
-		Use:   "qpm",
+	rootCmd = argparse.Command{
+		Usage: "qpm",
 		Short: "QPM is the package manager for QQML.",
 		Long: `QPM is the QQML (Quiz Question Markup Language) package manager.
 It is used to install QQML quizzes from either local files or remote repositories.
@@ -32,7 +33,6 @@ See <https://github.com/mrpiggypegasus/qqml> for more info.`,
 )
 
 func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		os.Exit(1)
-	}
+	fmt.Println("executing argparse sequence")
+	rootCmd.Execute(os.Args)
 }

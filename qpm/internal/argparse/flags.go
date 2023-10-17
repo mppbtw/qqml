@@ -44,15 +44,16 @@ type AnsweredFlag struct {
 }
 
 type AnsweredFlagArgument struct {
-	argType   FlagArgumentType
-	intArg    int
-	uintArg   uint
-	stringArg string
+	ArgType   FlagArgumentType
+	IntArg    int
+	UintArg   uint
+	StringArg string
 }
 
 type AnsweredFlags struct {
 	Flags []AnsweredFlag
 }
+
 func (a *AnsweredFlags) Get(name string) (*AnsweredFlag, error) {
 	for _, f := range a.Flags {
 		if f.Usage == name {
