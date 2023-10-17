@@ -22,6 +22,7 @@ import (
 )
 
 type ErrNoSuchCommand struct{}
+
 func (e ErrNoSuchCommand) Error() string {
 	return "There is no such command"
 }
@@ -32,12 +33,12 @@ type Command struct {
 	Long     string
 	Short    string
 	flags    []Flag
-	run      func([]string, AnsweredFlags)
+	Run      func([]string, AnsweredFlags)
 	Args     int
 }
 
 func (c *Command) Init() {
-	if len(c.flags) > 0 && c.run != nil {
+	if len(c.flags) > 0 && c.Run != nil {
 		fmt.Println("INTERNAL ERROR: Only leaf commands (withc subcommands) can have custom flags!")
 		os.Exit(1)
 	}
@@ -116,7 +117,7 @@ func (c *Command) ExecuteLeaf(args []string) {
 
 		if f.Arg != NoneFlagArgumentType {
 			answeredArg := AnsweredFlagArgument{}
-			answeredArg.argType = f.Arg
+			answeredArg.ArgType = f.Arg
 
 			if f.Arg != StringFlagArgumentType {
 				fmt.Println("INTERNAL ERROR: Only the string argument type is implemented yet.")
@@ -130,7 +131,7 @@ func (c *Command) ExecuteLeaf(args []string) {
 			flagArg := args[i+1]
 			flagIndeces = append(flagIndeces, i+1)
 			i++
-			answeredArg.stringArg = flagArg
+			answeredArg.StringArg = flagArg
 		}
 
 		answeredFlags = append(answeredFlags, answeredFlag)
@@ -143,7 +144,7 @@ func (c *Command) ExecuteLeaf(args []string) {
 		args = remove(args, i)
 	}
 
-	flagsResult := AnsweredFlags {
+	flagsResult := AnsweredFlags{
 		Flags: answeredFlags,
 	}
 	if _, err := flagsResult.Get("--help"); err != nil {
@@ -155,7 +156,7 @@ func (c *Command) ExecuteLeaf(args []string) {
 		os.Exit(1)
 	}
 
-	c.run(args, flagsResult)
+	c.Run(args, flagsResult)
 	os.Exit(0)
 }
 
@@ -167,7 +168,7 @@ func (c *Command) helpScreen() {
 func (c *Command) Execute(args []string) {
 
 	// If it's a leaf command
-	if c.run != nil {
+	if c.Run != nil {
 		c.ExecuteLeaf(args)
 	}
 }

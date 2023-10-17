@@ -124,5 +124,5 @@ func backwardsSort(inp []int) []int {
 }
 
 func remove(slice []string, i int) []string {
-    return append(slice[:i], slice[i+1:]...)
+	return append(slice[:i], slice[i+1:]...)
 }

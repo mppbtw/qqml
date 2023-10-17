@@ -22,18 +22,16 @@ import (
 	"qpm/internal/locate"
 	"qpm/internal/qqml"
 	"qpm/internal/utils"
-
-	"github.com/spf13/cobra"
+	"qpm/internal/argparse"
 )
 
 var (
-	runCmd = &cobra.Command{
-		Use:     "run",
+	runCmd = argparse.Command{
+		Usage:     "run",
 		Short:   "Run a quiz",
 		Long:    "Run a quiz from any of the available repos or locally installed files",
-		Aliases: []string{"r"},
-		Args:    cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		Args:     1,
+		Run: func( args []string, flags argparse.AnsweredFlags) {
 
 			// Check that QPM is in a valid state
 			res, err := utils.IsInitialised()
