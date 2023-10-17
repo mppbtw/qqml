@@ -29,9 +29,9 @@ import (
 
 var (
 	installCmd = argparse.Command{
-		Usage:     "install",
-		Short:   "Install QQML quizzes",
-		Long:    "Install QQML quizzes from either local files or remote repos",
+		Usage: "install",
+		Short: "Install QQML quizzes",
+		Long:  "Install QQML quizzes from either local files or remote repos",
 		Run: func(args []string, flags argparse.AnsweredFlags) {
 			fileFlag, err := flags.Get("--file")
 			if err != nil {
