@@ -20,15 +20,14 @@ import (
 	"fmt"
 	"os"
 	"qpm/internal/utils"
-
-	"github.com/spf13/cobra"
+	"qpm/internal/argparse"
 )
 
-var initCmd = &cobra.Command{
-	Use:   "init",
+var initCmd = argparse.Command{
+	Usage: "init",
 	Short: "Initialise the ~/.qpm directory",
 	Long:  "Initialise the ~/.qpm directory to store QQML quiz files",
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(args []string, flags argparse.AnsweredFlags) {
 		res, err := utils.IsInitialised()
 		if err != nil {
 			fmt.Println("Failed to tell if QPM is already initialised:", err.Error())

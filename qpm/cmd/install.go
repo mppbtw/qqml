@@ -20,22 +20,26 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"qpm/internal/argparse"
 	"qpm/internal/qqml"
 	"qpm/internal/utils"
 	"strings"
 	"unicode"
-
-	"github.com/spf13/cobra"
 )
 
 var (
-	filePath   string
-	installCmd = &cobra.Command{
-		Use:     "install",
+	installCmd = argparse.Command{
+		Usage:     "install",
 		Short:   "Install QQML quizzes",
 		Long:    "Install QQML quizzes from either local files or remote repos",
-		Aliases: []string{"i"},
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(args []string, flags argparse.AnsweredFlags) {
+			fileFlag, err := flags.Get("--file")
+			if err != nil {
+				fmt.Println("Missing the --file flag!")
+				os.Exit(1)
+			}
+			filePath := fileFlag.Arg.StringArg
+
 			if !utils.PathExists(filePath) {
 				fmt.Println("File", filePath, "does not exist")
 				os.Exit(1)
@@ -124,9 +128,5 @@ var (
 )
 
 func init() {
-	installCmd.Flags().StringVarP(&filePath, "file", "f", "", "install from local file")
-	installCmd.MarkFlagFilename("file")
-	installCmd.MarkFlagRequired("file")
-
 	rootCmd.AddCommand(installCmd)
 }
