@@ -26,7 +26,7 @@ type Flag struct {
 type ErrNoSuchFlag struct{}
 
 func (_ ErrNoSuchFlag) Error() string {
-	return ""
+	return "There is no such flag"
 }
 
 type FlagArgumentType int8
