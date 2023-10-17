@@ -26,7 +26,7 @@ func init() {
 }
 
 var versionCmd = argparse.Command{
-	Usage:   "version",
+	Usage: "version",
 	Short: "Print the current QPM version number",
 	Long:  "Take this number with a grain of salt, I'm forgetful sometimes",
 	Run: func(_ []string, _ argparse.AnsweredFlags) {
