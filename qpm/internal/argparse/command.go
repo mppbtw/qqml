@@ -176,3 +176,7 @@ func (c *Command) Execute(args []string) {
 func (c *Command) AddCommand(cmd Command) {
 	c.children = append(c.children, cmd)
 }
+
+func (c *Command) AddFlag(flag Flag) {
+	c.flags = append(c.flags, flag)
+}

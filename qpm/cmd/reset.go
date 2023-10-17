@@ -24,7 +24,7 @@ import (
 )
 
 var resetCmd = argparse.Command{
-	Usage:   "reset",
+	Usage: "reset",
 	Short: "Reset your progress on a quiz.",
 	Long:  "Reset your progress on a quiz, including historical scores.",
 	Args:  1,

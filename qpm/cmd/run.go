@@ -19,19 +19,19 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"qpm/internal/argparse"
 	"qpm/internal/locate"
 	"qpm/internal/qqml"
 	"qpm/internal/utils"
-	"qpm/internal/argparse"
 )
 
 var (
 	runCmd = argparse.Command{
-		Usage:     "run",
-		Short:   "Run a quiz",
-		Long:    "Run a quiz from any of the available repos or locally installed files",
-		Args:     1,
-		Run: func( args []string, flags argparse.AnsweredFlags) {
+		Usage: "run",
+		Short: "Run a quiz",
+		Long:  "Run a quiz from any of the available repos or locally installed files",
+		Args:  1,
+		Run: func(args []string, flags argparse.AnsweredFlags) {
 
 			// Check that QPM is in a valid state
 			res, err := utils.IsInitialised()
