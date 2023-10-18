@@ -25,7 +25,7 @@ import (
 
 type ErrNotInitialised struct{}
 
-func (e *ErrNotInitialised) Error() string {
+func (self ErrNotInitialised) Error() string {
 	return "QPM is not initialised, please run qpm init"
 }
 
