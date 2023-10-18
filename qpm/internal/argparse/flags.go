@@ -55,8 +55,8 @@ type AnsweredFlags struct {
 	Flags []AnsweredFlag
 }
 
-func (a *AnsweredFlags) Get(name string) (*AnsweredFlag, error) {
-	for _, f := range a.Flags {
+func (self *AnsweredFlags) Get(name string) (*AnsweredFlag, error) {
+	for _, f := range self.Flags {
 		if f.Usage == name {
 			return &f, nil
 		}

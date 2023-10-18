@@ -37,16 +37,16 @@ type Command struct {
 	Args     int
 }
 
-func (c *Command) Init() {
-	if len(c.flags) > 0 && c.Run != nil {
+func (self *Command) Init() {
+	if len(self.flags) > 0 && self.Run != nil {
 		fmt.Println("INTERNAL ERROR: Only leaf commands (withc subcommands) can have custom flags!")
 		os.Exit(1)
 	}
 
 	hasHelp := false
 
-	for i := 0; i < len(c.flags); i++ {
-		if c.flags[i].Usage == "--help" {
+	for i := 0; i < len(self.flags); i++ {
+		if self.flags[i].Usage == "--help" {
 			hasHelp = true
 			break
 		}
@@ -61,9 +61,9 @@ func (c *Command) Init() {
 			Required: false,
 		}
 		aliasIsAvaliable := true
-		for i := 0; i < len(c.flags); i++ {
-			for j := 0; j < len(c.flags[i].Aliases); j++ {
-				if c.flags[i].Aliases[j] == "-h" {
+		for i := 0; i < len(self.flags); i++ {
+			for j := 0; j < len(self.flags[i].Aliases); j++ {
+				if self.flags[i].Aliases[j] == "-h" {
 					aliasIsAvaliable = false
 					break
 				}
@@ -72,12 +72,12 @@ func (c *Command) Init() {
 		if aliasIsAvaliable {
 			helpFlag.Aliases = append(helpFlag.Aliases, "-h")
 		}
-		c.flags = append(c.flags, helpFlag)
+		self.flags = append(self.flags, helpFlag)
 	}
 }
 
-func (c *Command) lookupCommand(search string) (*Command, error) {
-	for _, cmd := range c.children {
+func (self *Command) lookupCommand(search string) (*Command, error) {
+	for _, cmd := range self.children {
 		if cmd.Usage == search {
 			return &cmd, nil
 		}
@@ -85,27 +85,27 @@ func (c *Command) lookupCommand(search string) (*Command, error) {
 	return &Command{}, ErrNoSuchCommand{}
 }
 
-func (c *Command) lookupFlag(flag string) (Flag, error) {
-	for i := 0; i < len(c.flags); i++ {
-		if c.flags[i].Usage == flag {
-			return c.flags[i], nil
+func (self *Command) lookupFlag(flag string) (Flag, error) {
+	for i := 0; i < len(self.flags); i++ {
+		if self.flags[i].Usage == flag {
+			return self.flags[i], nil
 		}
-		for j := 0; j < len(c.flags[i].Aliases); j++ {
-			if c.flags[i].Aliases[j] == flag {
-				return c.flags[i], nil
+		for j := 0; j < len(self.flags[i].Aliases); j++ {
+			if self.flags[i].Aliases[j] == flag {
+				return self.flags[i], nil
 			}
 		}
 	}
 	return Flag{}, ErrNoSuchFlag{}
 }
 
-func (c *Command) ExecuteLeaf(args []string) {
+func (self *Command) ExecuteLeaf(args []string) {
 	flagIndeces := []int{}
 	answeredFlags := []AnsweredFlag{}
 	i := 0
 	for i < len(args) {
 		arg := args[i]
-		f, err := c.lookupFlag(arg)
+		f, err := self.lookupFlag(arg)
 		if err != nil {
 			i++
 			continue
@@ -149,35 +149,42 @@ func (c *Command) ExecuteLeaf(args []string) {
 		Flags: answeredFlags,
 	}
 	if _, err := flagsResult.Get("--help"); err != nil {
-		c.helpScreen()
+		self.helpScreen()
 	}
 
-	if len(args) != c.Args {
-		fmt.Println("Expected", c.Args, "arguments, got", len(args))
+	if len(args) != self.Args {
+		fmt.Println("Expected", self.Args, "arguments, got", len(args))
 		os.Exit(1)
 	}
 
-	c.Run(args, flagsResult)
+	for _, flag := range self.flags {
+		if flag.Required {
+			if _, err := flagsResult.Get(flag.Usage); err != nil {
+				fmt.Println("The required flag", flag.Usage, "was not provided.")
+			}
+		}
+	}
+	self.Run(args, flagsResult)
 	os.Exit(0)
 }
 
-func (c *Command) helpScreen() {
+func (self *Command) helpScreen() {
 	fmt.Println("placeholder help screen")
 }
 
 // / Call this on the root command to initiate the parsing sequence
-func (c *Command) Execute(args []string) {
+func (self *Command) Execute(args []string) {
 
 	// If it's a leaf command
-	if c.Run != nil {
-		c.ExecuteLeaf(args)
+	if self.Run != nil {
+		self.ExecuteLeaf(args)
 	}
 }
 
-func (c *Command) AddCommand(cmd Command) {
-	c.children = append(c.children, cmd)
+func (self *Command) AddCommand(cmd Command) {
+	self.children = append(self.children, cmd)
 }
 
-func (c *Command) AddFlag(flag Flag) {
-	c.flags = append(c.flags, flag)
+func (self *Command) AddFlag(flag Flag) {
+	self.flags = append(self.flags, flag)
 }

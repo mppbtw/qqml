@@ -35,29 +35,29 @@ type QQMLRunCommand struct {
 	SrcType SrcType
 }
 
-func (c *QQMLRunCommand) constructArgs() ([]string, error) {
+func (self *QQMLRunCommand) constructArgs() ([]string, error) {
 	args := "run "
 
-	if len(c.SrcPath) == 0 {
+	if len(self.SrcPath) == 0 {
 		return nil, ErrSrcPathNotSpecified{}
 	}
 
-	args += c.SrcPath
+	args += self.SrcPath
 
-	if c.SrcType == JsonFile {
+	if self.SrcType == JsonFile {
 		args += " --json "
-	} else if c.SrcType != QQMLFile {
+	} else if self.SrcType != QQMLFile {
 		return nil, ErrNoSuchSrcType{}
 	}
 
-	if len(c.LogPath) != 0 {
-		args += "--log " + c.LogPath
+	if len(self.LogPath) != 0 {
+		args += "--log " + self.LogPath
 	}
 	return strings.Split(args, " "), nil
 }
 
-func (c *QQMLRunCommand) Output() (string, error) {
-	args, err := c.constructArgs()
+func (self *QQMLRunCommand) Output() (string, error) {
+	args, err := self.constructArgs()
 	if err != nil {
 		return "", err
 	}
@@ -73,8 +73,8 @@ func (c *QQMLRunCommand) Output() (string, error) {
 	return string(out), nil
 }
 
-func (c *QQMLRunCommand) Run() error {
-	args, err := c.constructArgs()
+func (self *QQMLRunCommand) Run() error {
+	args, err := self.constructArgs()
 	if err != nil {
 		return err
 	}
@@ -93,8 +93,8 @@ func (c *QQMLRunCommand) Run() error {
 	return nil
 }
 
-func (c *QQMLRunCommand) RunHeadless() error {
-	args, err := c.constructArgs()
+func (self *QQMLRunCommand) RunHeadless() error {
+	args, err := self.constructArgs()
 	if err != nil {
 		return err
 	}
