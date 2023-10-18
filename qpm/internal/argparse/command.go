@@ -58,6 +58,7 @@ func (c *Command) Init() {
 			Aliases: []string{},
 			Arg:     NoneFlagArgumentType,
 			Long:    "Show this help message",
+			Required: false,
 		}
 		aliasIsAvaliable := true
 		for i := 0; i < len(c.flags); i++ {

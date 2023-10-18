@@ -21,6 +21,7 @@ type Flag struct {
 	Aliases []string
 	Arg     FlagArgumentType
 	Long    string
+	Required bool
 }
 
 type ErrNoSuchFlag struct{}
