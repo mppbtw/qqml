@@ -17,7 +17,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"qpm/internal/argparse"
 )
@@ -33,6 +32,5 @@ See <https://github.com/mrpiggypegasus/qqml> for more info.`,
 )
 
 func Execute() {
-	fmt.Println("executing argparse sequence")
-	rootCmd.Execute(os.Args)
+	rootCmd.Execute(os.Args[1:])
 }
