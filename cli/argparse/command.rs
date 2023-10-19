@@ -252,7 +252,7 @@ impl Command {
                 } {
                     self.help_screen();
                 } else {
-                    println!("Unknown argument or subcommand");
+                    println!("Unknown argument or subcommand, use --help for more info");
                     exit(1);
                 };
             }
