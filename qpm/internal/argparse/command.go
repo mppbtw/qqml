@@ -37,9 +37,10 @@ type Command struct {
 	Args     int
 }
 
-func (self *Command) Init() {
-	if len(self.flags) > 0 && self.Run != nil {
-		fmt.Println("INTERNAL ERROR: Only leaf commands (withc subcommands) can have custom flags!")
+func (self *Command) init() {
+	if len(self.flags) > 0 && self.Run == nil {
+		fmt.Println("INTERNAL ERROR: Only leaf commands (without subcommands) can have custom flags!")
+		fmt.Println("error occuered on command:", self.Usage)
 		os.Exit(1)
 	}
 
@@ -125,7 +126,7 @@ func (self *Command) ExecuteLeaf(args []string) {
 				os.Exit(1)
 			}
 
-			if len(args) < i+1 {
+			if len(args) < i+2 {
 				fmt.Println("The flag", f.Usage, "requires an argument of type STRING")
 				os.Exit(1)
 			}
@@ -150,6 +151,7 @@ func (self *Command) ExecuteLeaf(args []string) {
 	}
 	if _, err := flagsResult.Get("--help"); err != nil {
 		self.helpScreen()
+		os.Exit(0)
 	}
 
 	if len(args) != self.Args {
@@ -174,11 +176,32 @@ func (self *Command) helpScreen() {
 
 // / Call this on the root command to initiate the parsing sequence
 func (self *Command) Execute(args []string) {
+	self.init()
 
 	// If it's a leaf command
 	if self.Run != nil {
 		self.ExecuteLeaf(args)
 	}
+
+	if len(args) > 0 {
+		arg := args[0]
+		cmd, err := self.lookupCommand(arg)
+		if err == nil {
+			cmd.Execute(args[1:])
+		}
+		if flag, err := self.lookupFlag(arg); err == nil {
+			if flag.Usage == "--help" {
+				self.helpScreen()
+				os.Exit(0)
+			}
+		}
+		fmt.Println("Unknown argument or subcommand, use --help for more info")
+		os.Exit(1)
+	} else {
+		self.helpScreen()
+		os.Exit(1)
+	}
+	os.Exit(0)
 }
 
 func (self *Command) AddCommand(cmd Command) {
