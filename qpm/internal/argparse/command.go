@@ -149,7 +149,7 @@ func (self *Command) ExecuteLeaf(args []string) {
 	flagsResult := AnsweredFlags{
 		Flags: answeredFlags,
 	}
-	if _, err := flagsResult.Get("--help"); err != nil {
+	if _, err := flagsResult.Get("--help"); err == nil {
 		self.helpScreen()
 		os.Exit(0)
 	}
