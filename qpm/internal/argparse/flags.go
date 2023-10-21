@@ -17,10 +17,10 @@
 package argparse
 
 type Flag struct {
-	Usage   string
-	Aliases []string
-	Arg     FlagArgumentType
-	Long    string
+	Usage    string
+	Aliases  []string
+	Arg      FlagArgumentType
+	Long     string
 	Required bool
 }
 
@@ -33,10 +33,10 @@ func (_ ErrNoSuchFlag) Error() string {
 type FlagArgumentType int8
 
 const (
-	IntegerFlagArgumentType FlagArgumentType = 0
-	UintFlagArgumentType    FlagArgumentType = 1
-	StringFlagArgumentType  FlagArgumentType = 2
-	NoneFlagArgumentType    FlagArgumentType = 3
+	IntegerFlagArgumentType FlagArgumentType = iota
+	UintFlagArgumentType
+	StringFlagArgumentType
+	NoneFlagArgumentType
 )
 
 type AnsweredFlag struct {
