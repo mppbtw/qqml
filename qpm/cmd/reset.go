@@ -27,7 +27,7 @@ var resetCmd = argparse.Command{
 	Usage: "reset",
 	Short: "Reset your progress on a quiz.",
 	Long:  "Reset your progress on a quiz, including historical scores.",
-	Args:  1,
+	Args:  argparse.ExactArgs(1),
 	Run: func(args []string, flags argparse.AnsweredFlags) {
 		quiz := args[0]
 

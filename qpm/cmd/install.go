@@ -129,10 +129,10 @@ var (
 
 func init() {
 	installCmd.AddFlag(argparse.Flag{
-		Usage: "--file",
-		Aliases: []string{"-f"},
-		Arg: argparse.StringFlagArgumentType,
-		Long: "Install from a specific file",
+		Usage:    "--file",
+		Aliases:  []string{"-f"},
+		Arg:      argparse.StringFlagArgumentType,
+		Long:     "Install from a specific file",
 		Required: true,
 	})
 	rootCmd.AddCommand(installCmd)

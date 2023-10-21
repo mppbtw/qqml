@@ -34,7 +34,7 @@ type Command struct {
 	Short    string
 	flags    []Flag
 	Run      func([]string, AnsweredFlags)
-	Args     int
+	Args     ExpectedArgs
 }
 
 func (self *Command) init() {
@@ -55,10 +55,10 @@ func (self *Command) init() {
 
 	if !hasHelp {
 		helpFlag := Flag{
-			Usage:   "--help",
-			Aliases: []string{},
-			Arg:     NoneFlagArgumentType,
-			Long:    "Show this help message",
+			Usage:    "--help",
+			Aliases:  []string{},
+			Arg:      NoneFlagArgumentType,
+			Long:     "Show this help message",
 			Required: false,
 		}
 		aliasIsAvaliable := true
@@ -134,6 +134,7 @@ func (self *Command) ExecuteLeaf(args []string) {
 			flagIndeces = append(flagIndeces, i+1)
 			i++
 			answeredArg.StringArg = flagArg
+			answeredFlag.Arg = answeredArg
 		}
 
 		answeredFlags = append(answeredFlags, answeredFlag)
@@ -154,7 +155,7 @@ func (self *Command) ExecuteLeaf(args []string) {
 		os.Exit(0)
 	}
 
-	if len(args) != self.Args {
+	if !self.Args.Validate(args) {
 		fmt.Println("Expected", self.Args, "arguments, got", len(args))
 		os.Exit(1)
 	}

@@ -19,6 +19,7 @@ package qqml
 import (
 	"os"
 	"os/exec"
+	"qpm/internal/utils"
 	"strings"
 )
 
@@ -35,7 +36,22 @@ type QQMLRunCommand struct {
 	SrcType SrcType
 }
 
+type ErrNoSuchFileOrDirectory struct {}
+func (e ErrNoSuchFileOrDirectory) Error() string {
+	return "No such file or directory (os error 2)"
+}
+
+func (self *QQMLRunCommand) validateArgs() error {
+	if !utils.PathExists(self.SrcPath) {
+		return ErrNoSuchFileOrDirectory{}
+	}
+	return nil
+}
+
 func (self *QQMLRunCommand) constructArgs() ([]string, error) {
+	if err := self.validateArgs(); err != nil {
+		return []string{}, err
+	}
 	args := "run "
 
 	if len(self.SrcPath) == 0 {
