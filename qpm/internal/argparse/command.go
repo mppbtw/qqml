@@ -37,11 +37,25 @@ type Command struct {
 	Args     ExpectedArgs
 }
 
+func (self *Command) displayError(msg string) {
+	fmt.Println("An internal error has occurred during the argument parsing process")
+	fmt.Println("Please report this to https://gitlab.com/MrPiggyPegasus/qqml")
+	fmt.Println(msg)
+	fmt.Println("error occured on the command:", self.Usage)
+	fmt.Println("Command debug info:", self)
+	os.Exit(1)
+}
+
 func (self *Command) init() {
+	if len(self.children) == 0 && self.Run == nil {
+		self.displayError("This command has no children, but .Run is nil")
+	}
 	if len(self.flags) > 0 && self.Run == nil {
-		fmt.Println("INTERNAL ERROR: Only leaf commands (without subcommands) can have custom flags!")
-		fmt.Println("error occuered on command:", self.Usage)
-		os.Exit(1)
+		self.displayError("Only leaf commands can have consumer-defined flags")
+	}
+
+	if self.Args == nil {
+		self.Args = ExactArgs(0)
 	}
 
 	hasHelp := false

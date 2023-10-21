@@ -30,7 +30,6 @@ func (self miniMaxArgs) Validate(args []string) bool {
 	return len(args) > self.min && len(args) < self.max
 }
 
-
 func ExactArgs(num int) exactArgs {
     return exactArgs{num: num}
 }
