@@ -53,7 +53,7 @@ func TestReverse(T *testing.T) {
 	}
 }
 
-func TestMerge(T *testing.T) {
+func TestMergeSort(T *testing.T) {
 	data := []TestArrayTransformData{
 		{
 			input:    []int{5, 4, 3, 2, 1},
@@ -105,5 +105,14 @@ func TestBackwardsSort(T *testing.T) {
 		if !reflect.DeepEqual(result, datum.expected) {
 			T.Error("Expected:", datum.expected, "Result:", result)
 		}
+	}
+}
+
+func TestSeparateLines(T *testing.T)  {
+	input := [][]string{[]string{"w", "w"}, []string{"ww", "www"}}
+	expected := "w    w\nww   www"
+	result := separateLines(input, 3)
+	if result != expected {
+		T.Error("Expected:", expected, "Result:", result)
 	}
 }
