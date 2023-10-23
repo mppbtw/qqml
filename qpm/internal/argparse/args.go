@@ -21,13 +21,13 @@ func (self exactArgs) Validate(args []string) bool {
 	return len(args) == self.num
 }
 func (self maximumArgs) Validate(args []string) bool {
-	return len(args) < self.max
+	return len(args) <= self.max
 }
 func (self minimumArgs) Validate(args []string) bool {
-	return len(args) > self.min
+	return len(args) >= self.min
 }
 func (self miniMaxArgs) Validate(args []string) bool {
-	return len(args) > self.min && len(args) < self.max
+	return len(args) >= self.min && len(args) <= self.max
 }
 
 func ExactArgs(num int) exactArgs {
