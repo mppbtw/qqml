@@ -16,7 +16,9 @@
 
 package argparse
 
-import "strings"
+import (
+	"strings"
+)
 
 func separateLines(inp [][]string, gapSize int8) string {
 	// dont ask this is literally black magic with 0 optimisation but who cares its only for the cli
@@ -47,7 +49,7 @@ func separateLines(inp [][]string, gapSize int8) string {
 	}
 
 	for i := 0; i < len(output); i++ {
-		for j := 0; j < len(output[i]); j++ {
+		for j := 0; j < len(output[i])-longestLine; j++ {
 			output[i] = append(output[i], "")
 		}
 	}
