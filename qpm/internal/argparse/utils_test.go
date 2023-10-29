@@ -109,10 +109,10 @@ func TestBackwardsSort(T *testing.T) {
 }
 
 func TestSeparateLines(T *testing.T)  {
-	input := [][]string{[]string{"w", "w"}, []string{"ww", "www"}}
+	input := [][]string{{"w", "w"}, {"ww", "www"}}
 	expected := "w    w\nww   www"
 	result := separateLines(input, 3)
 	if result != expected {
-		T.Error("Expected:", expected, "Result:", result)
+		T.Error("Expected:\n", expected, "\nResult:\n", result)
 	}
 }
