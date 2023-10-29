@@ -186,7 +186,27 @@ func (self *Command) ExecuteLeaf(args []string) {
 }
 
 func (self *Command) helpScreen() {
-	fmt.Println("placeholder help screen")
+	fmt.Println(self.Long)
+	usageMsg := "Usage:\n "
+	usageMsg += self.Usage
+	usageMsg += " "
+
+	if len(self.children) != 0 {
+		usageMsg += "[command]"
+		usageMsg += " "
+	}
+	if self.Args != ExactArgs(0) {
+		usageMsg += "["
+		usageMsg += self.Args.ToString()
+		usageMsg += "]"
+	}
+
+	if len(self.flags) > 1 {
+		usageMsg += "[flags]"
+		usageMsg += " "
+	}
+
+	fmt.Println("\n" + usageMsg)
 }
 
 // / Call this on the root command to initiate the parsing sequence
