@@ -207,6 +207,16 @@ func (self *Command) helpScreen() {
 	}
 
 	fmt.Println("\n" + usageMsg)
+
+	// Commands list
+	if len(self.children) != 0 {
+		fmt.Println("Commands:")
+		lines := [][]string{}
+		for _, child := range self.children {
+			lines = append(lines, []string{child.Usage, child.Short})
+		}
+		fmt.Println(separateLines(lines, 2))
+	}
 }
 
 // / Call this on the root command to initiate the parsing sequence
