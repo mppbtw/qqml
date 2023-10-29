@@ -18,6 +18,7 @@ package argparse
 
 type ExpectedArgs interface {
 	Validate([]string) bool
+	ToString() string
 }
 type exactArgs struct{
 	num int
@@ -36,14 +37,32 @@ type miniMaxArgs struct{
 func (self exactArgs) Validate(args []string) bool {
 	return len(args) == self.num
 }
+func (self exactArgs) ToString() string {
+	if self.num == 1 {
+		return "1 argument"
+	}
+	return string(self.num) + " arguments"
+}
+
 func (self maximumArgs) Validate(args []string) bool {
 	return len(args) <= self.max
 }
+func (self maximumArgs) ToString() string {
+	return "< " + string(self.max) + " arguments"
+}
+
 func (self minimumArgs) Validate(args []string) bool {
 	return len(args) >= self.min
 }
+func (self minimumArgs) ToString() string {
+	return "> " + string(self.min) + " arguments"
+}
+
 func (self miniMaxArgs) Validate(args []string) bool {
 	return len(args) >= self.min && len(args) <= self.max
+}
+func (self miniMaxArgs) ToString() string {
+	return string(self.min) + " < x < " + string(self.max) + "arguments" 
 }
 
 func ExactArgs(num int) exactArgs {
