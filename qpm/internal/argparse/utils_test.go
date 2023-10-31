@@ -108,7 +108,7 @@ func TestBackwardsSort(T *testing.T) {
 	}
 }
 
-func TestSeparateLines(T *testing.T)  {
+func TestSeparateLines(T *testing.T) {
 	input := [][]string{{"a", "b"}, {"cc", "dd"}}
 	expected := "a   b\ncc  dd"
 	result := separateLines(input, 2)

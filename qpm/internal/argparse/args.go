@@ -22,16 +22,16 @@ type ExpectedArgs interface {
 	Validate([]string) bool
 	ToString() string
 }
-type exactArgs struct{
+type exactArgs struct {
 	num int
 }
-type maximumArgs struct{
+type maximumArgs struct {
 	max int
 }
-type minimumArgs struct{
+type minimumArgs struct {
 	min int
 }
-type miniMaxArgs struct{
+type miniMaxArgs struct {
 	min int
 	max int
 }
@@ -64,17 +64,17 @@ func (self miniMaxArgs) Validate(args []string) bool {
 	return len(args) >= self.min && len(args) <= self.max
 }
 func (self miniMaxArgs) ToString() string {
-	return fmt.Sprint(self.min) + " < x < " + fmt.Sprint(self.max) + "arguments" 
+	return fmt.Sprint(self.min) + " < x < " + fmt.Sprint(self.max) + "arguments"
 }
 
 func ExactArgs(num int) exactArgs {
-    return exactArgs{num: num}
+	return exactArgs{num: num}
 }
 func MinimumArgs(min int) minimumArgs {
-    return minimumArgs{min: min}
+	return minimumArgs{min: min}
 }
 func MaximumArgs(max int) maximumArgs {
-    return maximumArgs{max: max}
+	return maximumArgs{max: max}
 }
 func MinimaxArgs(min int, max int) miniMaxArgs {
 	return miniMaxArgs{min: min, max: max}
