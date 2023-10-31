@@ -31,7 +31,7 @@ pub fn test_separate_lines() {
 pub fn test_left_pad() {
     let input = "super mario in real life";
     let expected = "    super mario in real life";
-    let result = the_one_and_only_left_pad(input.to_string(), 4, ' ');
+    let result = the_one_and_only_left_pad(input.to_string(), 4);
     dbg!(&result);
     assert_eq!(result, expected);
 }
