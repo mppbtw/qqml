@@ -125,3 +125,12 @@ func TestStripWhitespace(T *testing.T) {
 		T.Error("Expected:\n" + expected + "\nResult:\n" + result)
 	}
 }
+
+func TestLeftPad(T *testing.T) {
+	input := "belief doesnt change reality gary"
+	expected := "    belief doesnt change reality gary"
+	result := leftPad(input, 4)
+	if result != expected {
+		T.Error("Expected:\n" + expected + "\nResult:\n" + result)
+	}
+}
