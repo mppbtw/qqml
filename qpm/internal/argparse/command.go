@@ -222,6 +222,21 @@ func (self *Command) helpScreen() {
 		for i := 0; i < len(listLines); i++ {
 			fmt.Println(leftPad(listLines[i], 3))
 		}
+		fmt.Println()
+	}
+
+	// Flags list
+	if len(self.flags) != 0 {
+		fmt.Println("Flags:")
+		lines := [][]string{}
+		for _, flag := range self.flags {
+			lines = append(lines, []string{flag.Usage, strings.Join(flag.Aliases, " "), flag.Long})
+		}
+		list := separateLines(lines, 2)
+		listLines := strings.Split(list, "\n")
+		for _, line := range listLines {
+			fmt.Println(leftPad(line, 3))
+		}
 	}
 }
 
