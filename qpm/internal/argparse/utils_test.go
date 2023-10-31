@@ -109,10 +109,19 @@ func TestBackwardsSort(T *testing.T) {
 }
 
 func TestSeparateLines(T *testing.T)  {
-	input := [][]string{{"w", "w"}, {"ww", "www"}}
-	expected := "w    w\nww   www"
-	result := separateLines(input, 3)
+	input := [][]string{{"a", "b"}, {"cc", "dd"}}
+	expected := "a   b\ncc  dd"
+	result := separateLines(input, 2)
 	if result != expected {
-		T.Error("Expected:\n", expected, "\nResult:\n", result)
+		T.Error("Expected:\n" + expected + "\nResult:\n" + result)
+	}
+}
+
+func TestStripWhitespace(T *testing.T) {
+	input := " 1 2 3   "
+	expected := " 1 2 3"
+	result := stripWhitespace(input)
+	if result != expected {
+		T.Error("Expected:\n" + expected + "\nResult:\n" + result)
 	}
 }

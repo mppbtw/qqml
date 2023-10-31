@@ -16,6 +16,8 @@
 
 package argparse
 
+import "fmt"
+
 type ExpectedArgs interface {
 	Validate([]string) bool
 	ToString() string
@@ -41,28 +43,28 @@ func (self exactArgs) ToString() string {
 	if self.num == 1 {
 		return "1 argument"
 	}
-	return string(self.num) + " arguments"
+	return fmt.Sprint(self.num) + " arguments"
 }
 
 func (self maximumArgs) Validate(args []string) bool {
 	return len(args) <= self.max
 }
 func (self maximumArgs) ToString() string {
-	return "< " + string(self.max) + " arguments"
+	return "< " + fmt.Sprint(self.max) + " arguments"
 }
 
 func (self minimumArgs) Validate(args []string) bool {
 	return len(args) >= self.min
 }
 func (self minimumArgs) ToString() string {
-	return "> " + string(self.min) + " arguments"
+	return "> " + fmt.Sprint(self.min) + " arguments"
 }
 
 func (self miniMaxArgs) Validate(args []string) bool {
 	return len(args) >= self.min && len(args) <= self.max
 }
 func (self miniMaxArgs) ToString() string {
-	return string(self.min) + " < x < " + string(self.max) + "arguments" 
+	return fmt.Sprint(self.min) + " < x < " + fmt.Sprint(self.max) + "arguments" 
 }
 
 func ExactArgs(num int) exactArgs {
