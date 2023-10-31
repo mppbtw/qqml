@@ -98,16 +98,15 @@ pub fn strip_whitespace(inp: &mut String) {
         } else {
             return;
         }
-        i = i - 1;
+        i -= 1;
     }
 }
 
-pub fn the_one_and_only_left_pad(inp: String, chars: usize, pad_char: char) -> String {
-    let inp = inp.to_string();
+pub fn the_one_and_only_left_pad(inp: String, chars: usize) -> String {
     (0..chars)
-        .map(|_| "")
+        .map(|_| " ")
         .collect::<Vec<&'static str>>()
-        .join(&pad_char.to_string())
+        .join("")
         .to_string()
         + &inp
 }
