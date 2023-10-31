@@ -54,6 +54,7 @@ func separateLines(inp [][]string, gapSize int8) string {
 		}
 	}
 
+	// For each column in the matrix
 	for i := 0; i < len(inp[0]); i++ {
 		longestInCol := 0
 		for j := 0; j < len(inp); j++ {
@@ -61,24 +62,35 @@ func separateLines(inp [][]string, gapSize int8) string {
 				longestInCol = len(inp[j][i])
 			}
 		}
-
 		charsBeforeNextCol := longestInCol + int(gapSize)
 
+		// For each row (to access all elements over this iteration)
 		for j := 0; j < len(inp); j++ {
-			lines := inp[j]
-			item := lines[i]
+			item := inp[j][i]
 			output[j][i] = inp[j][i]
 			for n := 0; n < charsBeforeNextCol-len(item); n++ {
-				output[j][i] += ""
+				output[j][i] += " "
 			}
 		}
 	}
 
 	lines := []string{}
 	for i := 0; i < len(output); i++ {
-		lines = append(lines, strings.Join(output[i], ""))
+		lines = append(lines, stripWhitespace(strings.Join(output[i], "")))
 	}
 	return strings.Join(lines, "\n")
+}
+
+func stripWhitespace(inp string) string {
+	output := inp
+	for i := len(inp)-1; i > 0; i-- {
+		if inp[i] == ' ' {
+			output = output[0:len(output)-1]
+		} else {
+			return output
+		}
+	}
+	return output
 }
 
 func merge(a []int, b []int) []int {
