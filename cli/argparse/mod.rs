@@ -21,5 +21,8 @@ mod command;
 mod flag;
 mod utils;
 
+#[cfg(test)]
+mod test;
+
 pub use command::*;
 pub use flag::*;
