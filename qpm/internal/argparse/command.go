@@ -19,6 +19,7 @@ package argparse
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 type ErrNoSuchCommand struct{}
@@ -207,6 +208,7 @@ func (self *Command) helpScreen() {
 	}
 
 	fmt.Println("\n" + usageMsg)
+	fmt.Println()
 
 	// Commands list
 	if len(self.children) != 0 {
@@ -215,7 +217,11 @@ func (self *Command) helpScreen() {
 		for _, child := range self.children {
 			lines = append(lines, []string{child.Usage, child.Short})
 		}
-		fmt.Println(separateLines(lines, 2))
+		list := separateLines(lines, 2)
+		listLines := strings.Split(list, "\n")
+		for i := 0; i < len(listLines); i++ {
+			fmt.Println(leftPad(listLines[i], 3))
+		}
 	}
 }
 
