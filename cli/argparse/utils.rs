@@ -79,8 +79,21 @@ where
     Ok(output
         .iter()
         .map(|l| l.join(""))
+        .map(|mut l| {strip_whitespace(&mut l); l})
         .collect::<Vec<String>>()
         .join("\n"))
+}
+
+pub fn strip_whitespace(inp: &mut String) {
+    let mut i = inp.len()-1;
+    while i > 0 {
+        if inp.as_bytes()[i] == b' ' {
+            inp.remove(i);
+        } else {
+            return;
+        }
+        i = i - 1;
+    }
 }
 
 pub fn the_one_and_only_left_pad<S>(inp: S, chars: usize, pad_char: char) -> String
