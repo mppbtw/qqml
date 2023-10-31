@@ -17,6 +17,9 @@
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct LineSeparationError;
 
+#[cfg(test)]
+mod test;
+
 /// Will transform
 /// [
 ///     ["foo", "bar"],
@@ -79,13 +82,16 @@ where
     Ok(output
         .iter()
         .map(|l| l.join(""))
-        .map(|mut l| {strip_whitespace(&mut l); l})
+        .map(|mut l| {
+            strip_whitespace(&mut l);
+            l
+        })
         .collect::<Vec<String>>()
         .join("\n"))
 }
 
 pub fn strip_whitespace(inp: &mut String) {
-    let mut i = inp.len()-1;
+    let mut i = inp.len() - 1;
     while i > 0 {
         if inp.as_bytes()[i] == b' ' {
             inp.remove(i);
@@ -96,10 +102,7 @@ pub fn strip_whitespace(inp: &mut String) {
     }
 }
 
-pub fn the_one_and_only_left_pad<S>(inp: S, chars: usize, pad_char: char) -> String
-where
-    S: ToString,
-{
+pub fn the_one_and_only_left_pad(inp: String, chars: usize, pad_char: char) -> String {
     let inp = inp.to_string();
     (0..chars)
         .map(|_| "")

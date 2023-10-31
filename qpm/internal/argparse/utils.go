@@ -92,9 +92,9 @@ func leftPad(inp string, paddingSize int) string {
 
 func stripWhitespace(inp string) string {
 	output := inp
-	for i := len(inp)-1; i > 0; i-- {
+	for i := len(inp) - 1; i > 0; i-- {
 		if inp[i] == ' ' {
-			output = output[0:len(output)-1]
+			output = output[0 : len(output)-1]
 		} else {
 			return output
 		}

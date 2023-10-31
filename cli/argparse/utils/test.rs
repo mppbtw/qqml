@@ -14,12 +14,24 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use std::convert::Infallible;
-use std::process::exit;
+use crate::argparse::utils::separate_lines;
+use crate::argparse::utils::the_one_and_only_left_pad;
 
-mod command;
-mod flag;
-mod utils;
+#[test]
+pub fn test_separate_lines() {
+    let input: Vec<Vec<String>> =
+        vec![vec!["a".into(), "b".into()], vec!["cc".into(), "dd".into()]];
+    let expected = "a   b\ncc  dd";
+    let result = separate_lines(input, 2).unwrap();
+    dbg!(&result);
+    assert_eq!(result, expected);
+}
 
-pub use command::*;
-pub use flag::*;
+#[test]
+pub fn test_left_pad() {
+    let input = "super mario in real life";
+    let expected = "    super mario in real life";
+    let result = the_one_and_only_left_pad(input.to_string(), 4, ' ');
+    dbg!(&result);
+    assert_eq!(result, expected);
+}
