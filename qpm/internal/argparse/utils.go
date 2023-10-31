@@ -81,6 +81,15 @@ func separateLines(inp [][]string, gapSize int8) string {
 	return strings.Join(lines, "\n")
 }
 
+func leftPad(inp string, paddingSize int) string {
+	output := ""
+	for i := 0; i < paddingSize; i++ {
+		output += " "
+	}
+	output += inp
+	return output
+}
+
 func stripWhitespace(inp string) string {
 	output := inp
 	for i := len(inp)-1; i > 0; i-- {
