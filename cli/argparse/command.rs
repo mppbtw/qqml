@@ -127,7 +127,7 @@ impl Command {
                 )
                 .unwrap()
                 .split('\n')
-                .map(|line| the_one_and_only_left_pad(line, 3, ' '))
+                .map(|line| the_one_and_only_left_pad(line.to_string(), 3, ' '))
                 .collect::<Vec<String>>()
                 .join("\n"),
             );
@@ -150,7 +150,7 @@ impl Command {
                 )
                 .unwrap()
                 .split('\n')
-                .map(|line| the_one_and_only_left_pad(line, 3, ' '))
+                .map(|line| the_one_and_only_left_pad(line.to_string(), 3, ' '))
                 .collect::<Vec<String>>()
                 .join("\n"),
             );

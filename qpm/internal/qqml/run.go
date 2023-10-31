@@ -36,7 +36,8 @@ type QQMLRunCommand struct {
 	SrcType SrcType
 }
 
-type ErrNoSuchFileOrDirectory struct {}
+type ErrNoSuchFileOrDirectory struct{}
+
 func (e ErrNoSuchFileOrDirectory) Error() string {
 	return "No such file or directory (os error 2)"
 }
