@@ -87,7 +87,7 @@ impl Command {
         self.children.push(cmd);
     }
 
-    pub fn help_screen(&self) -> Infallible {
+    pub fn help_screen(&self) {
         // Long description
         println!("{}\n", self.long);
 
@@ -155,7 +155,6 @@ impl Command {
                 .join("\n"),
             );
         }
-        exit(0);
     }
 
     fn lookup_command(&self, arg: &str) -> Option<&Command> {
@@ -219,6 +218,7 @@ impl Command {
 
         if flags_result.get("--help").is_some() {
             self.help_screen();
+            exit(0);
         }
 
         if args.len() != self.args {
@@ -251,6 +251,7 @@ impl Command {
                     None => false,
                 } {
                     self.help_screen();
+                    exit(0)
                 } else {
                     println!("Unknown argument or subcommand, use --help for more info");
                     exit(1);
@@ -258,6 +259,7 @@ impl Command {
             }
             None => {
                 self.help_screen();
+                exit(1)
             }
         }
         exit(0)
