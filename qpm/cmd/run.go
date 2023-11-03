@@ -30,7 +30,7 @@ var (
 		Usage: "run",
 		Short: "Run a quiz",
 		Long:  "Run a quiz from any of the available repos or locally installed files",
-		Args:  argparse.MaximumArgs(1),
+		Args:  argparse.ExactArgs(1),
 		Run: func(args []string, flags argparse.AnsweredFlags) {
 			if fileFlag, err := flags.Get("--file"); err == nil {
 				command := qqml.QQMLRunCommand{
