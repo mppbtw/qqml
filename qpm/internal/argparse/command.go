@@ -153,6 +153,7 @@ func (self *Command) ExecuteLeaf(args []string) {
 		}
 
 		answeredFlags = append(answeredFlags, answeredFlag)
+		i++
 	}
 
 	// Sort backwards so we dont have to shift the indeces when removing them from
