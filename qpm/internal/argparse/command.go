@@ -147,9 +147,10 @@ func (self *Command) ExecuteLeaf(args []string) {
 			}
 			flagArg := args[i+1]
 			flagIndeces = append(flagIndeces, i+1)
-			i++
 			answeredArg.StringArg = flagArg
 			answeredFlag.Arg = answeredArg
+			args = append(args, flagArg)
+			i++
 		}
 
 		answeredFlags = append(answeredFlags, answeredFlag)
