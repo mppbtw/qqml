@@ -181,6 +181,7 @@ func (self *Command) ExecuteLeaf(args []string) {
 		if flag.Required {
 			if _, err := flagsResult.Get(flag.Usage); err != nil {
 				fmt.Println("The required flag", flag.Usage, "was not provided.")
+				os.Exit(1)
 			}
 		}
 	}

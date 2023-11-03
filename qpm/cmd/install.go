@@ -33,11 +33,9 @@ var (
 		Short: "Install QQML quizzes",
 		Long:  "Install QQML quizzes from either local files or remote repos",
 		Run: func(args []string, flags argparse.AnsweredFlags) {
-			fileFlag, err := flags.Get("--file")
-			if err != nil {
-				fmt.Println("Missing the --file flag!")
-				os.Exit(1)
-			}
+
+			// We dont need to check error this because the flag is marked as required
+			fileFlag, _ := flags.Get("--file")
 			filePath := fileFlag.Arg.StringArg
 
 			if !utils.PathExists(filePath) {
