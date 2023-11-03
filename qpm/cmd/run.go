@@ -116,11 +116,12 @@ var (
 
 func init() {
 	runCmd.AddFlag(argparse.Flag{
-		Usage:    "--file",
-		Long:     "Run from a local file (if you want any persistency, please install the file as a package)",
-		Aliases:  []string{"-f"},
-		Arg:      argparse.StringFlagArgumentType,
-		Required: false,
+		Usage:                    "--file",
+		Long:                     "Run from a local file (if you want any persistency, please install the file as a package)",
+		Aliases:                  []string{"-f"},
+		Arg:                      argparse.StringFlagArgumentType,
+		Required:                 false,
+		ArgumentCountsForCommand: true,
 	})
 	rootCmd.AddCommand(runCmd)
 }

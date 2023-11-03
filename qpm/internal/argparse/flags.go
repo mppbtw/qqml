@@ -22,6 +22,9 @@ type Flag struct {
 	Arg      FlagArgumentType
 	Long     string
 	Required bool
+	// If true, any arguments captured for this flag will count towards the total arg count for the command.
+	// Please be very careful not to mistake the flag argument for a command argument in your run function.
+	ArgumentCountsForCommand bool
 }
 
 type ErrNoSuchFlag struct{}
