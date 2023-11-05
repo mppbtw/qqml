@@ -175,7 +175,7 @@ func (self *Command) ExecuteLeaf(args []string) {
 	}
 
 	if !self.Args.Validate(args) {
-		fmt.Println("Expected", self.Args, "arguments, got", len(args))
+		fmt.Println("Expected", self.Args.ToString(), "arguments, got", len(args))
 		os.Exit(1)
 	}
 
