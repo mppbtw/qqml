@@ -87,7 +87,7 @@ impl Command {
         self.children.push(cmd);
     }
 
-    pub fn help_screen(&self) -> Infallible {
+    pub fn help_screen(&self) {
         // Long description
         println!("{}\n", self.long);
 
@@ -127,7 +127,7 @@ impl Command {
                 )
                 .unwrap()
                 .split('\n')
-                .map(|line| the_one_and_only_left_pad(line, 3, ' '))
+                .map(|line| the_one_and_only_left_pad(line.to_string(), 3))
                 .collect::<Vec<String>>()
                 .join("\n"),
             );
@@ -150,12 +150,11 @@ impl Command {
                 )
                 .unwrap()
                 .split('\n')
-                .map(|line| the_one_and_only_left_pad(line, 3, ' '))
+                .map(|line| the_one_and_only_left_pad(line.to_string(), 3))
                 .collect::<Vec<String>>()
                 .join("\n"),
             );
         }
-        exit(0);
     }
 
     fn lookup_command(&self, arg: &str) -> Option<&Command> {
@@ -191,7 +190,7 @@ impl Command {
 
                     let flag_argument = args.get(i + 1).cloned();
                     if flag_argument.is_none() {
-                        println!("The f {} requires an argument of type STRING", f.usage);
+                        println!("The flag {} requires an argument of type STRING", f.usage);
                         exit(1);
                     }
 
@@ -219,11 +218,12 @@ impl Command {
 
         if flags_result.get("--help").is_some() {
             self.help_screen();
+            exit(0);
         }
 
         if args.len() != self.args {
             println!("Expected {} arguments, got {}", self.args, args.len());
-            exit(0);
+            exit(1);
         }
 
         self.run.unwrap()(&args[..], flags_result);
@@ -251,13 +251,15 @@ impl Command {
                     None => false,
                 } {
                     self.help_screen();
+                    exit(0)
                 } else {
-                    println!("Unknown argument or subcommand");
+                    println!("Unknown argument or subcommand, use --help for more info");
                     exit(1);
                 };
             }
             None => {
                 self.help_screen();
+                exit(1)
             }
         }
         exit(0)

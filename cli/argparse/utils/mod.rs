@@ -17,6 +17,9 @@
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct LineSeparationError;
 
+#[cfg(test)]
+mod test;
+
 /// Will transform
 /// [
 ///     ["foo", "bar"],
@@ -60,7 +63,7 @@ where
         (0..line.len() - longest_line).for_each(|_| line.push(String::from("")));
     }
 
-    for (i, col) in inp[0].iter().enumerate() {
+    for i in 0..inp[0].len() {
         'a: {
             let longest_in_col = match inp.iter().map(|l| l[i].to_string().len()).max() {
                 Some(n) => n,
@@ -79,19 +82,31 @@ where
     Ok(output
         .iter()
         .map(|l| l.join(""))
+        .map(|mut l| {
+            strip_whitespace(&mut l);
+            l
+        })
         .collect::<Vec<String>>()
         .join("\n"))
 }
 
-pub fn the_one_and_only_left_pad<S>(inp: S, chars: usize, pad_char: char) -> String
-where
-    S: ToString,
-{
-    let inp = inp.to_string();
+pub fn strip_whitespace(inp: &mut String) {
+    let mut i = inp.len() - 1;
+    while i > 0 {
+        if inp.as_bytes()[i] == b' ' {
+            inp.remove(i);
+        } else {
+            return;
+        }
+        i -= 1;
+    }
+}
+
+pub fn the_one_and_only_left_pad(inp: String, chars: usize) -> String {
     (0..chars)
-        .map(|_| "")
+        .map(|_| " ")
         .collect::<Vec<&'static str>>()
-        .join(&pad_char.to_string())
+        .join("")
         .to_string()
         + &inp
 }

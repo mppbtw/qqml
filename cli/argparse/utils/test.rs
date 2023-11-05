@@ -14,23 +14,24 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-package cmd
+use crate::argparse::utils::separate_lines;
+use crate::argparse::utils::the_one_and_only_left_pad;
 
-import (
-	"os"
-	"qpm/internal/argparse"
-)
+#[test]
+pub fn test_separate_lines() {
+    let input: Vec<Vec<String>> =
+        vec![vec!["a".into(), "b".into()], vec!["cc".into(), "dd".into()]];
+    let expected = "a   b\ncc  dd";
+    let result = separate_lines(input, 2).unwrap();
+    dbg!(&result);
+    assert_eq!(result, expected);
+}
 
-var (
-	rootCmd = argparse.Command{
-		Usage: "qpm",
-		Short: "QPM is the package manager for QQML.",
-		Long: `QPM is the QQML (Quiz Question Markup Language) package manager.
-It is used to install QQML quizzes from either local files or remote repositories.
-See <https://github.com/mrpiggypegasus/qqml> for more info.`,
-	}
-)
-
-func Execute() {
-	rootCmd.Execute(os.Args[1:])
+#[test]
+pub fn test_left_pad() {
+    let input = "super mario in real life";
+    let expected = "    super mario in real life";
+    let result = the_one_and_only_left_pad(input.to_string(), 4);
+    dbg!(&result);
+    assert_eq!(result, expected);
 }

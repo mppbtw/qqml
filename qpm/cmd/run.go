@@ -19,21 +19,29 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"qpm/internal/argparse"
 	"qpm/internal/locate"
 	"qpm/internal/qqml"
 	"qpm/internal/utils"
-
-	"github.com/spf13/cobra"
 )
 
 var (
-	runCmd = &cobra.Command{
-		Use:     "run",
-		Short:   "Run a quiz",
-		Long:    "Run a quiz from any of the available repos or locally installed files",
-		Aliases: []string{"r"},
-		Args:    cobra.ExactArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+	runCmd = argparse.Command{
+		Usage: "run",
+		Short: "Run a quiz",
+		Long:  "Run a quiz from any of the available repos or locally installed files",
+		Args:  argparse.ExactArgs(1),
+		Run: func(args []string, flags argparse.AnsweredFlags) {
+			if fileFlag, err := flags.Get("--file"); err == nil {
+				command := qqml.QQMLRunCommand{
+					SrcPath: fileFlag.Arg.StringArg,
+				}
+				if err = command.Run(); err != nil {
+					fmt.Println("Failed to run the quiz:", err.Error())
+					os.Exit(1)
+				}
+				os.Exit(0)
+			}
 
 			// Check that QPM is in a valid state
 			res, err := utils.IsInitialised()
@@ -107,5 +115,13 @@ var (
 )
 
 func init() {
+	runCmd.AddFlag(argparse.Flag{
+		Usage:                    "--file",
+		Long:                     "Run from a local file (if you want any persistency, please install the file as a package)",
+		Aliases:                  []string{"-f"},
+		Arg:                      argparse.StringFlagArgumentType,
+		Required:                 false,
+		ArgumentCountsForCommand: true,
+	})
 	rootCmd.AddCommand(runCmd)
 }

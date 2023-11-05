@@ -19,17 +19,16 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"qpm/internal/argparse"
 	"qpm/internal/locate"
-
-	"github.com/spf13/cobra"
 )
 
-var resetCmd = &cobra.Command{
-	Use:   "reset",
+var resetCmd = argparse.Command{
+	Usage: "reset",
 	Short: "Reset your progress on a quiz.",
 	Long:  "Reset your progress on a quiz, including historical scores.",
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	Args:  argparse.ExactArgs(1),
+	Run: func(args []string, flags argparse.AnsweredFlags) {
 		quiz := args[0]
 
 		logFiles, err := locate.FindLogFile(quiz)
