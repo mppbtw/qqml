@@ -50,6 +50,24 @@ impl Command {
             panic!("Only leaf commands (without subcommands) can have custom flags!");
         }
 
+        // Check if the version subcommand already exists for this node
+        if !new
+            .children
+            .iter()
+            .map(|c| c.usage)
+            .collect::<Vec<&str>>()
+            .contains(&"version")
+        {
+            new.children.push(Command::new(CommandBuilder {
+                usage: "version",
+                short: "Display the version information",
+                long: "Display the version information for the current build",
+                args: 0,
+                flags: vec![],
+                run: None
+            }))
+        }
+
         // Check if the --help flag already exists
         if !new
             .flags
@@ -80,6 +98,7 @@ impl Command {
             }
             new.flags.push(help_flag);
         }
+
         new
     }
 
