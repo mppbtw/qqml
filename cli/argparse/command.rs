@@ -50,14 +50,7 @@ impl Command {
             panic!("Only leaf commands (without subcommands) can have custom flags!");
         }
 
-        // Check if the --help flag already exists
-        if !new
-            .flags
-            .iter()
-            .map(|f| f.usage)
-            .collect::<Vec<&str>>()
-            .contains(&"--help")
-        {
+        if new.flags.iter().any(|f| f.usage == "--help") {
             let mut help_flag = Flag {
                 usage:   "--help",
                 aliases: vec![],
@@ -67,19 +60,46 @@ impl Command {
 
             // Check if the -h alias has already been taken (either by an alias or the full
             // name of a flag)
-            let alias_avaliable = 'a: {
+            let alias_avaliable = || {
                 for f in new.flags.iter() {
                     if f.aliases.contains(&"-h") || f.usage == "-h" {
-                        break 'a false;
+                        return false;
                     }
                 }
-                true // treesitter chokes on this keyword for some reason
+                true
             };
-            if alias_avaliable {
+
+            // Some syntax was breaking treesitter so this is a closure now, your welcome
+            if alias_avaliable() {
                 help_flag.aliases.push("-h");
             }
             new.flags.push(help_flag);
         }
+
+        // The exact same thing here
+        if new.flags.iter().any(|f| f.usage == "--version") {
+            let mut version_flag = Flag {
+                usage:   "--version",
+                aliases: vec![],
+                arg:     None,
+                long:    Some("Display version information"),
+            };
+
+            let alias_avaliable = || {
+                for f in new.flags.iter() {
+                    if f.aliases.contains(&"-V") || f.usage == "-V" {
+                        return false;
+                    }
+                }
+                true
+            };
+
+            if alias_avaliable() {
+                version_flag.aliases.push("-V");
+            }
+            new.flags.push(version_flag);
+        }
+
         new
     }
 
@@ -157,6 +177,10 @@ impl Command {
         }
     }
 
+    fn version_screen(&self) {
+        println!("QQML v{}", env!("CARGO_PKG_VERSION"))
+    }
+
     fn lookup_command(&self, arg: &str) -> Option<&Command> {
         self.children.iter().find(|&child| child.usage == arg)
     }
@@ -221,6 +245,11 @@ impl Command {
             exit(0);
         }
 
+        if flags_result.get("--version").is_some() {
+            self.version_screen();
+            exit(0);
+        }
+
         if args.len() != self.args {
             println!("Expected {} arguments, got {}", self.args, args.len());
             exit(1);
@@ -246,15 +275,20 @@ impl Command {
             Some(arg) => {
                 if let Some(c) = self.lookup_command(arg) {
                     c.execute(&args[1..]);
-                } else if match self.lookup_flag(arg) {
-                    Some(f) => f.usage == "--help",
-                    None => false,
-                } {
-                    self.help_screen();
-                    exit(0)
                 } else {
-                    println!("Unknown argument or subcommand, use --help for more info");
-                    exit(1);
+                    match self.lookup_flag(arg) {
+                        Some(f) => {
+                            if f.usage == "--help" {
+                                self.help_screen();
+                            } else if f.usage == "--version" {
+                                self.version_screen();
+                            }
+                        }
+                        None => {
+                            println!("Unknown argument or subcommand, use --help for more info");
+                            exit(1);
+                        }
+                    }
                 };
             }
             None => {
