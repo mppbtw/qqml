@@ -50,7 +50,7 @@ impl Command {
             panic!("Only leaf commands (without subcommands) can have custom flags!");
         }
 
-        if new.flags.iter().find(|f| f.usage == "--help").is_none() {
+        if new.flags.iter().any(|f| f.usage == "--help") {
             let mut help_flag = Flag {
                 usage:   "--help",
                 aliases: vec![],
@@ -77,7 +77,7 @@ impl Command {
         }
 
         // The exact same thing here
-        if new.flags.iter().find(|f| f.usage == "--version").is_none() {
+        if new.flags.iter().any(|f| f.usage == "--version") {
             let mut version_flag = Flag {
                 usage:   "--version",
                 aliases: vec![],
@@ -275,18 +275,21 @@ impl Command {
             Some(arg) => {
                 if let Some(c) = self.lookup_command(arg) {
                     c.execute(&args[1..]);
-                } else{ match self.lookup_flag(arg) {
-                    Some(f) => if f.usage == "--help" {
-                        self.help_screen();
-                    } else if f.usage == "--version" {
-                        self.version_screen();
-                    },
-                    None => {
-                        println!("Unknown argument or subcommand, use --help for more info");
-                        exit(1);
-                    },
-                 
-                }};
+                } else {
+                    match self.lookup_flag(arg) {
+                        Some(f) => {
+                            if f.usage == "--help" {
+                                self.help_screen();
+                            } else if f.usage == "--version" {
+                                self.version_screen();
+                            }
+                        }
+                        None => {
+                            println!("Unknown argument or subcommand, use --help for more info");
+                            exit(1);
+                        }
+                    }
+                };
             }
             None => {
                 self.help_screen();
