@@ -50,7 +50,7 @@ impl Command {
             panic!("Only leaf commands (without subcommands) can have custom flags!");
         }
 
-        if new.flags.iter().any(|f| f.usage == "--help") {
+        if !new.flags.iter().any(|f| f.usage == "--help") {
             let mut help_flag = Flag {
                 usage:   "--help",
                 aliases: vec![],
@@ -77,7 +77,7 @@ impl Command {
         }
 
         // The exact same thing here
-        if new.flags.iter().any(|f| f.usage == "--version") {
+        if !new.flags.iter().any(|f| f.usage == "--version") {
             let mut version_flag = Flag {
                 usage:   "--version",
                 aliases: vec![],
