@@ -30,6 +30,6 @@ var versionCmd = argparse.Command{
 	Short: "Print the current QPM version number",
 	Long:  "Take this number with a grain of salt, I'm forgetful sometimes",
 	Run: func(_ []string, _ argparse.AnsweredFlags) {
-		fmt.Println("This installation of QPM is from QQML v0.4.4")
+		fmt.Println("This installation of QPM is from QQML v0.5.1")
 	},
 }
