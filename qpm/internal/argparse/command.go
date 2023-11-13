@@ -205,6 +205,7 @@ func (self *Command) helpScreen() {
 		usageMsg += "["
 		usageMsg += self.Args.ToString()
 		usageMsg += "]"
+		usageMsg += " "
 	}
 
 	if len(self.flags) > 1 {
