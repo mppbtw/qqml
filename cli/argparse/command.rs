@@ -123,7 +123,11 @@ impl Command {
         }
 
         if self.args > 0 {
-            usage_msg += &format!("[{} arguments]", self.args);
+            if self.args > 1 {
+                usage_msg += &format!("[{} arguments]", self.args);
+            } else {
+                usage_msg += &format!("[{} argument]", self.args);
+            }
             usage_msg += " ";
         }
 
