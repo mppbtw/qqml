@@ -69,7 +69,7 @@ pub fn init(parent: &mut Command) {
             usage:   "--output",
             aliases: vec!["-o"],
             arg:     Some(FlagArgumentType::String),
-            long:    None,
+            long:    Some("The path to output to."),
         }],
     }))
 }
