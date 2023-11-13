@@ -1,8 +1,8 @@
 stages:
+    - Build
+    - Test
     - Format
     - Lint
-    - Test
-    - Build
 
 Format QQML:
     image: rustlang/rust:nightly
