@@ -51,3 +51,8 @@ Test QPM:
     image: golang
     stage: Test
     script: cd ./qpm/ && go test -v . ./...
+
+Build QPM:
+    image: golang
+    stage: build
+    script: cd ./qpm/ && go build .
