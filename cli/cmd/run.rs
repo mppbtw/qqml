@@ -80,13 +80,13 @@ pub fn init(parent: &mut Command) {
                 aliases: vec!["-l"],
                 usage:   "--log",
                 arg:     Some(FlagArgumentType::String),
-                long:    None,
+                long:    Some("Output the log to a JSON file."),
             },
             Flag {
                 aliases: vec!["-j"],
                 usage:   "--json",
                 arg:     None,
-                long:    None,
+                long:    Some("Run from a JSON file."),
             },
         ],
     }))

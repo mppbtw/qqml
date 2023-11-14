@@ -175,7 +175,7 @@ func (self *Command) ExecuteLeaf(args []string) {
 	}
 
 	if !self.Args.Validate(args) {
-		fmt.Println("Expected", self.Args.ToString(), "arguments, got", len(args))
+		fmt.Println("Expected", self.Args.ToString() + ", got", len(args))
 		os.Exit(1)
 	}
 
@@ -205,6 +205,7 @@ func (self *Command) helpScreen() {
 		usageMsg += "["
 		usageMsg += self.Args.ToString()
 		usageMsg += "]"
+		usageMsg += " "
 	}
 
 	if len(self.flags) > 1 {
