@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'MrPiggyPegasus'
+//  Copyright (C) 2023 'mppbtw'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -303,3 +303,4 @@ fn wrap_text_to_width(input: &str, _width: usize) -> Result<String, WidthTooSmal
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct WidthTooSmallError;
+lError;

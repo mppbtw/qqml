@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'MrPiggyPegasus'
+//  Copyright (C) 2023 'mppbtw'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -242,5 +242,7 @@ impl Default for MultichoiceAnswer {
             explanation: None,
             is_chosen:   false,
         }
+    }
+}
     }
 }
