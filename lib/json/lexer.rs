@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'MrPiggyPegasus'
+//  Copyright (C) 2023 'mppbtw'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -143,5 +143,7 @@ impl Lexer {
 
     fn get_token_data(&self) -> TokenData {
         TokenData { line: 0, col: 0 }
+    }
+}
     }
 }

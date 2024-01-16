@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'MrPiggyPegasus'
+//  Copyright (C) 2023 'mppbtw'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -30,4 +30,6 @@ pub fn cleanup_and_exit(exit_print: Option<String>, log_file_path: Option<String
         }
     }
     exit(0)
+}
+it(0)
 }

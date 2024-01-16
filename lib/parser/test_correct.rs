@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'MrPiggyPegasus'
+//  Copyright (C) 2023 'mppbtw'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -353,4 +353,6 @@ fn test_parse_multichoice_questions_with_hints_mixed_quotes() {
         ],
     };
     assert_eq!(result, expected);
+}
+ted);
 }
