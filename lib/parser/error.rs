@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'MrPiggyPegasus'
+//  Copyright (C) 2023 'mppbtw'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -205,5 +205,7 @@ impl From<LexerError> for Error {
             LexerError::IntegerTooLarge(t) => Self::IntegerTooLarge(t),
             LexerError::UnterminatedStringError(t) => Self::UnterminatedLiteral(t),
         }
+    }
+}
     }
 }
