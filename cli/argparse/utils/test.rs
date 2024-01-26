@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'mppbtw'
+//  Copyright (C) 2023 'MrPiggyPegasus'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,4 @@ pub fn test_left_pad() {
     let result = the_one_and_only_left_pad(input.to_string(), 4);
     dbg!(&result);
     assert_eq!(result, expected);
-}
-ted);
 }
