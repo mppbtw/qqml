@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'mppbtw'
+//  Copyright (C) 2023 'MrPiggyPegasus'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -32,6 +32,4 @@ type ErrOutPathNotSpecified struct{}
 
 func (e ErrOutPathNotSpecified) Error() string {
 	return "The outPath value has not been specified!"
-}
-ied!"
 }

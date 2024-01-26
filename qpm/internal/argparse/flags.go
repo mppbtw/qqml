@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'mppbtw'
+//  Copyright (C) 2023 'MrPiggyPegasus'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -66,6 +66,4 @@ func (self *AnsweredFlags) Get(name string) (*AnsweredFlag, error) {
 
 	}
 	return nil, ErrNoSuchFlag{}
-}
-lag{}
 }

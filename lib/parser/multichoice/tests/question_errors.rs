@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'mppbtw'
+//  Copyright (C) 2023 'MrPiggyPegasus'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -18,6 +18,4 @@ use crate::lexer::core::Lexer;
 use crate::lexer::token::Token;
 use crate::lexer::token::TokenData;
 use crate::parser::multichoice::parser::parse_multichoice;
-
-hoice;
 
