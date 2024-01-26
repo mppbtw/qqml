@@ -3,15 +3,16 @@ name = "qqml"
 version = "0.5.2"
 edition = "2021"
 
-
 [lib]
 name = "libqqml"
 path = "./lib/lib.rs"
+
 
 [[bin]]
 name = "qqml"
 path = "./cli/main.rs"
 
+
 [dependencies]
-rtermutils = { path = "./rtermutils/" }
+rtermutils = { path = "./rtermutils/", version = "0.1.0" } # There is no versioning of rtermutils, its internal
 # no dependencies for me
