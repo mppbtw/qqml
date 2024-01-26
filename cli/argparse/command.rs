@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'mppbtw'
+//  Copyright (C) 2023 'MrPiggyPegasus'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -275,7 +275,7 @@ impl Command {
         }
 
         // If it has more subcommands
-        match args.get(0) {
+        match args.first() {
             Some(arg) => {
                 if let Some(c) = self.lookup_command(arg) {
                     c.execute(&args[1..]);
@@ -318,6 +318,4 @@ pub struct CommandBuilder {
     pub run:   Option<fn(&[String], AnsweredFlags) -> Infallible>,
     pub args:  usize,
     pub flags: Vec<Flag>,
-}
-lag>,
 }

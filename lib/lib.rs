@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'mppbtw'
+//  Copyright (C) 2023 'MrPiggyPegasus'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -32,4 +32,3 @@ pub use parser::error::Error;
 pub use parser::multichoice::parse_answer::parse_multichoice_answer;
 pub use parser::multichoice::parser::parse_multichoice;
 pub use parser::Question;
-estion;

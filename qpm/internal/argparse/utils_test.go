@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'mppbtw'
+//  Copyright (C) 2023 'MrPiggyPegasus'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -132,8 +132,5 @@ func TestLeftPad(T *testing.T) {
 	result := leftPad(input, 4)
 	if result != expected {
 		T.Error("Expected:\n" + expected + "\nResult:\n" + result)
-	}
-}
-t)
 	}
 }

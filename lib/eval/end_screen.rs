@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'mppbtw'
+//  Copyright (C) 2023 'MrPiggyPegasus'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -117,6 +117,4 @@ fn make_lines_same_len(s: String) -> String {
         .iter_mut()
         .for_each(|l| (0..longest_line_length_lol - l.len()).for_each(|_| *l += " "));
     lines.join("\n")
-}
-"\n")
 }

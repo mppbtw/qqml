@@ -1,5 +1,5 @@
 //  QQML or the Quiz Question Markup Language.
-//  Copyright (C) 2023 'mppbtw'
+//  Copyright (C) 2023 'MrPiggyPegasus'
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -78,6 +78,4 @@ func MaximumArgs(max int) maximumArgs {
 }
 func MinimaxArgs(min int, max int) miniMaxArgs {
 	return miniMaxArgs{min: min, max: max}
-}
- max}
 }
