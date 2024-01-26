@@ -275,7 +275,7 @@ impl Command {
         }
 
         // If it has more subcommands
-        match args.get(0) {
+        match args.first() {
             Some(arg) => {
                 if let Some(c) = self.lookup_command(arg) {
                     c.execute(&args[1..]);
