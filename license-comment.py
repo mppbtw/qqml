@@ -4,7 +4,7 @@ import sys
 
 text = "\
 //  QQML or the Quiz Question Markup Language.\n\
-//  Copyright (C) 2023 'MrPiggyPegasus'\n\
+//  Copyright (C) 2023 'mppbtw'\n\
 //\n\
 //  This program is free software: you can redistribute it and/or modify\n\
 //  it under the terms of the GNU General Public License as published by\n\
@@ -46,6 +46,7 @@ def search_down(path):
             f = open(path, "r+")
             lines = remove_comment_lines(f.readlines())
             f.seek(0)
+            f.truncate(0)
             f.write(text)
             for line in lines:
                 f.write(line)
