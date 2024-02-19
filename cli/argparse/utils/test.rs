@@ -15,6 +15,7 @@
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::argparse::utils::separate_lines;
+use crate::argparse::utils::strip_whitespace;
 use crate::argparse::utils::the_one_and_only_left_pad;
 
 #[test]
@@ -34,4 +35,12 @@ pub fn test_left_pad() {
     let result = the_one_and_only_left_pad(input.to_string(), 4);
     dbg!(&result);
     assert_eq!(result, expected);
+}
+
+#[test]
+pub fn test_strip_whitespace() {
+    let mut input = "ich bin ein berliner    ".to_owned();
+    strip_whitespace(&mut input);
+    dbg!(&input);
+    assert_eq!("ich bin ein berliner", input);
 }
