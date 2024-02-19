@@ -4,7 +4,7 @@ import sys
 
 text = "\
 //  QQML or the Quiz Question Markup Language.\n\
-//  Copyright (C) 2023 'mppbtw'\n\
+//  Copyright (C) 2024 'mppbtw'\n\
 //\n\
 //  This program is free software: you can redistribute it and/or modify\n\
 //  it under the terms of the GNU General Public License as published by\n\
