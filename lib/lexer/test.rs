@@ -283,7 +283,6 @@ fn test_read_comments() {
         }
         i += 1;
     }
-
 }
 
 #[test]
