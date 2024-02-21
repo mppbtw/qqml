@@ -107,7 +107,7 @@ pub fn parse_multichoice<T: Into<Token>>(
                         }
                         _ => return Err(Error::ExpectedCommaInHintsList(tok)),
                     };
-                }
+                },
                 Token::Eof(_) => {
                     return Err(Error::ExpectedCommaInHintsList(tok));
                 }
