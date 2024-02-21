@@ -110,10 +110,14 @@ impl Lexer {
 
     pub fn next_token(&mut self) -> Result<Token, LexerError> {
         self.scran_whitespace();
-        if self.ch == b'#' {
-            self.skip_until_newline();
+        loop {
+            if self.ch == b'#' {
+                self.skip_until_newline();
+                self.scran_whitespace();
+            } else {
+                break;
+            }
         }
-        self.scran_whitespace();
 
         self.starting_position = self.position;
         let tok: Token = match self.ch {

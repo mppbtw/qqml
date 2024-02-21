@@ -13,7 +13,7 @@ ask multichoice (2) "Which of these fish are red?" {
     * "Bream" (1);
     * "Shubunkin" (1);
     * "Veiltail" -> "Veiltail actually come in many colours";
-} hints
+} hints # note that you can split stuff over multiple lines, QQMl is newline agnostic
 
 "The veiltail, a name coined by William T. Innes, originated in the United States in the 1890s when Franklin Barrett of Philadelphia crossed a Japanese-bred fringetail ryukin to a telescope eye goldfish that exhibited a short, square-edged caudal.",
 
