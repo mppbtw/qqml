@@ -110,6 +110,11 @@ impl Lexer {
 
     pub fn next_token(&mut self) -> Result<Token, LexerError> {
         self.scran_whitespace();
+        if self.ch == b'#' {
+            self.skip_until_newline();
+        }
+        self.scran_whitespace();
+
         self.starting_position = self.position;
         let tok: Token = match self.ch {
             b'=' => Token::Equal(self.get_token_data()),
@@ -175,6 +180,12 @@ impl Lexer {
 
         self.read_char();
         Ok(tok)
+    }
+
+    fn skip_until_newline(&mut self) {
+        while self.ch != b'\n' && self.ch != 0 {
+            self.read_char();
+        }
     }
 
     fn read_number(&mut self) -> Result<usize, LexerError> {

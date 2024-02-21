@@ -232,7 +232,6 @@ fn test_single_char_tokens() {
         Token::Asterisk(d()),
         Token::Illegal(d()),
         Token::Illegal(d()),
-        Token::Illegal(d()),
         Token::Eof(d()),
     ];
 
@@ -256,4 +255,39 @@ fn test_read_massive_numbers() {
         "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999";
     let mut l = Lexer::new(input);
     assert!(l.next_token().is_err());
+}
+
+#[test]
+fn test_read_comments() {
+    let input = "ask multichoice () # comment goes here guys\n \
+        yeah";
+
+    let expected = vec![
+        Token::Ask(d()),
+        Token::Multichoice(d()),
+        Token::LParen(d()),
+        Token::RParen(d()),
+        Token::Ident(d(), "yeah".to_owned()),
+        Token::Eof(d()),
+    ];
+
+    let mut i = 0;
+    let mut lexer = Lexer::new(input);
+
+    loop {
+        let expected_token = &expected[i];
+        let tok = lexer.next_token().unwrap();
+        assert_eq!(tok, *expected_token);
+        if matches!(tok, Token::Eof(_)) {
+            break;
+        }
+        i += 1;
+    }
+
+}
+
+#[test]
+fn test_first_char_is_comment() {
+    let input = "# epic cool commentium\n ask";
+    assert_eq!(Lexer::new(input).next_token(), Ok(Token::Ask(d())));
 }
