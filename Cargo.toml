@@ -2,6 +2,10 @@
 name = "qqml"
 version = "0.5.2"
 edition = "2021"
+readme = "./README.md"
+documentation = "https://github.com/mppbtw/qqml"
+license = "GPL-3.0-or-later"
+description = "Backend of the QQML CLI (Parser/Compiler/Evaluator)"
 
 [lib]
 name = "libqqml"
