@@ -13,6 +13,6 @@ name = "qqml"
 path = "./cli/main.rs"
 
 
-[dependencies]
-rtermutils = { path = "./rtermutils/", version = "0.1.0" } # There is no versioning of rtermutils, its internal
+[build-dependencies]
+cmake = "0.1.50"
 # no dependencies for me
