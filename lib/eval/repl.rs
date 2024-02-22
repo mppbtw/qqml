@@ -18,13 +18,12 @@ use std::convert::Infallible;
 use std::io::stdout;
 use std::io::Write;
 
-use rtermutils::*;
-
 use super::end_screen::end_screen;
 use super::exit::cleanup_and_exit;
 use super::render::Render;
 use crate::parser::core::parse;
 use crate::parser::Question;
+use crate::termutils::*;
 use crate::Error;
 use crate::State;
 

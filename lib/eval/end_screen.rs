@@ -19,11 +19,10 @@ use std::io::Write;
 use std::thread::sleep;
 use std::time::Duration;
 
-use rtermutils::*;
-
 use super::exit::cleanup_and_exit;
 use super::render::pad_to_width;
 use super::state::State;
+use crate::termutils::*;
 
 pub fn end_screen(s: &mut State, log_path: Option<String>) {
     let percent = if s.achieved_marks() == 0 {

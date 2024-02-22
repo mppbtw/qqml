@@ -18,6 +18,7 @@ mod eval;
 mod json;
 mod lexer;
 mod parser;
+mod termutils;
 
 pub use eval::diagnostics::render_error;
 pub use eval::repl::run;

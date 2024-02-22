@@ -17,7 +17,7 @@
 use std::fs::write;
 use std::process::exit;
 
-use rtermutils::*;
+use crate::termutils::*;
 
 pub fn cleanup_and_exit(exit_print: Option<String>, log_file_path: Option<String>) -> ! {
     unsafe {
