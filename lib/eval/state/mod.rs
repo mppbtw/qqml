@@ -159,7 +159,7 @@ impl State {
                 .collect::<Vec<String>>()
                 .join(",")
         );
-        output += "}";
+        output += "}\n";
         output
     }
 
