@@ -20,6 +20,7 @@ use std::io::Write;
 
 use super::end_screen::end_screen;
 use super::exit::cleanup_and_exit;
+use super::exit::cleanup_and_exit_with_log;
 use super::render::Render;
 use crate::parser::core::parse;
 use crate::parser::Question;
@@ -34,7 +35,7 @@ pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
     }
     let mut refresh_needed = false;
     if s.questions.is_empty() {
-        cleanup_and_exit(None, None);
+        cleanup_and_exit();
     }
 
     unsafe {
@@ -162,10 +163,10 @@ pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
             _ => refresh_needed = false,
         }
     }
-    if log_path.is_some() {
-        cleanup_and_exit(Some(s.to_json()), log_path.cloned());
+    if let Some(p) = log_path {
+        cleanup_and_exit_with_log(s.to_json(), p);
     }
-    cleanup_and_exit(None, log_path.cloned());
+    cleanup_and_exit();
 }
 
 pub fn run(

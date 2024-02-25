@@ -22,6 +22,7 @@ use std::time::Duration;
 use super::exit::cleanup_and_exit;
 use super::render::pad_to_width;
 use super::state::State;
+use crate::eval::exit::cleanup_and_exit_with_log;
 use crate::termutils::*;
 
 pub fn end_screen(s: &mut State, log_path: Option<String>) {
@@ -51,11 +52,10 @@ pub fn end_screen(s: &mut State, log_path: Option<String>) {
     println!("You got {}/{}", s.achieved_marks(), s.get_max_marks());
     println!("Press enter to review your answers, or any other key to quit.");
     if unsafe { read_single_char() } != b'\n' {
-        if log_path.is_some() {
-            cleanup_and_exit(Some(s.to_json()), log_path);
-        } else {
-            cleanup_and_exit(None, log_path);
+        if let Some(p) = log_path {
+            cleanup_and_exit_with_log(s.to_json(), &p);
         }
+        cleanup_and_exit();
     }
 }
 

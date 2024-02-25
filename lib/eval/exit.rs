@@ -19,15 +19,23 @@ use std::process::exit;
 
 use crate::termutils::*;
 
-pub fn cleanup_and_exit(exit_print: Option<String>, log_file_path: Option<String>) -> ! {
+pub fn cleanup_and_exit_with_log<C: AsRef<[u8]> + std::fmt::Display>(log: C, path: &String) -> ! {
     unsafe {
         exit_alt_screen();
         show_cursor();
     }
-    if let Some(msg) = exit_print {
-        if let Some(path) = log_file_path {
-            write(path, msg).unwrap();
-        }
+    if let Err(e) = write(path, &log) {
+        println!("Failed to write to log file {}: {}", log, e.to_string());
+    }
+    exit(0)
+}
+
+/// Undo all of the terminal configuration done by the evaluator and return to
+/// the shell or however the QQML binary was run in the first place
+pub fn cleanup_and_exit() -> ! {
+    unsafe {
+        exit_alt_screen();
+        show_cursor();
     }
     exit(0)
 }
