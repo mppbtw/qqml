@@ -33,6 +33,10 @@ pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
         hide_cursor();
     }
     let mut refresh_needed = false;
+    if s.questions.is_empty() {
+        cleanup_and_exit(None, None);
+    }
+
     unsafe {
         print!(
             "{}",
@@ -160,9 +164,8 @@ pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
     }
     if log_path.is_some() {
         cleanup_and_exit(Some(s.to_json()), log_path.cloned());
-    } else {
-        cleanup_and_exit(None, log_path.cloned());
     }
+    cleanup_and_exit(None, log_path.cloned());
 }
 
 pub fn run(
