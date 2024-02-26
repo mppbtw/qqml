@@ -232,7 +232,6 @@ impl Lexer {
 
     fn read_ident(&mut self) -> String {
         let pos = self.position;
-        let mut c = 0;
         while is_letter(self.ch) {
             self.read_char();
         }
