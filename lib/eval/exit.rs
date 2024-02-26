@@ -25,7 +25,7 @@ pub fn cleanup_and_exit_with_log<C: AsRef<[u8]> + std::fmt::Display>(log: C, pat
         show_cursor();
     }
     if let Err(e) = write(path, &log) {
-        println!("Failed to write to log file {}: {}", log, e.to_string());
+        println!("Failed to write to log file {}: {}", log, e);
     }
     exit(0)
 }
