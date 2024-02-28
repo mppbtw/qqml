@@ -24,7 +24,6 @@ pub fn test_separate_lines() {
         vec![vec!["a".into(), "b".into()], vec!["cc".into(), "dd".into()]];
     let expected = "a   b\ncc  dd";
     let result = separate_lines(input, 2).unwrap();
-    dbg!(&result);
     assert_eq!(result, expected);
 }
 
@@ -33,7 +32,6 @@ pub fn test_left_pad() {
     let input = "super mario in real life";
     let expected = "    super mario in real life";
     let result = the_one_and_only_left_pad(input.to_string(), 4);
-    dbg!(&result);
     assert_eq!(result, expected);
 }
 
@@ -41,6 +39,5 @@ pub fn test_left_pad() {
 pub fn test_strip_whitespace() {
     let mut input = "ich bin ein berliner    ".to_owned();
     strip_whitespace(&mut input);
-    dbg!(&input);
     assert_eq!("ich bin ein berliner", input);
 }
