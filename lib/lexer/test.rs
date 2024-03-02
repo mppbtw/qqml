@@ -287,6 +287,6 @@ fn test_first_char_is_comment() {
 
 #[test]
 fn test_repeated_comment_lines() {
-    let input = "# first \n# second  \n# third##";
+    let input = "# first \n# second  \n  # third##";
     assert_eq!(Lexer::new(input).next_token(), Ok(Token::Eof(d())));
 }
