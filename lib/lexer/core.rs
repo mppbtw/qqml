@@ -110,13 +110,9 @@ impl Lexer {
 
     pub fn next_token(&mut self) -> Result<Token, LexerError> {
         self.scran_whitespace();
-        loop {
-            if self.ch == b'#' {
-                self.skip_until_newline();
-                self.scran_whitespace();
-            } else {
-                break;
-            }
+        while self.ch == b'#' {
+            self.skip_until_newline();
+            self.scran_whitespace();
         }
 
         self.starting_position = self.position;

@@ -84,8 +84,6 @@ fn test_tokenise_numbers() {
     loop {
         let expected_token = &expected[i];
         let tok = lexer.next_token().unwrap();
-        dbg!(&tok);
-        dbg!(&expected_token);
         assert_eq!(tok, *expected_token);
         if matches!(tok, Token::Eof(_)) {
             break;
@@ -114,8 +112,6 @@ fn test_tokenise_string_literals() {
     loop {
         let expected_token = &expected[i];
         let tok = lexer.next_token().unwrap();
-        dbg!(&tok);
-        dbg!(&expected_token);
         assert_eq!(tok, *expected_token);
         if matches!(tok, Token::Eof(_)) {
             break;
@@ -143,7 +139,6 @@ fn test_multi_char_tokens() {
     loop {
         let expected_token = &expected[i];
         let tok = lexer.next_token().unwrap();
-        dbg!(&tok);
         assert_eq!(tok, *expected_token);
         if matches!(tok, Token::Eof(_)) {
             break;
@@ -175,7 +170,6 @@ fn test_keyword_tokens_with_spaces() {
     loop {
         let expected_token = &expected[i];
         let tok = lexer.next_token().unwrap();
-        dbg!(&tok);
         assert_eq!(tok, *expected_token);
         if matches!(tok, Token::Eof(_)) {
             break;
@@ -293,6 +287,6 @@ fn test_first_char_is_comment() {
 
 #[test]
 fn test_repeated_comment_lines() {
-    let input = "# first \n# second  \n# third##";
+    let input = "# first \n# second  \n  # third##";
     assert_eq!(Lexer::new(input).next_token(), Ok(Token::Eof(d())));
 }
