@@ -2,7 +2,7 @@
 
 if [ $# -eq 0 ]
 then
-    echo "No arguments supplied. See https://github.com/MrPiggyPegasus/qqml#installation"
+    echo "No arguments supplied. See https://github.com/mppbtw/qqml#installation"
 fi
 
 case "$*" in

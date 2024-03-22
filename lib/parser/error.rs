@@ -193,7 +193,7 @@ impl fmt::Display for Error {
                 ),
         }.replace(
             "doc",
-            "https://github.com/MrPiggyPegasus/yarr/blob/main/doc/QQML.md",
+            "https://github.com/mppbtw/yarr/blob/main/doc/QQML.md",
         );
         write!(f, "{}", msg)
     }

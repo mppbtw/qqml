@@ -40,7 +40,7 @@ type Command struct {
 
 func (self *Command) displayError(msg string) {
 	fmt.Println("An internal error has occurred during the argument parsing process")
-	fmt.Println("Please report this to https://gitlab.com/MrPiggyPegasus/qqml")
+	fmt.Println("Please report this to https://gitlab.com/mppbtw/qqml")
 	fmt.Println(msg)
 	fmt.Println("error occured on the command:", self.Usage)
 	fmt.Println("Command debug info:", self)

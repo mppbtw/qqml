@@ -27,7 +27,7 @@ var (
 		Short: "QPM is the package manager for QQML.",
 		Long: `QPM is the QQML (Quiz Question Markup Language) package manager.
 It is used to install QQML quizzes from either local files or remote repositories.
-See <https://github.com/mrpiggypegasus/qqml> for more info.`,
+See <https://github.com/mppbtw/qqml> for more info.`,
 	}
 )
 
