@@ -32,7 +32,7 @@ pub fn init(parent: &mut Command) {
         short: "Compile QQML to JSON",
         args:  1,
         run:   Some(|args, flags| {
-            let src_path = &*args[0];
+            let src_path = &args[0];
             let src = match fs::read_to_string(src_path) {
                 Ok(s) => s,
                 Err(e) => {
