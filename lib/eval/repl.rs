@@ -22,14 +22,19 @@ use super::end_screen::end_screen;
 use super::exit::cleanup_and_exit;
 use super::exit::cleanup_and_exit_with_log;
 use super::render::Render;
+use crate::c_utils::*;
 use crate::parser::core::parse;
 use crate::parser::Question;
-use crate::termutils::*;
 use crate::Error;
 use crate::State;
 
+unsafe extern "C" fn sigint_handler() {
+    cleanup_and_exit();
+}
+
 pub fn run_from_state(mut s: State, log_path: Option<&String>) -> ! {
     unsafe {
+        set_sigint_handler(sigint_handler);
         enter_alt_screen();
         hide_cursor();
     }

@@ -22,8 +22,8 @@ use std::time::Duration;
 use super::exit::cleanup_and_exit;
 use super::render::pad_to_width;
 use super::state::State;
+use crate::c_utils::*;
 use crate::eval::exit::cleanup_and_exit_with_log;
-use crate::termutils::*;
 
 pub fn end_screen(s: &mut State, log_path: Option<String>) {
     let percent = if s.achieved_marks() == 0 {

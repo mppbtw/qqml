@@ -1,4 +1,4 @@
 cmake_minimum_required(VERSION 3.0)
-project(termutils)
-add_library(termutils STATIC termutils.c)
-install(TARGETS termutils DESTINATION .)
+project(c_utils)
+add_library(c_utils STATIC c_utils_term.c c_utils_sig.c)
+install(TARGETS c_utils DESTINATION .)
