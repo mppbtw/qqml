@@ -17,7 +17,7 @@
 use std::fs::write;
 use std::process::exit;
 
-use crate::termutils::*;
+use crate::c_utils::*;
 
 pub fn cleanup_and_exit_with_log<C: AsRef<[u8]> + std::fmt::Display>(log: C, path: &String) -> ! {
     unsafe {

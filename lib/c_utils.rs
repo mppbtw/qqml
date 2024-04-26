@@ -14,14 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-#[link(name = "termutils", kind = "static")]
+#[link(name = "c_utils", kind = "static")]
 extern "C" {
     pub fn clear_screen_with_height() -> i32;
+    pub fn set_sigint_handler(handler: unsafe extern "C" fn());
     pub fn clear_screen_with_width() -> i32;
 
-    // By 'break cursor' I mean that the cursor will be in some arbitrary place
-    // after calling the function. This is OK because the we might need to do
-    // more computation before clearing the screen to prevent flickering.
+    /// By 'break cursor' I mean that the cursor will be in some arbitrary place
+    /// after calling the function. This is OK because the we might need to do
+    /// more computation before clearing the screen to prevent flickering.
     pub fn break_cursor_with_width() -> i32;
     pub fn read_single_char() -> u8;
     pub fn enter_alt_screen();
